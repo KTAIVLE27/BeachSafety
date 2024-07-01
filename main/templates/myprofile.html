@@ -1,7 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <title>마이페이지</title>
@@ -34,20 +33,20 @@
     <!-- Custom Stylesheet -->
     <link href="{% static 'css/myprofile.css'%}" rel="stylesheet">
 
-    
+    <!-- Custom CSS for alert messages -->
+    <style>
+        .alert-message {
+            position: fixed;
+            top: 70px; /* Adjusted to ensure it is below the header */
+            right: 20px;
+            z-index: 1050; /* High z-index to ensure it is above other elements */
+            display: none;
+        
+        }
+    </style>
 </head>
-
 <body>
     <div class="container-fluid position-relative bg-white d-flex p-0">
-        <!-- Spinner Start -->
-        <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
-        </div>
-        <!-- Spinner End -->
-
-
         <!-- Sidebar Start -->
         <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-light navbar-light">
@@ -61,23 +60,22 @@
                     </div>
                     <div class="ms-3">
                         <h6 class="mb-0">27조</h6>
-                        <span>Admin</span>
+                        <span>{{ user.user_name }}</span> 
                     </div>
                 </div>
                 <div class="navbar-nav w-100">
                     <a href="{% url 'home'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/home_24dp.png'%}" style="width: 40px; height: 40px;"></i>홈</a>
-                    <a href="{% url 'myprofile'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/face_24dp.png'%}" style="width: 40px; height: 40px;"></i>마이 페이지</a>
-                    <a href="{% url 'cctv'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/videocam.png'%}" style="width: 40px; height: 40px;"></i>CCTV</a>
-                    <a href="{% url 'weather'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/partly.png'%}" style="width: 40px; height: 40px;"></i>날씨</a>
-                    <a href="{% url 'risk'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/fmd.png'%}" style="width: 40px; height: 40px;"></i>위험도</a>
-                    <a href="{% url 'board'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/wysiwyg_24dp.png'%}" style="width: 40px; height: 40px;"></i>공지사항</a>
-                    <a href="{% url 'free_board'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/wysiwyg_24dp.png'%}" style="width: 40px; height: 40px;"></i>자유 게시판</a>
-                    <a href="{% url 'chat'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/chat_24dp.png'%}" style="width: 40px; height: 40px;"></i>모의 훈련</a>
+                    <a href="{% url 'myprofile'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/face_24dp.png'%}" style="width: 40px; height: 40px;"></이>마이 페이지</a>
+                    <a href="{% url 'cctv'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/videocam.png'%}" style="width: 40px; height: 40px;"></이>CCTV</a>
+                    <a href="{% url 'weather'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/partly.png'%}" style="width: 40px; height: 40px;"></이>날씨</a>
+                    <a href="{% url 'risk'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/fmd.png'%}" style="width: 40px; height: 40px;"></이>위험도</a>
+                    <a href="{% url 'board'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/wysiwyg_24dp.png'%}" style="width: 40px; height: 40px;"></이>공지사항</a>
+                    <a href="{% url 'free_board'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/wysiwyg_24dp.png'%}" style="width: 40px; height: 40px;"></이>자유 게시판</a>
+                    <a href="{% url 'chat'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/chat_24dp.png'%}" style="width: 40px; height: 40px;"></이>모의 훈련</a>
                 </div>
             </nav>
         </div>
         <!-- Sidebar End -->
-
 
         <!-- Content Start -->
         <div class="content">
@@ -96,7 +94,12 @@
                 </form>
                 <div class="navbar-nav align-items-center ms-auto">
                     <div class="nav-item dropdown">
-                        <a href="#"><img src="{% static 'img/logout_24dp.png' %}" width="50" height="50"></i></a>
+                        <form method="post" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" style="border:none; background:none;">
+                                <img src="{% static 'img/logout_24dp.png' %}" width="50" height="50" alt="Logout">
+                            </button>
+                        </form>
                     </div>
     
                     <div class="nav-item dropdown">
@@ -116,7 +119,8 @@
                                 <h3 class="mb-0">프로필 수정</h3>
                             </div>
                             <div class="profile-box">
-                                <form id="profile-form" enctype="multipart/form-data">
+                                <form id="profile-form" method="post" action="{% url 'myprofile' %}" enctype="multipart/form-data">
+                                    {% csrf_token %}
                                     <!-- 프로필 이미지 -->
                                     <div class="mb-3 text-center">
                                         <label for="profile-img-upload" class="profile-img-label">
@@ -126,13 +130,15 @@
                                             </div>
                                         </label>
                                         <input type="file" id="profile-img-upload" name="profile-img-upload" class="d-none" accept="image/*" onchange="previewImage(event)">
-                                    </div><!-- ID -->
+                                    </div>
+
+                                    <!-- ID -->
                                     <div class="row mb-3">
                                         <div class="col-md-4">
                                             <label for="profile-id" class="form-label">ID</label>
                                         </div>
-                                        <div class="col-md-5">
-                                            <input type="text" id="profile-id" class="form-control" value="YourID" readonly>
+                                        <div class="col-md-8">
+                                            <input type="text" id="profile-id" class="form-control" value="{{ user.user_id }}" readonly>
                                         </div>
                                     </div>
                                     
@@ -141,8 +147,8 @@
                                         <div class="col-md-4">
                                             <label for="profile-pw" class="form-label">비밀번호</label>
                                         </div>
-                                        <div class="col-md-5">
-                                            <input type="password" id="profile-pw" class="form-control">
+                                        <div class="col-md-8">
+                                            <input type="password" id="profile-pw" name="password1" class="form-control">
                                         </div>
                                     </div>
                                     
@@ -151,22 +157,18 @@
                                         <div class="col-md-4">
                                             <label for="profile-pw-confirm" class="form-label">비밀번호 확인</label>
                                         </div>
-                                        <div class="col-md-5">
-                                            <input type="password" id="profile-pw-confirm" class="form-control">
+                                        <div class="col-md-8">
+                                            <input type="password" id="profile-pw-confirm" name="password2" class="form-control">
                                         </div>
-                                        <div class="col-md-3">
-                                            <button type="button" class="btn btn-primary w-100" onclick="saveProfile()">변경</button>
-                                        </div>
-                                    </div><!-- 이메일 -->
+                                    </div>
+                                    
+                                    <!-- 이메일 -->
                                     <div class="row mb-3">
                                         <div class="col-md-4">
                                             <label for="profile-email" class="form-label">이메일</label>
                                         </div>
-                                        <div class="col-md-5">
-                                            <input type="email" id="profile-email" class="form-control" value="YourEmail">
-                                        </div>
-                                        <div class="col-md-3">
-                                            <button type="button" class="btn btn-primary w-100" onclick="saveProfile()">변경</button>
+                                        <div class="col-md-8">
+                                            <input type="email" id="profile-email" name="user_email" class="form-control" value="{{ user.user_email }}">
                                         </div>
                                     </div>
                                     
@@ -175,8 +177,8 @@
                                         <div class="col-md-4">
                                             <label for="profile-name" class="form-label">이름</label>
                                         </div>
-                                        <div class="col-md-5">
-                                            <input type="text" id="profile-name" class="form-control" value="YourName" readonly>
+                                        <div class="col-md-8">
+                                            <input type="text" id="profile-name" class="form-control" value="{{ user.user_name }}" readonly>
                                         </div>
                                     </div>
                                     
@@ -185,11 +187,8 @@
                                         <div class="col-md-4">
                                             <label for="profile-phone" class="form-label">휴대폰번호</label>
                                         </div>
-                                        <div class="col-md-5">
-                                            <input type="text" id="profile-phone" class="form-control" value="YourPhoneNumber">
-                                        </div>
-                                        <div class="col-md-3">
-                                            <button type="button" class="btn btn-primary w-100" onclick="saveProfile()">변경</button>
+                                        <div class="col-md-8">
+                                            <input type="text" id="profile-phone" name="user_phone" class="form-control" value="{{ user.user_phone }}">
                                         </div>
                                     </div>
                                     
@@ -198,15 +197,12 @@
                                         <div class="col-md-4">
                                             <label for="profile-address" class="form-label">주소</label>
                                         </div>
-                                        <div class="col-md-5">
-                                            <input type="text" id="profile-address" class="form-control" value="YourAddress">
-                                        </div>
-                                        <div class="col-md-3">
-                                            <button type="button" class="btn btn-primary w-100" onclick="saveProfile()">변경</button>
+                                        <div class="col-md-8">
+                                            <input type="text" id="profile-address" name="user_address" class="form-control" value="{{ user.user_address }}">
                                         </div>
                                     </div>
                                     
-                                    <button type="button" class="btn btn-primary w-100" onclick="saveProfile()">저장</button>
+                                    <button type="submit" class="btn btn-primary w-100">저장</button>
                                     <p id="password-error" class="text-danger mt-2"></p>
                                 </form>
                             </div>
@@ -240,6 +236,31 @@
     <script src="{% static 'js/main.js'%}"></script>
     <!-- Custom Javascript -->
     <script src="{% static 'js/myprofile.js'%}"></script>
-</body>
 
+    <!-- Custom JavaScript for alert messages -->
+    <script>
+        // Display alert message
+        function showAlert(message, alertType) {
+            const alertBox = document.createElement('div');
+            alertBox.className = `alert alert-${alertType} alert-message`;
+            alertBox.textContent = message;
+
+            document.body.appendChild(alertBox);
+
+            alertBox.style.display = 'block';
+
+            setTimeout(() => {
+                alertBox.style.display = 'none';
+                alertBox.remove();
+            }, 3000);
+        }
+
+        // Handle messages from Django
+        {% if messages %}
+            {% for message in messages %}
+                showAlert("{{ message }}", "{% if message.tags %}{{ message.tags }}{% else %}info{% endif %}");
+            {% endfor %}
+        {% endif %}
+    </script>
+</body>
 </html>
