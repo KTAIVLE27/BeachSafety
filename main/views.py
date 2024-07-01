@@ -14,7 +14,7 @@ def is_admin(user):
 
 @user_passes_test(is_admin)
 def admin_panel(request):
-    return render(request, 'adminpanel/index.html')
+    return render(request, 'adminpanel/admin_home.html')
 
 def index(request):
     return render(request, 'index.html')
@@ -34,6 +34,9 @@ def myprofile(request):
 
 def board(request):
     return render(request, 'board.html')
+
+def free_board(request):
+    return render(request, 'free_board.html')
 
 def chat(request):
     return render(request, 'chat.html')
