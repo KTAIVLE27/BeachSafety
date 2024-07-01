@@ -86,7 +86,12 @@
                 </form>
                 <div class="navbar-nav align-items-center ms-auto">
                     <div class="nav-item dropdown">
-                        <a href="{% url 'signin' %}"><img src="{% static 'img/logout_24dp.png' %}" width="50" height="50"></i></a>
+                        <form method="post" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" style="border:none; background:none;">
+                                <img src="{% static 'img/logout_24dp.png' %}" width="50" height="50" alt="Logout">
+                            </button>
+                        </form>
                     </div>
     
                     <div class="nav-item dropdown">

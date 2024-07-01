@@ -25,6 +25,7 @@ def elements(request):
 def generic(request):
     return render(request, 'generic.html')
 
+@login_required
 def home(request):
     return render(request, 'home.html')
 
@@ -53,12 +54,15 @@ def signin(request):
         if form.is_valid():
             user_id = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
+            print(f"user_id: {user_id}")
+            print(f"password: {password}")
             user = authenticate(request, username = user_id, password = password)
+            print(f"authenticated user: {user}")
             if user is not None:
                 login(request, user)
                 if user.user_role == 'supervisor':
                     return redirect('superviosr_dashbord')
-                elif user.user_role == 'polic':
+                elif user.user_role == 'police':
                     return redirect('home')
                 elif user.user_role == 'admin':
                     return redirect('admin_panel')    
