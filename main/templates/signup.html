@@ -15,6 +15,8 @@
     <link href="{% static 'lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <!-- Bootstrap Datepicker CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="container-fluid">
@@ -29,27 +31,6 @@
                     </div>
                     <form method="post" action="{% url 'signup' %}">
                         {% csrf_token %}
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" name="code" id="id_code" placeholder="회원번호" required maxlength="150">
-                            <label for="id_code">CODE</label>
-                            {% for error in form.code.errors %}
-                                <div class="text-danger">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" name="username" id="id_username" placeholder="이름" required maxlength="150">
-                            <label for="id_username">Name</label>
-                            {% for error in form.username.errors %}
-                                <div class="text-danger">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" name="phoneNumber" id="id_PhoneNumber" placeholder="핸드폰번호" required maxlength="150">
-                            <label for="id_birth">PhoneNumber</label>
-                            {% for error in form.birth.errors %}
-                                <div class="text-danger">{{ error }}</div>
-                            {% endfor %}
-                        </div>
                         <div class="form-floating mb-3">
                             <input type="text" class="form-control" name="id" id="id_id" placeholder="ID" required maxlength="150">
                             <label for="id_id">ID</label>
@@ -72,16 +53,23 @@
                             {% endfor %}
                         </div>
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" name="birth" id="id_birth" placeholder="생년월일" required maxlength="150">
-                            <label for="id_birth">Birth</label>
-                            {% for error in form.birth.errors %}
+                            <input type="email" class="form-control" name="email" id="id_email" placeholder="name@example.com">
+                            <label for="id_email">Email address</label>
+                            {% for error in form.email.errors %}
                                 <div class="text-danger">{{ error }}</div>
                             {% endfor %}
                         </div>
                         <div class="form-floating mb-3">
-                            <input type="email" class="form-control" name="email" id="id_email" placeholder="name@example.com">
-                            <label for="id_email">Email address</label>
-                            {% for error in form.email.errors %}
+                            <input type="text" class="form-control" name="username" id="id_username" placeholder="이름" required maxlength="150">
+                            <label for="id_username">Name</label>
+                            {% for error in form.username.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" name="phoneNumber" id="id_PhoneNumber" placeholder="핸드폰번호" required maxlength="150">
+                            <label for="id_PhoneNumber">PhoneNumber</label>
+                            {% for error in form.phoneNumber.errors %}
                                 <div class="text-danger">{{ error }}</div>
                             {% endfor %}
                         </div>
@@ -92,6 +80,13 @@
                                 <div class="text-danger">{{ error }}</div>
                             {% endfor %}
                         </div>
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" name="birth" id="id_birth" placeholder="yyyy-mm-dd" required>
+                            <label for="id_birth">Birth</label>
+                            {% for error in form.birth.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>                        
                         <button type="submit" class="btn btn-primary py-3 w-100 mb-4">Sign Up</button>
                     </form>
                     <p class="text-center mb-0">Already have an Account? <a href="{% url 'signin' %}">Sign In</a></p>
@@ -100,8 +95,10 @@
         </div>
     </div>
 
+    <!-- 필요한 JavaScript 파일 포함 -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <script src="{% static 'lib/chart/chart.min.js' %}"></script>
     <script src="{% static 'lib/easing/easing.min.js' %}"></script>
     <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
@@ -110,5 +107,16 @@
     <script src="{% static 'lib/tempusdominus/js/moment-timezone.min.js' %}"></script>
     <script src="{% static 'lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
+
+    <!-- Datepicker 초기화 스크립트 -->
+    <script>
+        $(document).ready(function() {
+            $('#id_birth').datepicker({
+                format: 'yyyy-mm-dd', // 날짜 형식 지정
+                autoclose: true,
+                todayHighlight: true
+            });
+        });
+    </script>
 </body>
 </html>
