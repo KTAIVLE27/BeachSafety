@@ -30,23 +30,51 @@
                     <form method="post" action="{% url 'signup' %}">
                         {% csrf_token %}
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" name="username" id="id_username" placeholder="Username" required maxlength="150">
-                            <label for="id_username">Username</label>
+                            <input type="text" class="form-control" name="code" id="id_code" placeholder="회원번호" required maxlength="150">
+                            <label for="id_code">CODE</label>
+                            {% for error in form.code.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" name="username" id="id_username" placeholder="이름" required maxlength="150">
+                            <label for="id_username">Name</label>
                             {% for error in form.username.errors %}
                                 <div class="text-danger">{{ error }}</div>
                             {% endfor %}
                         </div>
                         <div class="form-floating mb-3">
-                            <input type="password" class="form-control" name="password1" id="id_password1" placeholder="Password" required>
+                            <input type="text" class="form-control" name="phoneNumber" id="id_PhoneNumber" placeholder="핸드폰번호" required maxlength="150">
+                            <label for="id_birth">PhoneNumber</label>
+                            {% for error in form.birth.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" name="id" id="id_id" placeholder="ID" required maxlength="150">
+                            <label for="id_id">ID</label>
+                            {% for error in form.id.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="password" class="form-control" name="password1" id="id_password1" placeholder="비밀번호" required>
                             <label for="id_password1">Password</label>
                             {% for error in form.password1.errors %}
                                 <div class="text-danger">{{ error }}</div>
                             {% endfor %}
                         </div>
                         <div class="form-floating mb-3">
-                            <input type="password" class="form-control" name="password2" id="id_password2" placeholder="Confirm Password" required>
+                            <input type="password" class="form-control" name="password2" id="id_password2" placeholder="비밀번호 확인" required>
                             <label for="id_password2">Confirm Password</label>
                             {% for error in form.password2.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" name="birth" id="id_birth" placeholder="생년월일" required maxlength="150">
+                            <label for="id_birth">Birth</label>
+                            {% for error in form.birth.errors %}
                                 <div class="text-danger">{{ error }}</div>
                             {% endfor %}
                         </div>
@@ -54,6 +82,13 @@
                             <input type="email" class="form-control" name="email" id="id_email" placeholder="name@example.com">
                             <label for="id_email">Email address</label>
                             {% for error in form.email.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" name="address" id="id_address" placeholder="주소" required maxlength="150">
+                            <label for="id_address">Address</label>
+                            {% for error in form.address.errors %}
                                 <div class="text-danger">{{ error }}</div>
                             {% endfor %}
                         </div>
