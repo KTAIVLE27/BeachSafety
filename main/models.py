@@ -1,18 +1,42 @@
 from django.db import models
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
-class Authority(models.Model):
-    auth_no = models.AutoField(primary_key=True)  # 권한 번호
-    auth_name = models.CharField(max_length=100, blank=False, unique=True)  # 권한 이름
+class UserManager(BaseUserManager):
+    def create_user(self, user_id, user_email, user_password=None, **extra_fields):
+        if not user_id:
+            raise ValueError('The User ID field must be set')
+        if not user_email:
+            raise ValueError('The Email field must be set')
+        email = self.normalize_email(user_email)
+        user = self.model(user_id=user_id, user_email=email, **extra_fields)
+        user.set_password(user_password)
+        user.save(using=self._db)
+        return user
+    
+    #관리자, 관제실 모두 제어 가능한 권한자
+    def create_superuser(self, user_id, user_email, user_password=None, **extra_fields):
+        extra_fields.setdefault('is_admin', True)
+        extra_fields.setdefault('is_superuser', True)
 
-    class Meta:
-        #managed = False
-        db_table = 'authority'
+        if extra_fields.get('is_admin') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+        
+        return self.create_user(user_id, user_email, user_password, **extra_fields)
 
-
-class User(models.Model):
-    user_no = models.AutoField(db_column='user_no', primary_key=True)  # 회원번호
-    auth_no = models.OneToOneField(Authority, on_delete=models.CASCADE, db_column='auth_no')  # 권한번호
-    user_password = models.CharField(max_length=128, blank=False)  # 비밀번호
+    # is_admin(super?) 관제 권한만 가지는 권한 :
+    # def create_
+    #     return self.create_user(user_id, user_email, user_password, **extra_fields)
+    
+class User(AbstractBaseUser, PermissionsMixin):
+    ROLE_CHOICES = (
+        ('police', '일반경찰'),
+        ('admin', '관리자'),
+        ('supervisor', '관제사'),
+    )
+    user_no = models.AutoField(primary_key=True)  # 회원번호
+    user_role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='police')  # 권한
     user_phone = models.CharField(max_length=20, blank=False)  # 휴대폰번호
     user_name = models.CharField(max_length=100, blank=False)  # 이름
     user_birth = models.DateField(blank=False)  # 생일
@@ -21,12 +45,23 @@ class User(models.Model):
     user_email = models.EmailField(unique=True, blank=False)  # 회원 이메일
     user_joinday = models.DateTimeField(auto_now_add=True, blank=False)  # 회원 가입날짜
 
+
+    is_active = models.BooleanField(default=True)  # 이메일 인증 등 을 통해 커스텀 가능
+    is_staff = models.BooleanField(default=False)
+
+    objects = UserManager()
+    
+    USERNAME_FIELD = 'user_id'
+    REQUIRED_FIELDS = ['user_email', 'user_name', 'user_phone', 'user_birth']
+
     class Meta:
         #managed = False
         db_table = 'user'
 
+    
+
 class Beach(models.Model):
-    beach_no = models.AutoField(max_length=20, primary_key=True)  # 해수욕장 번호
+    beach_no = models.AutoField(primary_key=True)  # 해수욕장 번호
     beach_name = models.CharField(max_length=100, blank=False)  # 해수욕장 이름
     beach_region = models.CharField(max_length=100, blank=False)  # 지역
 

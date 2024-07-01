@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 import logging
 from django.http import HttpResponseForbidden
+from .forms import SignUpForm
 
 def is_admin(user):
     return user.is_authenticated and user.username == 'aivle@kt.com' and user.check_password('aivle27')
@@ -46,33 +47,47 @@ def risk(request):
     return render(request, 'risk.html')
 
 def signin(request):
+    user = None
     if request.method == 'POST':
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        user = authenticate(request, email=email, password=password)
-        if user is not None:
-            login(request, user)
-            if is_admin(user):
-                return redirect('admin_panel') 
-            return redirect('/')  # 'home'은 home 페이지의 URL 패턴 이름이라고 가정
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user_id = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(request, username = user_id, password = password)
+            if user is not None:
+                login(request, user)
+                if user.user_role == 'supervisor':
+                    return redirect('superviosr_dashbord')
+                elif user.user_role == 'polic':
+                    return redirect('home')
+                elif user.user_role == 'admin':
+                    return redirect('admin_panel')    
+            else:
+                messages.error(request, '아이디 또는 비밀번호가 잘못되었습니다.')
         else:
-            messages.error(request, '이메일 또는 비밀번호가 잘못되었습니다.')
-    return render(request, 'signin.html')
+                messages.error(request, '아이디 또는 비밀번호가 잘못되었습니다.')
+    else:
+        form = AuthenticationForm()
+    return render(request, 'signin.html', {'form' : form})
+
+
+
 
 def signup(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = SignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
-            # 이 부분에서 password1과 password2를 사용해야 합니다.
-            password = form.cleaned_data.get('password1')
-            username = form.cleaned_data.get('username')
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                return redirect('/')
+            user.user_role = 'police'
+            user.save()
+            login(request, user) # 로그인 처리
+            return redirect('home')
+        else:
+            for field in form:
+                for error in field.errors:
+                    messages.error(request, f"{field.label}: {error}")
     else:
-        form = UserCreationForm()
+        form = SignUpForm()
     return render(request, 'signup.html', {'form': form})
 
 
