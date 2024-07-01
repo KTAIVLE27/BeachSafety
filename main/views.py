@@ -57,10 +57,7 @@ def signin(request):
         if form.is_valid():
             user_id = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
-            print(f"user_id: {user_id}")
-            print(f"password: {password}")
             user = authenticate(request, username = user_id, password = password)
-            print(f"authenticated user: {user}")
             if user is not None:
                 login(request, user)
                 if user.user_role == 'supervisor':
