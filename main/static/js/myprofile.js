@@ -1,48 +1,33 @@
-document.getElementById('profile-img-upload').addEventListener('change', function () {
-    const file = this.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            document.getElementById('profile-img').src = e.target.result;
-            document.getElementById('home-profile-img').src = e.target.result; // Update home profile image
-        }
-        reader.readAsDataURL(file);
-    }
-});
+// 파일 선택 시 프로필 사진 미리보기 및 저장
+function previewImage(event) {
+    var input = event.target;
+    var reader = new FileReader();
 
-function toggleEditable(fieldId) {
-    const field = document.getElementById(fieldId);
-    if (field.hasAttribute('readonly')) {
-        field.removeAttribute('readonly');
-        field.focus();
-    } else {
-        field.setAttribute('readonly', true);
-    }
+    reader.onload = function() {
+        var dataURL = reader.result;
+        var imgElement = document.getElementById('profile-img');
+        imgElement.src = dataURL;
+    };
+
+    reader.readAsDataURL(input.files[0]);
 }
 
-document.getElementById('profile-form').addEventListener('submit', function (event) {
-    event.preventDefault();
+// 비밀번호 확인 및 프로필 저장 기능
+function saveProfile() {
+    var pwField = document.getElementById('profile-pw');
+    var pwConfirmField = document.getElementById('profile-pw-confirm');
+    var pwError = document.getElementById('password-error');
 
-    const formData = new FormData(this);
-    fetch("{% url 'update_profile' %}", {
-        method: "POST",
-        body: formData,
-        headers: {
-            'X-CSRFToken': '{{ csrf_token }}'
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert('사진이 성공적으로 바뀌었다람쥐');
-            // Update the profile picture on the home page if necessary
-            document.getElementById('home-profile-img').src = document.getElementById('profile-img').src;
-        } else {
-            alert('사진 업로드에 실패하였습니다. 다시 시도하여주세요.');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('에러에러에러에러에러에러.');
-    });
-});
+    // Check if passwords match
+    if (pwField.value !== pwConfirmField.value) {
+        pwError.textContent = "비밀번호가 일치하지 않습니다.";
+        alert("비밀번호가 일치하지 않습니다.");
+        return; // Do not proceed further
+    } else {
+        pwError.textContent = ""; // Clear error message if passwords match
+    }
+
+    // 여기서 프로필 정보를 서버에 전송하여 저장하는 로직을 구현합니다.
+    // 예시로 Alert 대신 팝업으로 저장되었음을 표시합니다.
+    alert('프로필 수정이 완료되었습니다.');
+}

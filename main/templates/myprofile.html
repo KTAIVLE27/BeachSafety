@@ -33,6 +33,8 @@
 
     <!-- Custom Stylesheet -->
     <link href="{% static 'css/myprofile.css'%}" rel="stylesheet">
+
+    
 </head>
 
 <body>
@@ -63,7 +65,6 @@
                     </div>
                 </div>
                 <div class="navbar-nav w-100">
-                   
                     <a href="{% url 'home'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/home_24dp.png'%}" style="width: 40px; height: 40px;"></i>홈</a>
                     <a href="{% url 'myprofile'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/face_24dp.png'%}" style="width: 40px; height: 40px;"></i>마이 페이지</a>
                     <a href="{% url 'cctv'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/videocam.png'%}" style="width: 40px; height: 40px;"></i>CCTV</a>
@@ -108,55 +109,105 @@
 
             <!-- Profile Section Start -->
             <div class="container-fluid pt-4 px-4">
-                <div class="row g-4">
-                    <div class="col-12">
+                <div class="row g-4 justify-content-center">
+                    <div class="col-lg-8">
                         <div class="bg-light text-center rounded p-4">
                             <div class="d-flex align-items-center justify-content-between mb-4">
-                                <h6 class="mb-0">프로필</h6>
+                                <h3 class="mb-0">프로필 수정</h3>
                             </div>
                             <div class="profile-box">
                                 <form id="profile-form" enctype="multipart/form-data">
+                                    <!-- 프로필 이미지 -->
                                     <div class="mb-3 text-center">
-                                        <img src="{% static 'img/face_24dp.png' %}" id="profile-img" class="rounded-circle mb-3" alt="Profile Picture" style="width: 100px; height: 100px;">
-                                        <div>
-                                            <label for="profile-img-upload" class="btn btn-primary btn-sm">프로필 사진 업로드</label>
-                                            <input type="file" id="profile-img-upload" name="profile-img-upload" class="d-none" accept="image/*">
+                                        <label for="profile-img-upload" class="profile-img-label">
+                                            <img src="{% static 'img/face_24dp.png' %}" id="profile-img" class="rounded-circle mb-3" alt="Profile Picture" style="width: 100px; height: 100px;">
+                                            <div class="overlay">
+                                                <div class="text">편집</div>
+                                            </div>
+                                        </label>
+                                        <input type="file" id="profile-img-upload" name="profile-img-upload" class="d-none" accept="image/*" onchange="previewImage(event)">
+                                    </div><!-- ID -->
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <label for="profile-id" class="form-label">ID</label>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <input type="text" id="profile-id" class="form-control" value="YourID" readonly>
                                         </div>
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="profile-id" class="form-label">ID</label>
-                                        <input type="text" id="profile-id" class="form-control" value="YourID" readonly>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="profile-pw" class="form-label">비밀번호</label>
-                                        <div class="input-group">
-                                            <input type="password" id="profile-pw" class="form-control" value="YourPassword" readonly>
-                                            <button type="button" class="btn btn-outline-primary" onclick="toggleEditable('profile-pw')">변경</button>
+                                    
+                                    <!-- 비밀번호 -->
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <label for="profile-pw" class="form-label">비밀번호</label>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <input type="password" id="profile-pw" class="form-control">
                                         </div>
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="profile-name" class="form-label">이름</label>
-                                        <input type="text" id="profile-name" class="form-control" value="YourName" readonly>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="profile-birthdate" class="form-label">생년월일</label>
-                                        <input type="date" id="profile-birthdate" class="form-control" value="YourBirthdate" readonly>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="profile-phone" class="form-label">연락처</label>
-                                        <div class="input-group">
-                                            <input type="text" id="profile-phone" class="form-control" value="YourPhoneNumber" readonly>
-                                            <button type="button" class="btn btn-outline-primary" onclick="toggleEditable('profile-phone')">변경</button>
+                                    
+                                    <!-- 비밀번호 확인 -->
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <label for="profile-pw-confirm" class="form-label">비밀번호 확인</label>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <input type="password" id="profile-pw-confirm" class="form-control">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <button type="button" class="btn btn-primary w-100" onclick="saveProfile()">변경</button>
+                                        </div>
+                                    </div><!-- 이메일 -->
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <label for="profile-email" class="form-label">이메일</label>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <input type="email" id="profile-email" class="form-control" value="YourEmail">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <button type="button" class="btn btn-primary w-100" onclick="saveProfile()">변경</button>
                                         </div>
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="profile-email" class="form-label">Email</label>
-                                        <div class="input-group">
-                                            <input type="email" id="profile-email" class="form-control" value="YourEmail" readonly>
-                                            <button type="button" class="btn btn-outline-primary" onclick="toggleEditable('profile-email')">변경</button>
+                                    
+                                    <!-- 이름 -->
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <label for="profile-name" class="form-label">이름</label>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <input type="text" id="profile-name" class="form-control" value="YourName" readonly>
                                         </div>
                                     </div>
-                                    <button type="submit" class="btn btn-primary">저장</button>
+                                    
+                                    <!-- 휴대폰번호 -->
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <label for="profile-phone" class="form-label">휴대폰번호</label>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <input type="text" id="profile-phone" class="form-control" value="YourPhoneNumber">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <button type="button" class="btn btn-primary w-100" onclick="saveProfile()">변경</button>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 주소 -->
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <label for="profile-address" class="form-label">주소</label>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <input type="text" id="profile-address" class="form-control" value="YourAddress">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <button type="button" class="btn btn-primary w-100" onclick="saveProfile()">변경</button>
+                                        </div>
+                                    </div>
+                                    
+                                    <button type="button" class="btn btn-primary w-100" onclick="saveProfile()">저장</button>
+                                    <p id="password-error" class="text-danger mt-2"></p>
                                 </form>
                             </div>
                         </div>
@@ -192,10 +243,3 @@
 </body>
 
 </html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Profile</title>
-</head>

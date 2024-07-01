@@ -1,19 +1,58 @@
-.profile-box {
-    width: 80%;
-    max-width: 500px;
-    margin: 0 auto;
-    text-align: left;
-    padding: 20px;
-    border: 1px solid #ddd; /* 테두리 추가 */
-    border-radius: 10px; /* 테두리 모서리를 둥글게 */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
-}
+/* Custom CSS for profile edit page */
 
-#profile-img {
-    cursor: pointer;
-    object-fit: cover;
-    width: 100px; /* 프로필 이미지 크기 조정 */
-    height: 100px; /* 프로필 이미지 크기 조정 */
-    border-radius: 50%; /* 이미지를 원형으로 만듦 */
-    margin-bottom: 15px; /* 이미지와 다른 내용 사이의 간격 추가 */
-}
+        .profile-img-label {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            font-size: 14px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .overlay .text {
+            transition: transform 0.3s ease;
+        }
+
+        .profile-img-label:hover .overlay {
+            opacity: 1;
+        }
+
+        .profile-img-label:hover .overlay .text {
+            transform: translateY(-50%);
+        }
+
+        .overlay .text {
+            transform: translateY(0);
+        }
+
+        .profile-box label {
+            position: relative;
+            margin-bottom: 0.5rem;
+        }
+
+        #password-error {
+            font-size: 14px;
+        }
+
+        .profile-box button {
+            font-size: 14px;
+            padding: 10px 20px;
+        }
+
+        @media (max-width: 576px) {
+            .profile-img-label {
+                font-size: 12px;
+            }
+        }
