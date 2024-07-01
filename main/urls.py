@@ -1,9 +1,11 @@
 from django.urls import path
 from django.contrib import admin
 from . import views
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path("", views.signin,name='signin'),
+    path('logout/',  auth_views.LogoutView.as_view(), name='logout'),
     path("index", views.index,name='index'),
     path("elements", views.elements,name='elements'),
     path("generic", views.generic,name='generic'),
