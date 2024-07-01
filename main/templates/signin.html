@@ -65,8 +65,8 @@
                             <form method="post" action="{% url 'signin' %}">
                                 {% csrf_token %}
                                 <div class="form-floating mb-3">
-                                    <input type="email" name="email" class="form-control" id="floatingInput" placeholder="name@example.com" required>
-                                    <label for="floatingInput">Email</label>
+                                    <input type="text" name="id" class="form-control" id="id_id" placeholder="ID" required>
+                                    <label for="floatingInput">ID</label>
                                 </div>
                                 <div class="form-floating mb-4">
                                     <input type="password" name="password" class="form-control" id="floatingPassword" placeholder="Password" required>
