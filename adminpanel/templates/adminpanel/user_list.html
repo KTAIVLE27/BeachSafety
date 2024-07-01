@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>모의 훈련</title>
+    <title>사용자 정보 관리</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -46,8 +46,8 @@
         <!-- Sidebar Start -->
         <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-light navbar-light">
-                <a class="navbar-brand mx-4 mb-3">
-                    <h3 class="text-primary">Chat</h3>
+                <a href="index.html" class="navbar-brand mx-4 mb-3">
+                    <h3 class="text-primary">사용자정보 관리</h3>
                 </a>
                 <div class="d-flex align-items-center ms-4 mb-4">
                     <div class="position-relative">
@@ -61,14 +61,10 @@
                 </div>
                 <div class="navbar-nav w-100">
                     
-                    <a href="{% url 'home'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/home_24dp.png'%}" style="width: 40px; height: 40px;"></i>홈</a>
-                    <a href="{% url 'myprofile'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/face_24dp.png'%}" style="width: 40px; height: 40px;"></i>마이 페이지</a>
-                    <a href="{% url 'cctv'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/videocam.png'%}" style="width: 40px; height: 40px;"></i>CCTV</a>
-                    <a href="{% url 'weather'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/partly.png'%}" style="width: 40px; height: 40px;"></i>날씨</a>
-                    <a href="{% url 'risk'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/fmd.png'%}" style="width: 40px; height: 40px;"></i>위험도</a>
-                    <a href="{% url 'board'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/wysiwyg_24dp.png'%}" style="width: 40px; height: 40px;"></i>공지사항</a>
-                    <a href="{% url 'free_board'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/wysiwyg_24dp.png'%}" style="width: 40px; height: 40px;"></i>자유 게시판</a>
-                    <a href="{% url 'chat'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/chat_24dp.png'%}" style="width: 40px; height: 40px;"></i>모의 훈련</a>
+                    <a href="{% url 'admin_home' %}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/home_24dp.png'%}" style="width: 40px; height: 40px;"></i>관리자 홈</a>
+                    <a href="{% url 'user_list'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/face_24dp.png'%}" style="width: 40px; height: 40px;"></i>사용자 정보 관리</a>
+                    <a href="{% url 'senario'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/wysiwyg_24dp.png'%}" style="width: 40px; height: 40px;"></i>훈련시나리오 관리</a>
+                    <a href="{% url 'board_manage'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/chat_24dp.png'%}" style="width: 40px; height: 40px;"></i>게시판 관리</a>
                     
                         
                 </div>
@@ -88,16 +84,17 @@
                     <i class="fa fa-bars"></i>
                 </a> 
                 
-                <a href="{% url 'home' %}"><img src="{% static 'img/logo.png' %}" width="50" height="50"></i></a>
-               
-
-                <div class="navbar-nav align-items-center ms-auto">    
+                <a href="{% url 'admin_home' %}"><img src="{% static 'img/logo.png' %}" width="50" height="50"></i></a>
+                <form class="d-none d-md-flex ms-4">
+                    <input class="form-control border-0" type="search" placeholder="Search">
+                </form>
+                <div class="navbar-nav align-items-center ms-auto">
                     <div class="nav-item dropdown">
                         <a href="#"><img src="{% static 'img/logout_24dp.png' %}" width="50" height="50"></i></a>
                     </div>
-            
+    
                     <div class="nav-item dropdown">
-                        <a href="myprofile"><img class="rounded-circle me-lg-2" src="{% static 'img/face_24dp.png'%}" alt="" style="width: 40px; height: 40px;">
+                        <a href="#"><img class="rounded-circle me-lg-2" src="{% static 'img/face_24dp.png'%}" alt="" style="width: 40px; height: 40px;">
                         </a>
                         
                     </div>
@@ -107,19 +104,34 @@
 
             <!-- Sales Chart Start -->
             <div class="container-fluid pt-4 px-4">
-                
                 <div class="row g-4">
-                    <div class="col-sm-12 col-xl-6">
+                    
                         <div class="bg-light text-center rounded p-4">
-                            <form class="d-none d-md-flex ms-4">
-                                <input class="form-control border-0" type="search" placeholder="Search">
-                            </form>
                             <div class="d-flex align-items-center justify-content-between mb-4">
-                                <h6 class="mb-0">챗봇 구현창</h6>
+                                <h6 class="mb-0">사용자 정보</h6>
+                                <div class="table-container">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>이름</th>
+                                                <th>계정 생성 날짜</th>
+                                                <th>최근 로그인 시간</th>
+                                            </tr>
+                                        </thead>
+                                        {% comment %} <tbody>
+                                            {% for user in users %}
+                                            <tr>
+                                                <td>{{ user.username }}</td>
+                                                <td>{{ user.date_joined }}</td>
+                                                <td>{{ user.last_login }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody> {% endcomment %}
+                                    </table>
+                                </div>
                             </div>
-                        
                         </div>
-                    </div>
+                   
                 </div>
             </div>
             <!-- Sales Chart End -->
