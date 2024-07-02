@@ -141,4 +141,107 @@ def signup(request):
         form = SignUpForm()
     return render(request, 'signup.html', {'form': form})
 
+# myapp/views.py
+# from django.shortcuts import render
+# from .utils import fetch_data_from_kma
+# import arrow
+
+# STATUS_OF_SKY = {
+#     "1": "맑음",
+#     "3": "구름많음",
+#     "4": "흐림"
+# }
+
+# STATUS_OF_PRECIPITATION = {
+#     "0": "없음",
+#     "1": "비",
+#     "2": "비/눈",
+#     "3": "눈",
+#     "5": "빗방울",
+#     "6": "빗방울눈날림",
+#     "7": "눈날림"
+# }
+
+# def weather_view(request):
+#     current_time_kst = arrow.now('Asia/Seoul')
+
+#     sky = fetch_data_from_kma(current_time_kst, '3', 'SKY', '0500')
+#     precipitation = fetch_data_from_kma(current_time_kst, '4', 'PTY', '0500')
+#     lowest_temp_of_today = fetch_data_from_kma(current_time_kst, '5', 'TMN', '0600')
+#     highest_temp_of_today = fetch_data_from_kma(current_time_kst, '16', 'TMX', '1500')
+#     temperature = fetch_data_from_kma(current_time_kst, '1', 'T1H', '0500')
+#     rainfall = fetch_data_from_kma(current_time_kst, '1', 'RN1', '0500')
+#     wind_ew = fetch_data_from_kma(current_time_kst, '1', 'UUU', '0500')
+#     wind_ns = fetch_data_from_kma(current_time_kst, '1', 'VVV', '0500')
+#     humidity = fetch_data_from_kma(current_time_kst, '1', 'REH', '0500')
+#     wind_direction = fetch_data_from_kma(current_time_kst, '1', 'VEC', '0500')
+#     wind_speed = fetch_data_from_kma(current_time_kst, '1', 'WSD', '0500')
+
+#     weather_data = {
+#         "weather_of_today": STATUS_OF_SKY.get(sky, "Unknown"),
+#         "precipitation": STATUS_OF_PRECIPITATION.get(precipitation, "Unknown"),
+#         "lowest_temp_of_today": lowest_temp_of_today,
+#         "highest_temp_of_today": highest_temp_of_today,
+#         "temperature": temperature,
+#         "rainfall": rainfall,
+#         "wind_ew": wind_ew,
+#         "wind_ns": wind_ns,
+#         "humidity": humidity,
+#         "wind_direction": wind_direction,
+#         "wind_speed": wind_speed,
+#     }
+
+#     return render(request, 'weather.html', {'weather_data': weather_data})
+
+from django.shortcuts import render
+from .utils import fetch_data_from_kma
+import arrow
+
+STATUS_OF_SKY = {
+    "1": "맑음",
+    "3": "구름많음",
+    "4": "흐림"
+}
+
+STATUS_OF_PRECIPITATION = {
+    "0": "없음",
+    "1": "비",
+    "2": "비/눈",
+    "3": "눈",
+    "5": "빗방울",
+    "6": "빗방울눈날림",
+    "7": "눈날림"
+}
+
+def weather_view(request):
+    current_time_kst = arrow.now('Asia/Seoul')
+
+    sky = fetch_data_from_kma(current_time_kst, '3', 'SKY', '0500')
+    precipitation = fetch_data_from_kma(current_time_kst, '4', 'PTY', '0500')
+    lowest_temp_of_today = fetch_data_from_kma(current_time_kst, '5', 'TMN', '0600')
+    highest_temp_of_today = fetch_data_from_kma(current_time_kst, '16', 'TMX', '1500')
+    temperature = fetch_data_from_kma(current_time_kst, '1', 'T1H', '0500')
+    rainfall = fetch_data_from_kma(current_time_kst, '1', 'RN1', '0500')
+    wind_ew = fetch_data_from_kma(current_time_kst, '1', 'UUU', '0500')
+    wind_ns = fetch_data_from_kma(current_time_kst, '1', 'VVV', '0500')
+    humidity = fetch_data_from_kma(current_time_kst, '1', 'REH', '0500')
+    wind_direction = fetch_data_from_kma(current_time_kst, '1', 'VEC', '0500')
+    wind_speed = fetch_data_from_kma(current_time_kst, '1', 'WSD', '0500')
+
+    weather_data = {
+        "weather_of_today": STATUS_OF_SKY.get(sky, "Unknown"),
+        "precipitation": STATUS_OF_PRECIPITATION.get(precipitation, "Unknown"),
+        "lowest_temp_of_today": lowest_temp_of_today,
+        "highest_temp_of_today": highest_temp_of_today,
+        "temperature": temperature,
+        "rainfall": rainfall,
+        "wind_ew": wind_ew,
+        "wind_ns": wind_ns,
+        "humidity": humidity,
+        "wind_direction": wind_direction,
+        "wind_speed": wind_speed,
+    }
+
+    return render(request, 'weather.html', {'weather_data': weather_data})
+
 
