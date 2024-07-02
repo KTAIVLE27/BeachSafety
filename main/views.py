@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 import logging
 from django.http import HttpResponseForbidden
+from .models import *
 from .forms import SignUpForm
 
 def is_admin(user):
@@ -89,7 +90,13 @@ def chat(request):
     return render(request, 'chat.html')
 
 def cctv(request):
-    return render(request, 'cctv.html')
+    beaches = Beach.objects.all() # beach 목록들
+    cctvs = CCTV.objects.select_related('beach_no') # beach_no에 맞는 cctv
+    context = {
+        'beaches': beaches,
+        'cctvs': cctvs,
+    }
+    return render(request, 'cctv.html', context)
 
 def weather(request):
     return render(request, 'weather.html')
