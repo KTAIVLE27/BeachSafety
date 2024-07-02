@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>DASHMIN - Bootstrap Admin Template</title>
+    <title>회원가입</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -32,7 +32,7 @@
                     <form method="post" action="{% url 'signup' %}">
                         {% csrf_token %}
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" name="user_id" id="id_id" placeholder="ID" required maxlength="150">
+                            <input type="text" class="form-control" name="id" id="id_id" placeholder="ID" required maxlength="150">
                             <label for="id_id">ID</label>
                             {% for error in form.id.errors %}
                                 <div class="text-danger">{{ error }}</div>
@@ -53,35 +53,36 @@
                             {% endfor %}
                         </div>
                         <div class="form-floating mb-3">
-                            <input type="email" class="form-control" name="user_email" id="id_email" placeholder="name@example.com">
+                            <input type="email" class="form-control" name="email" id="id_email" placeholder="name@example.com">
                             <label for="id_email">Email address</label>
                             {% for error in form.email.errors %}
                                 <div class="text-danger">{{ error }}</div>
                             {% endfor %}
                         </div>
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" name="user_name" id="id_username" placeholder="이름" required maxlength="150">
+                            <input type="text" class="form-control" name="username" id="id_username" placeholder="이름" required maxlength="150">
                             <label for="id_username">Name</label>
                             {% for error in form.username.errors %}
                                 <div class="text-danger">{{ error }}</div>
                             {% endfor %}
                         </div>
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" name="user_phone" id="id_PhoneNumber" placeholder="핸드폰번호" required maxlength="150">
+                            <input type="text" class="form-control" name="phoneNumber" id="id_PhoneNumber" placeholder="핸드폰번호" required maxlength="150">
                             <label for="id_PhoneNumber">PhoneNumber</label>
                             {% for error in form.phoneNumber.errors %}
                                 <div class="text-danger">{{ error }}</div>
                             {% endfor %}
                         </div>
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" name="user_address" id="id_address" placeholder="주소" required maxlength="150">
+                            <input type="text" class="form-control" name="address" id="id_address" placeholder="주소" required maxlength="150">
                             <label for="id_address">Address</label>
                             {% for error in form.address.errors %}
                                 <div class="text-danger">{{ error }}</div>
                             {% endfor %}
+                            <button type="button" class="btn btn-secondary mt-2" onclick="execDaumPostcode()">Search Address</button>
                         </div>
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" name="user_birth" id="id_birth" placeholder="yyyy-mm-dd" required>
+                            <input type="text" class="form-control" name="birth" id="id_birth" placeholder="yyyy-mm-dd" required>
                             <label for="id_birth">Birth</label>
                             {% for error in form.birth.errors %}
                                 <div class="text-danger">{{ error }}</div>
@@ -117,6 +118,19 @@
                 todayHighlight: true
             });
         });
+
+        // Daum 우편번호 검색 API 초기화 스크립트
+        function execDaumPostcode() {
+            new daum.Postcode({
+                oncomplete: function(data) {
+                    // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분입니다.
+                    document.getElementById('id_address').value = data.address;
+                }
+            }).open();
+        }
     </script>
+
+    <!-- Daum 우편번호 검색 API 스크립트 -->
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 </body>
 </html>
