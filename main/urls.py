@@ -15,7 +15,6 @@ urlpatterns = [
     path("free_board", views.free_board,name='free_board'),
     path("chat", views.chat,name='chat'),
     path("cctv", views.cctv,name='cctv'),
-    # path("weather", views.weather,name='weather'),
     path("weather", views.control_view, name='weather'),
     path("signup", views.signup,name='signup'),
     path("risk", views.risk,name='risk'),
