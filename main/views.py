@@ -10,7 +10,7 @@ from django.http import HttpResponseForbidden
 from .forms import SignUpForm
 
 def is_admin(user):
-    return user.is_authenticated and user.username == 'aivle@kt.com' and user.check_password('aivle27')
+    return user.is_authenticated and user.username == 'admin' and user.check_password('aivle0527!')
 
 @user_passes_test(is_admin)
 def admin_panel(request):
