@@ -6,8 +6,7 @@ def admin_home(request):
     return render(request, 'adminpanel/admin_home.html')
 
 def user_list(request):
-    users = User.objects.all().order_by('-date_joined')
-    return render(request, 'adminpanel/user_list.html', {'users': users})
+    return render(request, 'adminpanel/user_list.html')
 
 def senario(request):
     return render(request, 'adminpanel/senario.html')
