@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 import logging
 from django.http import HttpResponseForbidden
 from .models import *
-from .forms import SignUpForm, PasswordResetForm
+from .forms import SignUpForm, PostForm, PasswordResetForm
 from .utils import get_weather_item
 
 def is_admin(user):
@@ -95,6 +95,20 @@ def cctv(request):
 def risk(request):
     return render(request, 'risk.html')
 
+@login_required
+def new_post(request):
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+            messages.success(request, '게시물이 성공적으로 작성되었습니다.')
+            return redirect('board')
+    else:
+        form = PostForm()
+    return render(request, 'new_post.html', {'form': form})
+
 def signin(request):
     user = None
     if request.method == 'POST':
@@ -159,6 +173,7 @@ def control_view(request):
     }
     return render(request, 'weather.html', context)
 
+
 def forgotpw(request):
     if request.method == 'POST':
         form = PasswordResetForm(request.POST)
@@ -181,3 +196,4 @@ def forgotpw(request):
     else:
         form = PasswordResetForm()
     return render(request, 'forgotpw.html', {'form': form})
+
