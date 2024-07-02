@@ -105,27 +105,34 @@
             <!-- Sales Chart Start -->
             <div class="container-fluid pt-4 px-4">
                 <div class="row g-4">
-                    
-                        <div class="bg-light text-center rounded p-4">
-                            <div class="d-flex align-items-center justify-content-between mb-4">
-                                <h6 class="mb-0">사용자 정보</h6>
-                                <div class="table-container">
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th>이름</th>
-                                                <th>계정 생성 날짜</th>
-                                                <th>최근 로그인 시간</th>
-                                            </tr>
-                                        </thead>
-                                         
-                                    </table>
-                                </div>
+                    <div class="bg-light text-center rounded p-4">
+                        <div class="d-flex align-items-center justify-content-between mb-4">
+                            <h6 class="mb-0">사용자 정보</h6>
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>이름</th>
+                                            <th>계정 생성 날짜</th>
+                                            <th>최근 로그인 시간</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for user in users %}
+                                        <tr>
+                                            <td>{{ user.user_name }}</td>
+                                            <td>{{ user.user_joinday }}</td>
+                                            <td>{{ user.last_login }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                   
+                    </div>
                 </div>
             </div>
+            
             <!-- Sales Chart End -->
 
 
