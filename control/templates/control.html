@@ -35,7 +35,7 @@
 <body>
     <div class="container-fluid position-relative bg-white d-flex p-0">
        
-<div id="vmap" style="width:50vw;height:50vh;left:0px;top:0px">
+<div id="vmap" style="width:100vw;height:100vh;left:0px;top:0px">
 </div> 
 <script type="text/javascript" src="http://map.vworld.kr/js/vworldMapInit.js.do?version=2.0
 &apiKey=80973894-487D-3977-BA22-621594681047&domain=www.test.com/map.html"></script> 
@@ -106,16 +106,16 @@ function updateMarkerIcon(marker, imgUrl) {
 
 // 여러 마커 추가
 var markerData = [
-    { id: 'marker1', x: 128.909, y: 37.8, epsg: 'EPSG:4326', title: '마커 1', contents: '마커 1 내용', iconUrl: "{% static 'img/red1.png' %}" },
-    { id: 'marker2', x: 129.411, y: 36.597, epsg: 'EPSG:4326', title: '마커 2', contents: '마커 2 내용', iconUrl: "{% static 'img/green1.png' %}" },
-    { id: 'marker3', x: 128.631, y: 38.118, epsg: 'EPSG:4326', title: '마커 3', contents: '마커 3 내용', iconUrl: "{% static 'img/yellow1.png' %}" },
+    { id: 'marker1', x: lon, y: lat, epsg: 'EPSG:4326', title: latestData, contents: latestData, iconUrl: "{% static 'img/red1.png' %}" },
+    { id: 'marker2', x: 129.411, y: 36.597, epsg: 'EPSG:4326', title: '마커 1', contents: '마커 1 내용', iconUrl: "{% static 'img/green1.png' %}" },
+    { id: 'marker3', x: 128.631, y: 38.118, epsg: 'EPSG:4326', title: '마커 2', contents: '마커 2 내용', iconUrl: "{% static 'img/yellow1.png' %}" },
     { id: 'marker4', x: 126.507, y: 36.305, epsg: 'EPSG:4326', title: '마커 3', contents: '마커 3 내용', iconUrl: "{% static 'img/yellow1.png' %}" },
-    { id: 'marker5', x: 129.09, y: 37.593, epsg: 'EPSG:4326', title: '마커 3', contents: '마커 3 내용', iconUrl: "{% static 'img/yellow1.png' %}" },
-    { id: 'marker6', x: 128.601, y: 38.19, epsg: 'EPSG:4326', title: '마커 3', contents: '마커 3 내용', iconUrl: "{% static 'img/yellow1.png' %}" },
-    { id: 'marker7', x: 129.199, y: 35.178, epsg: 'EPSG:4326', title: '마커 3', contents: '마커 3 내용', iconUrl: "{% static 'img/yellow1.png' %}" },
-    { id: 'marker8', x: 129.264, y: 35.318, epsg: 'EPSG:4326', title: '마커 3', contents: '마커 3 내용', iconUrl: "{% static 'img/yellow1.png' %}" },
-    { id: 'marker9', x: 126.409, y: 33.245, epsg: 'EPSG:4326', title: '마커 3', contents: '마커 3 내용', iconUrl: "{% static 'img/yellow1.png' %}" },
-    { id: 'marker10', x: 129.16, y: 35.158, epsg: 'EPSG:4326', title: '마커 3', contents: '마커 3 내용', iconUrl: "{% static 'img/yellow1.png' %}" },
+    { id: 'marker5', x: 129.09, y: 37.593, epsg: 'EPSG:4326', title: '마커 4', contents: '마커 4 내용', iconUrl: "{% static 'img/yellow1.png' %}" },
+    { id: 'marker6', x: 128.601, y: 38.19, epsg: 'EPSG:4326', title: '마커 5', contents: '마커 5 내용', iconUrl: "{% static 'img/yellow1.png' %}" },
+    { id: 'marker7', x: 129.199, y: 35.178, epsg: 'EPSG:4326', title: '마커 6', contents: '마커 6 내용', iconUrl: "{% static 'img/yellow1.png' %}" },
+    { id: 'marker8', x: 129.264, y: 35.318, epsg: 'EPSG:4326', title: '마커 7', contents: '마커 7 내용', iconUrl: "{% static 'img/yellow1.png' %}" },
+    { id: 'marker9', x: 126.409, y: 33.245, epsg: 'EPSG:4326', title: '마커 8', contents: '마커 8 내용', iconUrl: "{% static 'img/yellow1.png' %}" },
+    
 ];
 
 var markers = {};
@@ -188,10 +188,6 @@ setInterval(function() {
     <!-- Template Javascript -->
     <script src="{% static 'js/main.js'%}"></script>
 </body>
-
-
-    <p>변수 a의 값은 {{ latest_data.score_msg }}입니다.</p>
-    <p>변수 a의 값은 <span id="meta-lon">{{ meta.lon }}</span>입니다.</p>
     
 
 
