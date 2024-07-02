@@ -1,5 +1,5 @@
-from django.urls import path
 from django.contrib import admin
+from django.urls import path, include
 from . import views
 from django.contrib.auth import views as auth_views
 
@@ -17,6 +17,8 @@ urlpatterns = [
     path("risk", views.risk,name='risk'),
     path('forgotpw/', views.forgotpw, name='forgotpw'),
     path('adminpanel/', views.admin_panel, name='admin_panel'),
+    path('admin/', admin.site.urls),
+    path('adminpanel/', include('adminpanel.urls', namespace='adminpanel'))
     path('new_post/', views.new_post, name='new_post'),  # Added path for new_post
 ]
 
