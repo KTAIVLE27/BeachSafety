@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-
+from django.utils import timezone
 class UserManager(BaseUserManager):
     def create_user(self, user_id, user_email, user_password=None, **extra_fields):
         if not user_id:
@@ -77,9 +77,9 @@ class Notice_board(models.Model):
     notice_title = models.CharField(max_length=200, blank=False)  # 제목
     notice_writer = models.CharField(max_length=100, blank=False)  # 작성자
     notice_img = models.CharField(max_length=255, blank=True, null=True)  # 이미지
-    notice_hit = models.IntegerField(default=0)  # 조회수
-    notice_rdate = models.DateField(blank=True, null=True)  # 작성일
-    notice_ield = models.TextField(blank=True, null=True)  # 본문
+    notice_views = models.IntegerField(default=0)  # 조회수
+    notice_wdate = models.DateTimeField(blank=False, default=timezone.now)  # 작성일
+    notice_contents = models.TextField(blank=True, null=True)  # 본문
 
     class Meta:
         #managed = False
@@ -93,9 +93,9 @@ class Event_board(models.Model):
     event_title = models.CharField(max_length=200, blank=False)  # 제목
     event_writer = models.CharField(max_length=100, blank=False)  # 작성자
     event_img = models.CharField(max_length=255, blank=True, null=True)  # 이미지
-    event_hit = models.IntegerField(default=0)  # 조회수
-    event_rdate = models.DateField(blank=True, null=True)  # 작성일
-    event_ield = models.TextField(blank=True, null=True)  # 본문
+    event_views = models.IntegerField(default=0)  # 조회수
+    event_wdate = models.DateTimeField( blank=False, default=timezone.now)  # 작성일
+    event_contents= models.TextField(blank=True, null=True)  # 본문
 
     class Meta:
         #managed = False
