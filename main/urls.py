@@ -15,6 +15,6 @@ urlpatterns = [
     path("weather", views.control_view, name='weather'),
     path("signup", views.signup,name='signup'),
     path("risk", views.risk,name='risk'),
+    path('forgotpw/', views.forgotpw, name='forgotpw'),
     path('adminpanel/', views.admin_panel, name='admin_panel'),
-    
 ]
