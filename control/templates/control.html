@@ -35,7 +35,7 @@
 <body>
     <div class="container-fluid position-relative bg-white d-flex p-0">
        
-<div id="vmap" style="width:100vw;height:100vh;left:0px;top:0px">
+<div id="vmap" style="width:50vw;height:50vh;left:0px;top:0px">
 </div> 
 <script type="text/javascript" src="http://map.vworld.kr/js/vworldMapInit.js.do?version=2.0
 &apiKey=80973894-487D-3977-BA22-621594681047&domain=www.test.com/map.html"></script> 
@@ -56,6 +56,13 @@ vw.ol3.MapOptions = {
 };
 
 let vmap = new vw.ol3.Map("vmap",  vw.ol3.MapOptions); 
+
+var context = JSON.parse('{{ contextjson | escapejs }}');
+
+var latestData = context.score_msg;
+var meta = context.meta;
+var lon = context.lon;
+var lat = context.lat;
 
 //마커찍기
 var markerLayer = new vw.ol3.layer.Marker(vmap); 
@@ -126,6 +133,10 @@ setInterval(function() {
 }, 5000); // 5초마다 업데이트
 </script>
 
+
+
+
+
 <div class="logo">
 <a href="{% url 'home' %}"><img src="{% static 'img/logo.png' %}" style="width:50px; height:50px;" ></i></a>      
 </div> 
@@ -178,9 +189,12 @@ setInterval(function() {
     <script src="{% static 'js/main.js'%}"></script>
 </body>
 
+
+    <p>변수 a의 값은 {{ latest_data.score_msg }}입니다.</p>
+    <p>변수 a의 값은 <span id="meta-lon">{{ meta.lon }}</span>입니다.</p>
+    
+
+
 </html>
-
-
-
 
 
