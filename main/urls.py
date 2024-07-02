@@ -1,5 +1,5 @@
-from django.urls import path, include
 from django.contrib import admin
+from django.urls import path, include
 from . import views
 from django.contrib.auth import views as auth_views
 
@@ -16,6 +16,9 @@ urlpatterns = [
     path("signup", views.signup,name='signup'),
     path("risk", views.risk,name='risk'),
     path('adminpanel/', views.admin_panel, name='admin_panel'),
+    # path('admin/', admin.site.urls, name='django_admin'),
+    # path('adminpanel/', include('adminpanel.urls', namespace='adminpanel')),
     path('admin/', admin.site.urls),
-    path('adminpanel/', include('adminpanel.urls'))
+    path('adminpanel/', include('adminpanel.urls', namespace='adminpanel'))
+
 ]
