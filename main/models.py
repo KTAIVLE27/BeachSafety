@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-
+from django.utils import timezone
 class UserManager(BaseUserManager):
     def create_user(self, user_id, user_email, user_password=None, **extra_fields):
         if not user_id:
@@ -13,7 +13,6 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
     
-    #관리자, 관제실 모두 제어 가능한 권한자
     def create_superuser(self, user_id, user_email, user_password=None, **extra_fields):
         extra_fields.setdefault('is_admin', True)
         extra_fields.setdefault('is_superuser', True)
@@ -25,10 +24,6 @@ class UserManager(BaseUserManager):
         
         return self.create_user(user_id, user_email, user_password, **extra_fields)
 
-    # is_admin(super?) 관제 권한만 가지는 권한 :
-    # def create_
-    #     return self.create_user(user_id, user_email, user_password, **extra_fields)
-    
 class User(AbstractBaseUser, PermissionsMixin):
     ROLE_CHOICES = (
         ('police', '일반경찰'),
@@ -45,7 +40,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     user_email = models.EmailField(unique=True, blank=False)  # 회원 이메일
     user_joinday = models.DateTimeField(auto_now_add=True, blank=False)  # 회원 가입날짜
 
-
     is_active = models.BooleanField(default=True)  # 이메일 인증 등 을 통해 커스텀 가능
     is_staff = models.BooleanField(default=False)
 
@@ -55,10 +49,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ['user_email', 'user_name', 'user_phone', 'user_birth']
 
     class Meta:
-        #managed = False
         db_table = 'user'
-
-    
 
 class Beach(models.Model):
     beach_no = models.AutoField(primary_key=True)  # 해수욕장 번호
@@ -66,42 +57,54 @@ class Beach(models.Model):
     beach_region = models.CharField(max_length=100, blank=False)  # 지역
 
     class Meta:
-        #managed = False
         db_table = 'beach'
 
 class Notice_board(models.Model):
     board_id = models.CharField(max_length=20, primary_key=True)  # 게시물 고유 번호
-    user_no = models.ForeignKey(User, on_delete=models.RESTRICT,db_column='user_no')  # 회원번호
-    #auth_no = models.OneToOneField(Authority, db_column='auth_no')  # 권한번호
-    beach_no = models.ForeignKey(Beach,on_delete=models.RESTRICT, db_column='beach_no')
+    user_no = models.ForeignKey(User, on_delete=models.RESTRICT, db_column='user_no')  # 회원번호
+    beach_no = models.ForeignKey(Beach, on_delete=models.RESTRICT, db_column='beach_no')
     notice_title = models.CharField(max_length=200, blank=False)  # 제목
     notice_writer = models.CharField(max_length=100, blank=False)  # 작성자
     notice_img = models.CharField(max_length=255, blank=True, null=True)  # 이미지
-    notice_hit = models.IntegerField(default=0)  # 조회수
-    notice_rdate = models.DateField(blank=True, null=True)  # 작성일
-    notice_ield = models.TextField(blank=True, null=True)  # 본문
+    notice_views = models.IntegerField(default=0)  # 조회수
+    notice_wdate = models.DateTimeField(blank=False, default=timezone.now)  # 작성일
+    notice_contents = models.TextField(blank=True, null=True)  # 본문
 
     class Meta:
-        #managed = False
         db_table = 'notice_board'
 
 class Event_board(models.Model):
     board_id = models.CharField(max_length=20, primary_key=True)  # 게시물 고유 번호
-    user_no = models.ForeignKey(User,on_delete=models.RESTRICT, db_column='user_no')  # 회원번호
-    #auth_no = models.ForeignKey(Authority, db_column='auth_no')  # 권한번호
-    beach_no = models.ForeignKey(Beach,on_delete=models.RESTRICT, db_column='beach_no')
+    user_no = models.ForeignKey(User, on_delete=models.RESTRICT, db_column='user_no')  # 회원번호
+    beach_no = models.ForeignKey(Beach, on_delete=models.RESTRICT, db_column='beach_no')
     event_title = models.CharField(max_length=200, blank=False)  # 제목
     event_writer = models.CharField(max_length=100, blank=False)  # 작성자
     event_img = models.CharField(max_length=255, blank=True, null=True)  # 이미지
-    event_hit = models.IntegerField(default=0)  # 조회수
-    event_rdate = models.DateField(blank=True, null=True)  # 작성일
-    event_ield = models.TextField(blank=True, null=True)  # 본문
+    event_views = models.IntegerField(default=0)  # 조회수
+    event_wdate = models.DateTimeField( blank=False, default=timezone.now)  # 작성일
+    event_contents= models.TextField(blank=True, null=True)  # 본문
 
     class Meta:
-        #managed = False
         db_table = 'event_board'
 
+class CCTV(models.Model):
+    cctv_code = models.AutoField(primary_key=True)  # CCTV 코드
+    beach_no = models.OneToOneField(Beach, on_delete=models.CASCADE, db_column='beach_no')  # 해수욕장 번호
+    cctv_location = models.CharField(max_length=255, blank=False)  # 위치
+    cctv_url = models.URLField(max_length=255, blank=False)  # 실시간 URL
 
+    class Meta:
+        db_table = 'cctv'
+
+class RipApi(models.Model):
+    beach_code = models.CharField(max_length=20, primary_key=True)  # 해안 코드
+    beach_no = models.OneToOneField(Beach, on_delete=models.CASCADE, db_column='beach_no')  # 해수욕장 번호
+    date_type = models.CharField(max_length=10, blank=False)  # 데이터 종류
+    date = models.DateTimeField(blank=False)  # 날짜
+    result_type = models.CharField(max_length=10, blank=False)  # 결과 타입 (json, xml 등)
+
+    class Meta:
+        db_table = 'rip_api'
 
 # 댓글 일단 보류
 # class Comment(models.Model):
@@ -135,36 +138,3 @@ class Event_board(models.Model):
 
 #     class Meta:
 #         db_table = 'scenario_eval'
-
-
-
-
-
-
-
-
-
-class CCTV(models.Model):
-    cctv_code = models.AutoField(primary_key=True)  # CCTV 코드
-    beach_no = models.OneToOneField(Beach, on_delete=models.CASCADE, db_column='beach_no')  # 해수욕장 번호
-    cctv_location = models.CharField(max_length=255, blank=False)  # 위치
-    cctv_url = models.URLField(max_length=255, blank=False)  # 실시간 URL
-
-    class Meta:
-        #managed = False
-        db_table = 'cctv'
-
-
-
-
-class RipApi(models.Model):
-    beach_code = models.CharField(max_length=20, primary_key=True)  # 해안 코드
-    beach_no = models.OneToOneField(Beach, on_delete=models.CASCADE, db_column='beach_no')  # 해수욕장 번호
-    date_type = models.CharField(max_length=10, blank=False)  # 데이터 종류
-    date = models.DateTimeField(blank=False)  # 날짜
-    result_type = models.CharField(max_length=10, blank=False)  # 결과 타입 (json, xml 등)
-
-    class Meta:
-        #managed = False
-        db_table = 'rip_api'
-

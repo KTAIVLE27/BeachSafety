@@ -40,56 +40,56 @@
                         </div>
                         <div class="form-floating mb-3">
                             <input type="password" class="form-control" name="password1" id="id_password1" placeholder="비밀번호" required>
-                            <label for="id_password1">Password</label>
+                            <label for="id_password1">비밀번호</label>
                             {% for error in form.password1.errors %}
                                 <div class="text-danger">{{ error }}</div>
                             {% endfor %}
                         </div>
                         <div class="form-floating mb-3">
                             <input type="password" class="form-control" name="password2" id="id_password2" placeholder="비밀번호 확인" required>
-                            <label for="id_password2">Confirm Password</label>
+                            <label for="id_password2">비밀번호 재입력</label>
                             {% for error in form.password2.errors %}
                                 <div class="text-danger">{{ error }}</div>
                             {% endfor %}
                         </div>
                         <div class="form-floating mb-3">
                             <input type="email" class="form-control" name="user_email" id="id_email" placeholder="name@example.com">
-                            <label for="id_email">Email address</label>
+                            <label for="id_email">이메일</label>
                             {% for error in form.user_email.errors %}
                                 <div class="text-danger">{{ error }}</div>
                             {% endfor %}
                         </div>
                         <div class="form-floating mb-3">
                             <input type="text" class="form-control" name="user_name" id="id_username" placeholder="이름" required maxlength="150">
-                            <label for="id_username">Name</label>
+                            <label for="id_username">이름</label>
                             {% for error in form.user_name.errors %}
                                 <div class="text-danger">{{ error }}</div>
                             {% endfor %}
                         </div>
                         <div class="form-floating mb-3">
                             <input type="text" class="form-control" name="user_phone" id="id_PhoneNumber" placeholder="핸드폰번호" required maxlength="150">
-                            <label for="id_PhoneNumber">PhoneNumber</label>
+                            <label for="id_PhoneNumber">전화번호</label>
                             {% for error in form.user_phone.errors %}
                                 <div class="text-danger">{{ error }}</div>
                             {% endfor %}
                         </div>
                         <div class="form-floating mb-3">
                             <input type="text" class="form-control" name="user_address" id="id_address" placeholder="주소" required maxlength="150" onclick="execDaumPostcode()">
-                            <label for="id_address">Address</label>
+                            <label for="id_address">주소</label>
                             {% for error in form.user_address.errors %}
                                 <div class="text-danger">{{ error }}</div>
                             {% endfor %}
                         </div>
                         <div class="form-floating mb-3">
                             <input type="text" class="form-control" name="user_birth" id="id_birth" placeholder="yyyy-mm-dd" required>
-                            <label for="id_birth">Birth</label>
+                            <label for="id_birth">생년월일</label>
                             {% for error in form.user_birth.errors %}
                                 <div class="text-danger">{{ error }}</div>
                             {% endfor %}
                         </div>                        
-                        <button type="submit" class="btn btn-primary py-3 w-100 mb-4">Sign Up</button>
+                        <button type="submit" class="btn btn-primary py-3 w-100 mb-4">로그인</button>
                     </form>
-                    <p class="text-center mb-0">Already have an Account? <a href="{% url 'signin' %}">Sign In</a></p>
+                    <p class="text-center mb-0">계정이 있으신가요? <a href="{% url 'signin' %}">로그인</a></p>
                 </div>
             </div>
         </div>

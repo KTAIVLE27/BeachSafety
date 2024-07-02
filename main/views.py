@@ -8,11 +8,14 @@ from django.contrib.auth.models import User
 import logging
 from django.http import HttpResponseForbidden
 from .models import *
-from .forms import SignUpForm
+from .forms import SignUpForm, PostForm, PasswordResetForm
 from .utils import get_weather_item
 
 def is_admin(user):
     return user.is_authenticated and user.username == 'admin' and user.check_password('aivle0527!')
+
+def forgotpw(request):
+    return render(request, 'forgotpw.html')
 
 @user_passes_test(is_admin)
 def admin_panel(request):
@@ -92,6 +95,20 @@ def cctv(request):
 def risk(request):
     return render(request, 'risk.html')
 
+@login_required
+def new_post(request):
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+            messages.success(request, '게시물이 성공적으로 작성되었습니다.')
+            return redirect('board')
+    else:
+        form = PostForm()
+    return render(request, 'new_post.html', {'form': form})
+
 def signin(request):
     user = None
     if request.method == 'POST':
@@ -155,3 +172,28 @@ def control_view(request):
         'weather_data': weather_data
     }
     return render(request, 'weather.html', context)
+
+
+def forgotpw(request):
+    if request.method == 'POST':
+        form = PasswordResetForm(request.POST)
+        if form.is_valid():
+            user_id = form.cleaned_data.get('user_id')
+            user_name = form.cleaned_data.get('user_name')
+            user_phone = form.cleaned_data.get('user_phone')
+            new_password1 = form.cleaned_data.get('new_password1')
+
+            try:
+                user = User.objects.get(user_id=user_id, user_name=user_name, user_phone=user_phone)
+                user.set_password(new_password1)
+                user.save()
+                messages.success(request, 'Password has been reset successfully.')
+                return redirect('signin')
+            except User.DoesNotExist:
+                messages.error(request, 'User with provided details does not exist.')
+        else:
+            messages.error(request, 'Form is not valid.')
+    else:
+        form = PasswordResetForm()
+    return render(request, 'forgotpw.html', {'form': form})
+
