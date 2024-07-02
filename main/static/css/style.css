@@ -369,3 +369,36 @@
     border-radius: 25px; /* 모서리를 둥글게 설정 */
     font-size: 16px; /* 폰트 크기 */
 }
+.search-wrapper {
+    position: relative;
+    width: 300px;
+}
+
+.control-search {
+    width: 100%; /* 검색창의 너비를 부모의 너비에 맞춤 */
+    padding: 10px 20px; /* 내부 여백 */
+    padding-right: 40px; /* 아이콘을 위한 오른쪽 여백 추가 */
+    border: 2px solid #ccc; /* 테두리 */
+    border-radius: 25px; /* 모서리를 둥글게 설정 */
+    font-size: 16px; /* 폰트 크기 */
+}
+
+.search-button {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+}
+
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border: 1px solid black;
+    border-radius: 5px;
+    display: none;
+    z-index: 1000; /* 팝업이 다른 요소 위에 나타나도록 설정 */
+}
