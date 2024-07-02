@@ -79,6 +79,7 @@
                             {% for error in form.address.errors %}
                                 <div class="text-danger">{{ error }}</div>
                             {% endfor %}
+                            <button type="button" class="btn btn-secondary mt-2" onclick="execDaumPostcode()">Search Address</button>
                         </div>
                         <div class="form-floating mb-3">
                             <input type="text" class="form-control" name="birth" id="id_birth" placeholder="yyyy-mm-dd" required>
@@ -117,6 +118,19 @@
                 todayHighlight: true
             });
         });
+
+        // Daum 우편번호 검색 API 초기화 스크립트
+        function execDaumPostcode() {
+            new daum.Postcode({
+                oncomplete: function(data) {
+                    // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분입니다.
+                    document.getElementById('id_address').value = data.address;
+                }
+            }).open();
+        }
     </script>
+
+    <!-- Daum 우편번호 검색 API 스크립트 -->
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 </body>
 </html>
