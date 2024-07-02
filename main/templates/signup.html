@@ -74,12 +74,11 @@
                             {% endfor %}
                         </div>
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" name="user_address" id="id_address" placeholder="주소" required maxlength="150">
+                            <input type="text" class="form-control" name="user_address" id="id_address" placeholder="주소" required maxlength="150" onclick="execDaumPostcode()">
                             <label for="id_address">Address</label>
                             {% for error in form.address.errors %}
                                 <div class="text-danger">{{ error }}</div>
                             {% endfor %}
-                            <button type="button" class="btn btn-secondary mt-2" onclick="execDaumPostcode()">Search Address</button>
                         </div>
                         <div class="form-floating mb-3">
                             <input type="text" class="form-control" name="user_birth" id="id_birth" placeholder="yyyy-mm-dd" required>
