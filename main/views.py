@@ -9,6 +9,7 @@ import logging
 from django.http import HttpResponseForbidden
 from .models import *
 from .forms import SignUpForm
+from .utils import get_weather_item
 
 def is_admin(user):
     return user.is_authenticated and user.username == 'admin' and user.check_password('aivle0527!')
@@ -17,22 +18,9 @@ def is_admin(user):
 def admin_panel(request):
     return render(request, 'adminpanel/admin_home.html')
 
-def index(request):
-    return render(request, 'index.html')
-
-def elements(request):
-    return render(request, 'elements.html')
-
-def generic(request):
-    return render(request, 'generic.html')
-
 @login_required
 def home(request):
     return render(request, 'home.html')
-
-# @login_required
-# def myprofile(request):
-#     return render(request, 'myprofile.html')
 
 @login_required
 def myprofile(request):
@@ -77,30 +65,30 @@ def myprofile(request):
         return redirect('myprofile')
     else:
         return render(request, 'myprofile.html')
-        
 
-
+@login_required
 def board(request):
     return render(request, 'board.html')
 
+@login_required
 def free_board(request):
     return render(request, 'free_board.html')
 
+@login_required
 def chat(request):
     return render(request, 'chat.html')
 
+@login_required
 def cctv(request):
-    beaches = Beach.objects.all() # beach 목록들
-    cctvs = CCTV.objects.select_related('beach_no') # beach_no에 맞는 cctv
+    beaches = Beach.objects.all()
+    cctvs = CCTV.objects.select_related('beach_no')
     context = {
         'beaches': beaches,
         'cctvs': cctvs,
     }
     return render(request, 'cctv.html', context)
 
-def weather(request):
-    return render(request, 'weather.html')
-
+@login_required
 def risk(request):
     return render(request, 'risk.html')
 
@@ -111,25 +99,22 @@ def signin(request):
         if form.is_valid():
             user_id = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
-            user = authenticate(request, username = user_id, password = password)
+            user = authenticate(request, username=user_id, password=password)
             if user is not None:
                 login(request, user)
                 if user.user_role == 'supervisor':
-                    return redirect('superviosr_dashbord')
+                    return redirect('supervisor_dashboard')
                 elif user.user_role == 'police':
                     return redirect('home')
                 elif user.user_role == 'admin':
-                    return redirect('admin_panel')    
+                    return redirect('admin_panel')
             else:
                 messages.error(request, '아이디 또는 비밀번호가 잘못되었습니다.')
         else:
-                messages.error(request, '아이디 또는 비밀번호가 잘못되었습니다.')
+            messages.error(request, '아이디 또는 비밀번호가 잘못되었습니다.')
     else:
         form = AuthenticationForm()
-    return render(request, 'signin.html', {'form' : form})
-
-
-
+    return render(request, 'signin.html', {'form': form})
 
 def signup(request):
     if request.method == 'POST':
@@ -138,14 +123,35 @@ def signup(request):
             user = form.save()
             user.user_role = 'police'
             user.save()
-            login(request, user) # 로그인 처리
+            login(request, user)
             return redirect('home')
         else:
-            for field in form:
-                for error in field.errors:
-                    messages.error(request, f"{field.label}: {error}")
+            # 유효성 검사 오류가 발생하면 다시 회원가입 페이지를 렌더링합니다.
+            return render(request, 'signup.html', {'form': form})
     else:
         form = SignUpForm()
     return render(request, 'signup.html', {'form': form})
 
 
+def control_view(request):
+    forecast_data_items = get_weather_item()
+    forecast_data = dict(forecast_data_items)
+
+    weather_data = {
+        'weather_of_today': forecast_data.get('TMP', 'N/A'),
+        'highest_temp_of_today': forecast_data.get('TMX', 'N/A'),
+        'lowest_temp_of_today': forecast_data.get('TMN', 'N/A'),
+        'temperature': forecast_data.get('TMP', 'N/A'),
+        'rainfall': forecast_data.get('PCP', 'N/A'),
+        'wind_ew': forecast_data.get('UUU', 'N/A'),
+        'wind_ns': forecast_data.get('VVV', 'N/A'),
+        'humidity': forecast_data.get('REH', 'N/A'),
+        'precipitation': forecast_data.get('PTY', 'N/A'),
+        'wind_direction': forecast_data.get('VEC', 'N/A'),
+        'wind_speed': forecast_data.get('WSD', 'N/A'),
+    }
+
+    context = {
+        'weather_data': weather_data
+    }
+    return render(request, 'weather.html', context)
