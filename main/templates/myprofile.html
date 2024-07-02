@@ -41,7 +41,6 @@
             right: 20px;
             z-index: 1050; /* High z-index to ensure it is above other elements */
             display: none;
-        
         }
     </style>
 </head>
@@ -198,7 +197,7 @@
                                             <label for="profile-address" class="form-label">주소</label>
                                         </div>
                                         <div class="col-md-8">
-                                            <input type="text" id="profile-address" name="user_address" class="form-control" value="{{ user.user_address }}">
+                                            <input type="text" id="profile-address" name="user_address" class="form-control" value="{{ user.user_address }}" onclick="execDaumPostcode()">
                                         </div>
                                     </div>
                                     
@@ -237,6 +236,9 @@
     <!-- Custom Javascript -->
     <script src="{% static 'js/myprofile.js'%}"></script>
 
+    <!-- Daum Postcode Script -->
+    <script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>
+
     <!-- Custom JavaScript for alert messages -->
     <script>
         // Display alert message
@@ -261,6 +263,26 @@
                 showAlert("{{ message }}", "{% if message.tags %}{{ message.tags }}{% else %}info{% endif %}");
             {% endfor %}
         {% endif %}
+
+        // Daum Postcode
+        function execDaumPostcode() {
+            new daum.Postcode({
+                oncomplete: function(data) {
+                    // 주소 정보를 해당 필드에 넣는다.
+                    document.getElementById("profile-address").value = data.address;
+                }
+            }).open();
+        }
+
+        // Preview Image
+        function previewImage(event) {
+            var reader = new FileReader();
+            reader.onload = function(){
+                var output = document.getElementById('profile-img');
+                output.src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
     </script>
 </body>
 </html>
