@@ -59,18 +59,71 @@ let vmap = new vw.ol3.Map("vmap",  vw.ol3.MapOptions);
 
 //마커찍기
 var markerLayer = new vw.ol3.layer.Marker(vmap); 
+vmap.addLayer(markerLayer);
 //마커 레이어 생성
-vw.ol3.markerOption = {
-x : 14377620.227912728,
-y : 4185281.4261198505,
-epsg : "EPSG:900913",
-title : '테스트마커2',
-contents : '테스트마커2 본문내용<br>테스트마커2 본문내용',
-iconUrl : "{% static 'img/marker.png' %}",
-}; //마커 옵션 설정
 
-markerLayer.addMarker(vw.ol3.markerOption);// 마커를 레이어에 등록
-vmap.addLayer(markerLayer) //마커를 vmap에 등록
+
+// 팝업 엘리먼트
+var popup = document.getElementById('popup');
+
+// 마커 생성 함수
+function createMarker(id, x, y, epsg, title, contents, iconUrl) {
+    var markerOption = {
+        x: x,
+        y: y,
+        epsg: epsg,
+        title: title,
+        contents: contents,
+        iconUrl: iconUrl,
+        attr: { id: id }
+    };
+    var marker = markerLayer.addMarker(markerOption);
+
+    // 마커 클릭 이벤트 추가
+    marker.on('click', function(evt) {
+        popup.innerHTML = contents;
+        popup.style.display = 'block';
+        popup.style.left = evt.pixel[0] + 'px';
+        popup.style.top = evt.pixel[1] + 'px';
+    });
+
+    return markerOption;
+}
+
+// 마커 상태 업데이트 함수
+function updateMarkerIcon(marker, imgUrl) {
+    marker.iconUrl = imgUrl;
+    markerLayer.removeMarker(marker);
+    markerLayer.addMarker(marker);
+}
+
+// 여러 마커 추가
+var markerData = [
+    { id: 'marker1', x: 128.909, y: 37.8, epsg: 'EPSG:4326', title: '마커 1', contents: '마커 1 내용', iconUrl: "{% static 'img/red1.png' %}" },
+    { id: 'marker2', x: 129.411, y: 36.597, epsg: 'EPSG:4326', title: '마커 2', contents: '마커 2 내용', iconUrl: "{% static 'img/green1.png' %}" },
+    { id: 'marker3', x: 128.631, y: 38.118, epsg: 'EPSG:4326', title: '마커 3', contents: '마커 3 내용', iconUrl: "{% static 'img/yellow1.png' %}" },
+    { id: 'marker4', x: 126.507, y: 36.305, epsg: 'EPSG:4326', title: '마커 3', contents: '마커 3 내용', iconUrl: "{% static 'img/yellow1.png' %}" },
+    { id: 'marker5', x: 129.09, y: 37.593, epsg: 'EPSG:4326', title: '마커 3', contents: '마커 3 내용', iconUrl: "{% static 'img/yellow1.png' %}" },
+    { id: 'marker6', x: 128.601, y: 38.19, epsg: 'EPSG:4326', title: '마커 3', contents: '마커 3 내용', iconUrl: "{% static 'img/yellow1.png' %}" },
+    { id: 'marker7', x: 129.199, y: 35.178, epsg: 'EPSG:4326', title: '마커 3', contents: '마커 3 내용', iconUrl: "{% static 'img/yellow1.png' %}" },
+    { id: 'marker8', x: 129.264, y: 35.318, epsg: 'EPSG:4326', title: '마커 3', contents: '마커 3 내용', iconUrl: "{% static 'img/yellow1.png' %}" },
+    { id: 'marker9', x: 126.409, y: 33.245, epsg: 'EPSG:4326', title: '마커 3', contents: '마커 3 내용', iconUrl: "{% static 'img/yellow1.png' %}" },
+    { id: 'marker10', x: 129.16, y: 35.158, epsg: 'EPSG:4326', title: '마커 3', contents: '마커 3 내용', iconUrl: "{% static 'img/yellow1.png' %}" },
+];
+
+var markers = {};
+
+markerData.forEach(function(marker) {
+    markers[marker.id] = createMarker(marker.id, marker.x, marker.y, marker.epsg, marker.title, marker.contents, marker.iconUrl);
+});
+
+// 주기적으로 마커 아이콘 업데이트
+setInterval(function() {
+    Object.keys(markers).forEach(function(id) {
+        var newIconUrl = Math.random() > 0.5 ? "{% static 'img/red1.png' %}" : "{% static 'img/green1.png' %}";
+        updateMarkerIcon(markers[id], newIconUrl);
+    });
+}, 5000); // 5초마다 업데이트
 </script>
 
 <div class="logo">
@@ -78,9 +131,16 @@ vmap.addLayer(markerLayer) //마커를 vmap에 등록
 </div> 
 
 <div class="nav-buttons">
+    
     <form>
-        <input class="control-search" type="search" placeholder="Search">
+        <div class="search-wrapper">
+            <input class="control-search" type="search" placeholder="Search">
+            <span class="search-button" type="submit">
+                <img src="{% static 'img/search_icon.png' %}" alt="Search" style="width: 30px; height: 30px;">
+            </span>
+        </div>
     </form>
+
     <a href="{% url 'signin' %}"><img src="{% static 'img/logout_24dp.png' %}"style="width: 40px; height: 40px;"></a>
     <a href="{% url 'myprofile' %}"><img src="{% static 'img/face_24dp.png' %}" style="width: 40px; height: 40px;"></a>  
 </div>
