@@ -13,3 +13,6 @@ def senario(request):
 
 def board_manage(request):
     return render(request, 'adminpanel/board_manage.html')
+
+def notice_manage(request):
+    return render(request, 'adminpanel/notice_manage.html')
