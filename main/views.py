@@ -9,6 +9,8 @@ import logging
 from django.http import HttpResponseForbidden
 from .models import *
 from .forms import SignUpForm
+from django.shortcuts import render
+from .utils import get_weather_item
 
 def is_admin(user):
     return user.is_authenticated and user.username == 'admin' and user.check_password('aivle0527!')
@@ -17,22 +19,9 @@ def is_admin(user):
 def admin_panel(request):
     return render(request, 'adminpanel/admin_home.html')
 
-def index(request):
-    return render(request, 'index.html')
-
-def elements(request):
-    return render(request, 'elements.html')
-
-def generic(request):
-    return render(request, 'generic.html')
-
 @login_required
 def home(request):
     return render(request, 'home.html')
-
-# @login_required
-# def myprofile(request):
-#     return render(request, 'myprofile.html')
 
 @login_required
 def myprofile(request):
@@ -79,16 +68,19 @@ def myprofile(request):
         return render(request, 'myprofile.html')
         
 
-
+@login_required
 def board(request):
     return render(request, 'board.html')
 
+@login_required
 def free_board(request):
     return render(request, 'free_board.html')
 
+@login_required
 def chat(request):
     return render(request, 'chat.html')
 
+@login_required
 def cctv(request):
     beaches = Beach.objects.all() # beach 목록들
     cctvs = CCTV.objects.select_related('beach_no') # beach_no에 맞는 cctv
@@ -98,9 +90,7 @@ def cctv(request):
     }
     return render(request, 'cctv.html', context)
 
-# def weather(request):
-#     return render(request, 'weather.html')
-
+@login_required
 def risk(request):
     return render(request, 'risk.html')
 
@@ -145,9 +135,6 @@ def signup(request):
     else:
         form = SignUpForm()
     return render(request, 'signup.html', {'form': form})
-
-from django.shortcuts import render
-from .utils import get_weather_item
 
 def control_view(request):
     forecast_data_items = get_weather_item()
