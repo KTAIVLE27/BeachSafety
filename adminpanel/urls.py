@@ -6,4 +6,5 @@ urlpatterns = [
     path('board_manage/', views.board_manage, name='board_manage'),
     path('senario/', views.senario, name='senario'),
     path('user_list/', views.user_list, name='user_list'),
+    path('notice_manage/', views.notice_manage, name='notice_manage'),
 ]
