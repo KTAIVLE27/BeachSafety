@@ -98,8 +98,8 @@ def cctv(request):
     }
     return render(request, 'cctv.html', context)
 
-def weather(request):
-    return render(request, 'weather.html')
+# def weather(request):
+#     return render(request, 'weather.html')
 
 def risk(request):
     return render(request, 'risk.html')
@@ -129,8 +129,6 @@ def signin(request):
     return render(request, 'signin.html', {'form' : form})
 
 
-
-
 def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -148,4 +146,31 @@ def signup(request):
         form = SignUpForm()
     return render(request, 'signup.html', {'form': form})
 
+from django.shortcuts import render
+from .utils import get_weather_item
+
+def control_view(request):
+    forecast_data_items = get_weather_item()
+    
+    forecast_data = dict(forecast_data_items)
+    
+    # Map the forecast data to more descriptive keys
+    weather_data = {
+        'weather_of_today': forecast_data.get('TMP', 'N/A'),
+        'highest_temp_of_today': forecast_data.get('TMX', 'N/A'),
+        'lowest_temp_of_today': forecast_data.get('TMN', 'N/A'),
+        'temperature': forecast_data.get('TMP', 'N/A'),
+        'rainfall': forecast_data.get('PCP', 'N/A'),
+        'wind_ew': forecast_data.get('UUU', 'N/A'),
+        'wind_ns': forecast_data.get('VVV', 'N/A'),
+        'humidity': forecast_data.get('REH', 'N/A'),
+        'precipitation': forecast_data.get('PTY', 'N/A'),
+        'wind_direction': forecast_data.get('VEC', 'N/A'),
+        'wind_speed': forecast_data.get('WSD', 'N/A'),
+    }
+    
+    context = {
+        'weather_data': weather_data
+    }
+    return render(request, 'weather.html', context)
 
