@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.password_validation import validate_password
 from .models import User
 
 class SignUpForm(UserCreationForm):
@@ -13,3 +14,4 @@ class SignUpForm(UserCreationForm):
     class Meta:
         model = User
         fields = ('user_id', 'user_email', 'user_name', 'user_phone', 'user_birth', 'user_address', 'password1', 'password2')
+

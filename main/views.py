@@ -29,8 +29,55 @@ def generic(request):
 def home(request):
     return render(request, 'home.html')
 
+# @login_required
+# def myprofile(request):
+#     return render(request, 'myprofile.html')
+
+@login_required
 def myprofile(request):
-    return render(request, 'myprofile.html')
+    if request.method == 'POST':
+        user = request.user
+
+        user_email = request.POST.get('user_email')
+        user_phone = request.POST.get('user_phone')
+        user_address = request.POST.get('user_address')
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+
+        # 비밀번호 확인 및 설정
+        if password1 and password2:
+            if password1 == password2:
+                if user.check_password(password1):
+                    messages.error(request, '새 비밀번호는 현재 비밀번호와 다르게 설정해 주세요.')
+                    return redirect('myprofile')
+                else:
+                    user.set_password(password1)
+                    password_changed = True
+            else:
+                messages.error(request, '비밀번호가 일치하지 않습니다.')
+                return redirect('myprofile')
+        else:
+            password_changed = False
+
+        # 이메일 변경
+        if user_email and user_email != user.user_email:
+            user.user_email = user_email
+
+        # 휴대폰 번호 변경
+        if user_phone and user_phone != user.user_phone:
+            user.user_phone = user_phone
+
+        # 주소 변경
+        if user_address and user_address != user.user_address:
+            user.user_address = user_address
+
+        user.save()
+        messages.success(request, '프로필 정보가 성공적으로 변경되었습니다.')
+        return redirect('myprofile')
+    else:
+        return render(request, 'myprofile.html')
+        
+
 
 def board(request):
     return render(request, 'board.html')
@@ -57,10 +104,7 @@ def signin(request):
         if form.is_valid():
             user_id = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
-            print(f"user_id: {user_id}")
-            print(f"password: {password}")
             user = authenticate(request, username = user_id, password = password)
-            print(f"authenticated user: {user}")
             if user is not None:
                 login(request, user)
                 if user.user_role == 'supervisor':
