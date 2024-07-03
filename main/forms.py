@@ -88,6 +88,18 @@ class PostForm(forms.ModelForm):
             'notice_img': forms.FileInput(attrs={'class': 'form-control-file'}),
         }
         
+class FreePostForm(forms.ModelForm):
+    beach_no = forms.ModelChoiceField(queryset=Beach.objects.all(), required=False, label='해수욕장')
+
+    class Meta:
+        model = Event_board
+        fields = ['event_title', 'event_contents', 'beach_no', 'event_img']
+        widgets = {
+            'event_title': forms.TextInput(attrs={'class': 'form-control', 'maxlength': 200, 'required': True}),
+            'event_contents': forms.Textarea(attrs={'class': 'form-control', 'rows': 10, 'required': True}),
+            'event_img': forms.FileInput(attrs={'class': 'form-control-file'}),
+        }
+        
         
 class SignUpForm(UserCreationForm):
     user_id = forms.CharField(

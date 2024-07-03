@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 import logging
 from django.http import HttpResponseForbidden
 from .models import *
-from .forms import SignUpForm, PostForm, PasswordResetForm
+from .forms import *
 from .utils import get_weather_item
 from django.core.paginator import Paginator
 
@@ -80,7 +80,6 @@ def myprofile(request):
 
 @login_required
 def board(request):
-    notices = Notice_board.objects.all()
     beach_no = request.GET.get('beach_no')
     
     if beach_no == 'common':
@@ -106,7 +105,7 @@ def board(request):
 def board_detail(request, pk):
     try:
         post = Notice_board.objects.get(pk=pk)
-        post.notice_views += 1  # 조회수 증가 => 관리자 입장에서는 안해도 될 듯
+        post.notice_views += 1  # 조회수 증가 
         post.save()
     except Notice_board.DoesNotExist:
         messages.error(request, "해당 게시글을 찾을 수 없습니다.")
@@ -117,9 +116,51 @@ def board_detail(request, pk):
 
 @login_required
 def free_board(request):
-    event_boards = Event_board.objects.all()
-    context = {'event_boards': event_boards}
-    return render(request, 'free_board.html', context)
+    beach_no = request.GET.get('beach_no')
+    if beach_no == 'common':
+        posts = Event_board.objects.filter(beach_no__isnull=True).order_by('-event_wdate')
+    elif beach_no:
+        posts = Event_board.objects.filter(beach_no=beach_no).order_by('-event_wdate')
+    else:
+        posts = Event_board.objects.all().order_by('-event_wdate')
+    
+    # 페이징 처리
+    paginator = Paginator(posts, 10)  # 페이지당 10개의 게시물
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    beaches = Beach.objects.all()
+    return render(request, 'free_board.html', {'posts': posts, 'page_obj': page_obj, 'beaches':beaches})
+
+
+@login_required
+def create_freeboard(request):
+    if request.method == 'POST':
+        form = FreePostForm(request.POST, request.FILES)
+        if form.is_valid():
+            event = form.save(commit=False)
+            event.user_no = request.user
+            event.event_wdate = timezone.now()
+            if not event.beach_no:
+                event.beach_no = None         
+            event.save()
+            return redirect('free_board')
+    else:
+        form = FreePostForm()
+        
+    beaches = Beach.objects.all()
+    return render(request, 'create_freeboard.html', {'beaches': beaches})
+
+@login_required
+def freeboard_detail(request, pk):
+    try:
+        post = Event_board.objects.get(pk=pk)
+        post.event_views += 1  # 조회수 증가
+        post.save()
+    except Event_board.DoesNotExist:
+        messages.error(request, "해당 게시글을 찾을 수 없습니다.")
+        return redirect('free_board')
+    
+    return render(request, 'freeboard_detail.html', {'post': post})
 
 @login_required
 def chat(request):
@@ -138,25 +179,6 @@ def cctv(request):
 @login_required
 def risk(request):
     return render(request, 'risk.html')
-
-# @login_required
-# def new_post(request):
-#     if request.method == 'POST':
-#         form = PostForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             notice = form.save(commit=False)
-#             notice.user_no = request.user
-#             notice.beach_no = form.cleaned_data['beach']
-#             notice.notice_wdate = timezone.now()
-#             notice.notice_img = request.FILES.get('fileName').name if request.FILES.get('fileName') else None
-#             notice.save()
-#             #messages.success(request, '게시물이 성공적으로 작성되었습니다.')
-#             return redirect('board')
-#     else:
-#         form = PostForm()
-        
-#     beaches = Beach.objects.all()
-#     return render(request, 'new_post.html', {'form': form, 'beaches':beaches})
 
 def signin(request):
     user = None

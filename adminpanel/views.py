@@ -101,13 +101,10 @@ def create_notice(request):
     return render(request, 'adminpanel/create_notice.html', {'beaches': beaches})
 
 
-
-
 @login_required
 def notice_detail(request, pk):
     try:
         post = Notice_board.objects.get(pk=pk)
-        post.notice_views += 1  # 조회수 증가 => 관리자 입장에서는 안해도 될 듯
         post.save()
     except Notice_board.DoesNotExist:
         messages.error(request, "해당 게시글을 찾을 수 없습니다.")
@@ -120,7 +117,6 @@ def notice_detail(request, pk):
 def board_detail(request, pk):
     try:
         post = Event_board.objects.get(pk=pk)
-        post.event_views += 1  # 조회수 증가 => 관리자 입장에서는 안해도 될 듯
         post.save()
     except Event_board.DoesNotExist:
         messages.error(request, "해당 게시글을 찾을 수 없습니다.")
