@@ -140,36 +140,18 @@
                                             <th scope="col" style="width: 60%;">제목</th> <!-- Adjusted width for Title -->
                                             <th scope="col" style="width: 20%;">작성일</th> <!-- Adjusted width for Date -->
                                             <th scope="col" style="width: 20%;">작성자</th> <!-- Adjusted width for Author -->
+                                            <th scope="col" style="width: 20%;">조회수</th> <!-- Adjusted width for Author -->
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <!-- Example rows, replace with dynamic data -->
-                                        <tr>
-                                            <td>예시 제목 1</td>
-                                            <td>2024-07-01</td>
-                                            <td>Admin</td>
-                                        </tr>
-                                        <tr>
-                                            <td>예시 제목 2</td>
-                                            <td>2024-06-30</td>
-                                            <td>User</td>
-                                        </tr>
-                                        <tr>
-                                            <td>예시 제목 3</td>
-                                            <td>2024-06-29</td>
-                                            <td>Admin</td>
-                                        </tr>
-                                        <tr>
-                                            <td>예시 제목 4</td>
-                                            <td>2024-06-28</td>
-                                            <td>User</td>
-                                        </tr>
-                                        <tr>
-                                            <td>예시 제목 5</td>
-                                            <td>2024-06-27</td>
-                                            <td>Admin</td>
-                                        </tr>
-                                        <!-- End of example rows -->
+                                        {% for notice in notices %}
+                                            <tr>
+                                                <td>{{ notice.notice_title }}</td>
+                                                <td>{{ notice.notice_rdate | date:"Y-m-d"}}</td>
+                                                <td>{{ notice.user_no.user_name }}</td>
+                                                <td>{{ notice.notice_views }}</td>
+                                            </tr>
+                                        {% endfor %}
                                     </tbody>
                                 </table>
                             </div>

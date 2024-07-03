@@ -26,7 +26,7 @@ def delete_boards(request):
     try:
         data = json.loads(request.body)
         ids_to_delete = data['ids']
-        Event_board.objects.filter(event_id__in=ids_to_delete).delete()
+        Event_board.objects.filter(board_id__in=ids_to_delete).delete()
         return JsonResponse({"status": "success"}, status=200)
     except Exception as e:
         return JsonResponse({"status": "error", "message": str(e)}, status=400)
@@ -48,7 +48,7 @@ def delete_notice_boards(request):
         data = json.loads(request.body)
         ids_to_delete = data['ids']
         print(ids_to_delete)
-        Notice_board.objects.filter(notice_id__in=ids_to_delete).delete()
+        Notice_board.objects.filter(board_id__in=ids_to_delete).delete()
         return JsonResponse({"status": "success"}, status=200)
     except Exception as e:
         return JsonResponse({"status": "error", "message": str(e)}, status=400)
