@@ -5,6 +5,7 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
+from django.http import JsonResponse
 import logging
 from django.http import HttpResponseForbidden
 from .models import *
@@ -131,7 +132,20 @@ def free_board(request):
     beaches = Beach.objects.all()
     return render(request, 'free_board.html', {'posts': posts, 'page_obj': page_obj, 'beaches':beaches})
 
+# 자유게시판 조회
+@login_required
+def freeboard_detail(request, pk):
+    try:
+        post = Event_board.objects.get(pk=pk)
+        post.event_views += 1  # 조회수 증가
+        post.save()
+    except Event_board.DoesNotExist:
+        messages.error(request, "해당 게시글을 찾을 수 없습니다.")
+        return redirect('free_board')
+    beaches = Beach.objects.all()
+    return render(request, 'freeboard_detail.html', {'post': post, 'beaches':beaches})
 
+#자유게시판 생성
 @login_required
 def create_freeboard(request):
     if request.method == 'POST':
@@ -150,17 +164,24 @@ def create_freeboard(request):
     beaches = Beach.objects.all()
     return render(request, 'create_freeboard.html', {'beaches': beaches})
 
+# 자유게시판 수정
 @login_required
-def freeboard_detail(request, pk):
-    try:
-        post = Event_board.objects.get(pk=pk)
-        post.event_views += 1  # 조회수 증가
-        post.save()
-    except Event_board.DoesNotExist:
-        messages.error(request, "해당 게시글을 찾을 수 없습니다.")
-        return redirect('free_board')
-    
-    return render(request, 'freeboard_detail.html', {'post': post})
+def edit_freeboard(request, pk):
+    post = get_object_or_404(Event_board, pk=pk)
+    beaches = Beach.objects.all()
+
+    if request.user != post.user_no:
+        return JsonResponse({'success': False})
+
+    if request.method == 'POST':
+        form = FreePostForm(request.POST, request.FILES, instance=post)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'success': False})
+    return JsonResponse({'success': False})
+
 
 @login_required
 def chat(request):

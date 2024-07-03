@@ -106,6 +106,7 @@
                             <h4 class="mb-3">{{ post.event_title }}</h4> <!-- =Event Title -->
                             <div class="d-flex justify-content-between">
                                 <span>작성자: {{ post.user_no.user_name }}</span>
+                                <span>구분: {% if post.beach_no %}{{ post.beach_no.beach_name }}{% else %}공통{% endif %}</span>
                                 <span>작성일시: {{ post.event_wdate|date:"Y-m-d H:i" }}</span>
                                 <span>조회수: {{ post.event_views }}</span>
                             </div>

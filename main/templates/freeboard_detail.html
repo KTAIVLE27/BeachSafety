@@ -106,16 +106,53 @@
                             <h4 class="mb-3">{{ post.event_title }}</h4> <!-- =Event Title -->
                             <div class="d-flex justify-content-between">
                                 <span>작성자: {{ post.user_no.user_name }}</span>
+                                <span>구분: {% if post.beach_no %}{{ post.beach_no.beach_name }}{% else %}공통{% endif %}</span>
                                 <span>작성일시: {{ post.event_wdate|date:"Y-m-d H:i" }}</span>
                                 <span>조회수: {{ post.event_views }}</span>
                             </div>
                             <hr>
                             <div class="text-start">
-                                <p>{{ post.event_contents }}</p>
-                                {% if post.event_img %}
-                                <div>
-                                    <a href="{{ post.event_img.url }}" target="_blank">첨부파일 다운로드</a>
+                                <div id="viewContent">
+                                    <p>{{ post.event_contents }}</p>
+                                    {% if post.event_img %}
+                                    <div>
+                                        <a href="{{ post.event_img.url }}" target="_blank">첨부파일 다운로드</a>
+                                    </div>
+                                    {% endif %}
                                 </div>
+                                {% if post.user_no == user %}
+                                <form id="editForm" method="POST" enctype="multipart/form-data" style="display:none;">
+                                    {% csrf_token %}
+                                    <div class="mb-3">
+                                        <label for="event_title" class="form-label">제목</label>
+                                        <input type="text" class="form-control" id="event_title" name="event_title" value="{{ post.event_title }}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="beach_no" class="form-label">구분</label>
+                                        <select class="form-select" id="beach_no" name="beach_no">
+                                            <option value="common" {% if not post.beach_no %}selected{% endif %}>공통</option>
+                                            {% for beach in beaches %}
+                                            <option value="{{ beach.beach_no }}" {% if post.beach_no and post.beach_no.beach_no == beach.beach_no %}selected{% endif %}>{{ beach.beach_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="event_contents" class="form-label">내용</label>
+                                        <textarea class="form-control" id="event_contents" name="event_contents" rows="5">{{ post.event_contents }}</textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="event_img" class="form-label">첨부파일</label>
+                                        <input type="file" class="form-control" id="event_img" name="event_img">
+                                        {% if post.event_img %}
+                                        <div>
+                                            <a href="{{ post.event_img.url }}" target="_blank">첨부파일 다운로드</a>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">저장</button>
+                                    <button type="button" id="cancelEditButton" class="btn btn-secondary">취소</button>
+                                </form>
+                                <button id="editButton" class="btn btn-warning">수정</button>
                                 {% endif %}
                             </div>
                             <hr>
@@ -146,7 +183,55 @@
     <script src="{% static 'lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js'%}"></script>
 
     <!-- Template Javascript -->
-    <script src="{% static 'js/main.js'%}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var editButton = document.getElementById('editButton');
+            var cancelEditButton = document.getElementById('cancelEditButton');
+            var editForm = document.getElementById('editForm');
+            var viewContent = document.getElementById('viewContent');
+
+            if (editButton) {
+                editButton.addEventListener('click', function() {
+                    editForm.style.display = 'block';
+                    viewContent.style.display = 'none';
+                    editButton.style.display = 'none';
+                });
+
+                cancelEditButton.addEventListener('click', function() {
+                    editForm.style.display = 'none';
+                    viewContent.style.display = 'block';
+                    editButton.style.display = 'block';
+                });
+
+                editForm.addEventListener('submit', function(event) {
+                    event.preventDefault();
+
+                    var formData = new FormData(editForm);
+
+                    fetch("{% url 'edit_freeboard' post.pk %}", {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            location.reload();
+                        } else {
+                            alert('저장에 실패했습니다.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>
