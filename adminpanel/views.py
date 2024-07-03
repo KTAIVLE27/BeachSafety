@@ -7,6 +7,7 @@ from django.views.decorators.http import require_POST
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from main.models import User
 from main.models import Event_board, Notice_board
 import json
@@ -45,15 +46,23 @@ def notice_manage(request):
     beach_no = request.GET.get('beach_no')
     
     if beach_no == 'common':
-        posts = Notice_board.objects.filter(beach_no__isnull=True)
+        posts = Notice_board.objects.filter(beach_no__isnull=True).order_by('-notice_wdate')
     elif beach_no:
-        posts = Notice_board.objects.filter(beach_no=beach_no)
+        posts = Notice_board.objects.filter(beach_no=beach_no).order_by('-notice_wdate')
     else:
-        posts = Notice_board.objects.all()
-        
+        posts = Notice_board.objects.all().order_by('-notice_wdate')
+    
+    
+    # 페이징 처리
+    paginator = Paginator(posts, 10)  # 페이지당 10개의 게시물
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    beaches = Beach.objects.all()
     beaches = Beach.objects.all()
     
-    return render(request, 'adminpanel/notice_manage.html', {'posts': posts, 'beaches': beaches, 'selected_beach_no': beach_no})
+    
+    return render(request, 'adminpanel/notice_manage.html', {'posts': posts, 'beaches': beaches, 'selected_beach_no': beach_no, 'page_obj': page_obj})
 
 @require_POST
 def delete_notice_boards(request):
