@@ -77,7 +77,7 @@ class SignUpForm(UserCreationForm):
         fields = ('user_id', 'user_email', 'user_name', 'user_phone', 'user_birth', 'user_address', 'password1', 'password2')
 
 class PostForm(forms.ModelForm):
-    beach_no = forms.ModelChoiceField(queryset=Beach.objects.all(), required=True, label='해수욕장')
+    beach_no = forms.ModelChoiceField(queryset=Beach.objects.all(), required=False, label='해수욕장')
 
     class Meta:
         model = Notice_board

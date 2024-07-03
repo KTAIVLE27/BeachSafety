@@ -42,7 +42,6 @@
         </div>
         <!-- Spinner End -->
 
-
         <!-- Sidebar Start -->
         <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-light navbar-light">
@@ -69,7 +68,6 @@
             </nav>
         </div>
         <!-- Sidebar End -->
-
 
         <!-- Content Start -->
         <div class="content">
@@ -101,148 +99,147 @@
             <!-- Navbar End -->
 
             <!-- Notices Start -->
-<div class="container-fluid pt-4 px-4">
-    <div class="row g-4">
-        <div class="col-lg-12">
-            <div class="bg-light text-center rounded p-4">
-                <div class="d-flex align-items-center justify-content-between mb-4">
-                    <h4 class="mb-0">공지사항 목록</h4> <!-- Increased font size for Notices -->
-                    <div class="d-flex">
-                        <a href="{% url 'adminpanel:create_notice' %}" class="btn btn-secondary me-2">글쓰기</a> <!-- Write Button -->
-                        <div class="dropdown me-2">
-                            <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                구분
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <li><a class="dropdown-item" href="#">중문 해수욕장</a></li>
-                                <li><a class="dropdown-item" href="#">해운대 해수욕장</a></li>
-                                <li><a class="dropdown-item" href="#">송정 해수욕장</a></li>
-                                <li><a class="dropdown-item" href="#">김녕 해수욕장</a></li>
-                                <li><a class="dropdown-item" href="#">광안리 해수욕장</a></li>
-                                <li><a class="dropdown-item" href="#">경포 해수욕장</a></li>
-                                <li><a class="dropdown-item" href="#">을왕리 해수욕장</a></li>
-                                <li><a class="dropdown-item" href="#">속초 해수욕장</a></li>
-                                <li><a class="dropdown-item" href="#">망상 해수욕장</a></li>
-                                <li><a class="dropdown-item" href="#">송도 해수욕장</a></li>
-                            </ul>
-                        </div>
-                        <button id="deleteButton" class="btn btn-primary">삭제</button> <!-- Delete Button -->
-                    </div>
-                </div>
-                <!-- Table for Notices -->
-                <div class="table-responsive" style="height: 400px; overflow-y: scroll;">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col" style="width: 5%;">
-                                    <input type="checkbox" id="selectAll">
-                                </th>
-                                <th scope="col" style="width: 5%;">글 번호</th> <!-- Adjusted width for Title -->
-                                <th scope="col" style="width: 15%;">구분</th> <!-- Adjusted width for Title -->
-                                <th scope="col" style="width: 60%;">제목</th> <!-- Adjusted width for Date -->
-                                <th scope="col" style="width: 20%;">등록일</th> <!-- Adjusted width for Author -->
-                            </tr>
-                        </thead>
-                        <tbody id="noticeTableBody">
-                            {% for post in posts %}
-                            <tr data-id="{{post.notice_id}}">
-                                <td><input type="checkbox" class="selectRow"></td>
-                                <td>{{ forloop.counter }}</td>  <!-- 글 번호 자동 생성 -->
-                                {% comment %} <td>{{ post.notice_classification }}</td> {% endcomment %}   <!-- 여기서 구분 불러오기 -->
-                                <td>{{ post.notice_title }}</td>
-                                <td>{{ post.notice_wdate | date:"Y-m-d" }}</td>
-                                <td>{{ post.user_no.user_name }}</td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="4">No posts found.</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                <!-- Search Bar -->
-                <div class="container pt-4">
-                    <div class="row justify-content-center"> <!-- 중앙 정렬 -->
-                        <div class="col-lg-6">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <select class="form-select">
-                                        <option selected>제목</option>
-                                        <option value="1">작성자</option>
-                                    </select>
+            <div class="container-fluid pt-4 px-4">
+                <div class="row g-4">
+                    <div class="col-lg-12">
+                        <div class="bg-light text-center rounded p-4">
+                            <div class="d-flex align-items-center justify-content-between mb-4">
+                                <h4 class="mb-0">공지사항 목록</h4> <!-- Increased font size for Notices -->
+                                <div class="d-flex">
+                                    <a href="{% url 'adminpanel:create_notice' %}" class="btn btn-secondary me-2">글쓰기</a> <!-- Write Button -->
+                                    <div class="dropdown me-2">
+                                        <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                            구분
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item" href="?">전체</a>
+                                            <a class="dropdown-item" href="?beach_no=common">공통</a>
+                                            {% for beach in beaches %}
+                                                <a class="dropdown-item" href="?beach_no={{ beach.beach_no }}">{{ beach.beach_name }}</a>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <button id="deleteButton" class="btn btn-primary">삭제</button> <!-- Delete Button -->
                                 </div>
-                                <input class="form-control" type="search" placeholder="검색" aria-label="Search">
-                                <button class="btn btn-outline-primary" type="submit">검색</button>
                             </div>
+                            <!-- Table for Notices -->
+                            <div class="table-responsive" style="height: 400px; overflow-y: scroll;">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" style="width: 5%;">
+                                                <input type="checkbox" id="selectAll">
+                                            </th>
+                                            <th scope="col" style="width: 5%;">글 번호</th> <!-- Adjusted width for Title -->
+                                            <th scope="col" style="width: 15%;">구분</th> <!-- Adjusted width for Title -->
+                                            <th scope="col" style="width: 50%;">제목</th> <!-- Adjusted width for Date -->
+                                            <th scope="col" style="width: 10%;">작성자</th> <!-- Adjusted width for Author -->
+                                            <th scope="col" style="width: 20%;">등록일시</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="noticeTableBody">
+                                        {% for post in posts %}
+                                        <tr data-id="{{ post.notice_id }}">
+                                            <td><input type="checkbox" class="selectRow"></td>
+                                            <td>{{ forloop.counter }}</td>  <!-- 글 번호 자동 생성 -->
+                                            {% comment %} <td>{{ post.notice_classification }}</td> {% endcomment %}   <!-- 여기서 구분 불러오기 -->
+                                            <td>
+                                                {% if post.beach_no %}
+                                                    {{ post.beach_no.beach_name }}
+                                                {% else %}
+                                                    공통
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ post.notice_title }}</td>
+                                            <td>{{ post.notice_wdate | date:"Y-m-d" }}</td>
+                                            <td>{{ post.user_no.user_name }}</td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="6">No posts found.</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- Search Bar -->
+                            <div class="container pt-4">
+                                <div class="row justify-content-center"> <!-- 중앙 정렬 -->
+                                    <div class="col-lg-6">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <select class="form-select">
+                                                    <option selected>제목</option>
+                                                    <option value="1">작성자</option>
+                                                </select>
+                                            </div>
+                                            <input class="form-control" type="search" placeholder="검색" aria-label="Search">
+                                            <button class="btn btn-outline-primary" type="submit">검색</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End of Search Bar -->
+                            <!-- Pagination -->
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination justify-content-center"> <!-- Centered pagination -->
+                                    <li class="page-item disabled">
+                                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true"><</a>
+                                    </li>
+                                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#">></a>
+                                    </li>
+                                </ul>
+                            </nav>
                         </div>
                     </div>
                 </div>
-                <!-- End of Search Bar -->
-                <!-- Pagination -->
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-center"> <!-- Centered pagination -->
-                        <li class="page-item disabled">
-                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true"><</a>
-                        </li>
-                        <li class="page-item"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">></a>
-                        </li>
-                    </ul>
-                </nav>
             </div>
-        </div>
-    </div>
-</div>
-<!-- Notices End -->
+            <!-- Notices End -->
 
-<!-- JavaScript to handle deletion -->
-<script>
-    document.getElementById('selectAll').addEventListener('change', function() {
-        var checkboxes = document.querySelectorAll('.selectRow');
-        for (var checkbox of checkboxes) {
-            checkbox.checked = this.checked;
-        }
-    });
+            <!-- JavaScript to handle deletion -->
+            <script>
+                document.getElementById('selectAll').addEventListener('change', function() {
+                    var checkboxes = document.querySelectorAll('.selectRow');
+                    for (var checkbox of checkboxes) {
+                        checkbox.checked = this.checked;
+                    }
+                });
 
-    // post 삭제
-    document.getElementById('deleteButton').addEventListener('click', function() {
-        var checkboxes = document.querySelectorAll('.selectRow:checked');
-        var idsToDelete = [];
-        checkboxes.forEach(function(checkbox) {
-            idsToDelete.push(checkbox.closest('tr').getAttribute('data-id'));
-        });
-        console.log(idsToDelete)
-        if (idsToDelete.length > 0) {
-            fetch('{% url 'adminpanel:delete_notice_boards' %}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': '{{ csrf_token }}'
-                },
-                body: JSON.stringify({ ids: idsToDelete })
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                if (data.status === "success") {
-                    location.reload(); // 성공시 페이지 리로드
-                } else {
-                    alert("Error: " + data.message); // 실패시 메시지 출력
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        }
-    });
-</script>
-
-
-        
+                // post 삭제
+                document.getElementById('deleteButton').addEventListener('click', function() {
+                    var checkboxes = document.querySelectorAll('.selectRow:checked');
+                    var idsToDelete = [];
+                    checkboxes.forEach(function(checkbox) {
+                        idsToDelete.push(checkbox.closest('tr').getAttribute('data-id'));
+                    });
+                    console.log(idsToDelete)
+                    if (idsToDelete.length > 0) {
+                        fetch('{% url 'adminpanel:delete_notice_boards' %}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            },
+                            body: JSON.stringify({ ids: idsToDelete })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data);
+                            if (data.status === "success") {
+                                location.reload(); // 성공시 페이지 리로드
+                            } else {
+                                alert("Error: " + data.message); // 실패시 메시지 출력
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
+                    }
+                });
+            </script>
         </div>
         <!-- Content End -->
-
 
         <!-- Back to Top -->
         <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
@@ -251,10 +248,10 @@
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{% static 'lib/chart/chart.min.js'%}"></script>
-    <script src="{% static 'lib/easing/easing.min.js'%}"></script>
-    <script src="{% static 'lib/waypoints/waypoints.min.js'%}"></script>
-    <script src="{% static 'lib/owlcarousel/owl.carousel.min.js'%}"></script>
+    <script src="{% static 'lib/chart/chart.min.js' %}"></script>
+    <script src="{% static 'lib/easing/easing.min.js' %}"></script>
+    <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
+    <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
     <script src="{% static 'lib/tempusdominus/js/moment.min.js'%}"></script>
     <script src="{% static 'lib/tempusdominus/js/moment-timezone.min.js'%}"></script>
     <script src="{% static 'lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js'%}"></script>

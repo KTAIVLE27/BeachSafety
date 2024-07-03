@@ -146,8 +146,8 @@
                             <form method="post" enctype="multipart/form-data">
                                 {% csrf_token %}
                                 <div class="input-group mb-3">
-                                    <select class="custom-select" name="beach_no" required>
-                                        <option value="" selected>전체</option>
+                                    <select class="custom-select" name="beach_no">
+                                        <option value="" selected>공통</option>
                                         {% for beach in beaches %}
                                             <option value="{{ beach.beach_no }}">{{ beach.beach_name }}</option>
                                         {% endfor %}

@@ -62,7 +62,7 @@ class Beach(models.Model):
 class Notice_board(models.Model):
     notice_id = models.AutoField(max_length=20, primary_key=True)  # 게시물 고유 번호
     user_no = models.ForeignKey(User, on_delete=models.RESTRICT, db_column='user_no')  # 회원번호
-    beach_no = models.ForeignKey(Beach, on_delete=models.RESTRICT, db_column='beach_no')
+    beach_no = models.ForeignKey(Beach, on_delete=models.RESTRICT, db_column='beach_no', null=True, blank=True)
     notice_title = models.CharField(max_length=200, blank=False)  # 제목
     notice_img = models.CharField(max_length=255, blank=True, null=True)  # 이미지
     notice_views = models.IntegerField(default=0)  # 조회수

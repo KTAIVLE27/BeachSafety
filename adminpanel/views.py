@@ -41,8 +41,19 @@ def user_list_view(request):
     return render(request, 'adminpanel/user_list.html', context)
   
 def notice_manage(request):
-    posts = Notice_board.objects.all()
-    return render(request, 'adminpanel/notice_manage.html', {'posts':posts})
+    #posts = Notice_board.objects.prefetch_related('beach_no').all()
+    beach_no = request.GET.get('beach_no')
+    
+    if beach_no == 'common':
+        posts = Notice_board.objects.filter(beach_no__isnull=True)
+    elif beach_no:
+        posts = Notice_board.objects.filter(beach_no=beach_no)
+    else:
+        posts = Notice_board.objects.all()
+        
+    beaches = Beach.objects.all()
+    
+    return render(request, 'adminpanel/notice_manage.html', {'posts': posts, 'beaches': beaches, 'selected_beach_no': beach_no})
 
 @require_POST
 def delete_notice_boards(request):
@@ -56,7 +67,7 @@ def delete_notice_boards(request):
         return JsonResponse({"status": "error", "message": str(e)}, status=400)
 
 
-logger = logging.getLogger(__name__)
+
 @login_required
 def create_notice(request):
     if request.method == 'POST':
@@ -65,6 +76,8 @@ def create_notice(request):
             notice = form.save(commit=False)
             notice.user_no = request.user
             notice.notice_wdate = timezone.now()
+            if not notice.beach_no:
+                notice.beach_no = None         
             notice.save()
             return redirect('adminpanel:notice_manage')
     else:
