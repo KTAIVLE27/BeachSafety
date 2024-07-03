@@ -209,7 +209,36 @@ def forgotpw(request):
     return render(request, 'forgotpw.html', {'form': form})
 
 
+# def myposts(request):
+#     if request.method == 'POST':
+#         user = request.user
+
+#         user_no = request.POST.get('user_no')
+
+
+
+#     else:
+#         return render(request, 'myposts.html')
+
+@login_required
 def myposts(request):
-    # 내가 쓴 글을 가져오는 로직을 추가하세요.
-    return render(request, 'myposts.html')
+    if request.method == 'GET':
+        try:
+            user_no = request.user.user_no  # 로그인된 사용자의 user_no 가져오기
+            event_boards = Event_board.objects.filter(user_no=user_no)  # user_no와 일치하는 게시물 필터링
+            return render(request, 'myposts.html', {'event_boards': event_boards, 'user': request.user})
+        except AttributeError:
+            # 로그인된 사용자가 없는 경우 처리
+            return redirect('login')  # 로그인 페이지로 리디렉션
+        except Event_board.DoesNotExist:
+            # 일치하는 게시물이 없는 경우 처리
+            return render(request, 'myposts.html', {'event_boards': [], 'user': request.user})
+    else:
+        render(request, 'myposts.html')
+
+    
+    
+    
+    
+    
 
