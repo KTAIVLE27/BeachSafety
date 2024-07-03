@@ -19,5 +19,6 @@ urlpatterns = [
     path('adminpanel/', views.admin_panel, name='admin_panel'),
     path('new_post/', views.new_post, name='new_post'),  # Added path for new_post
     path('myposts/', views.myposts, name='myposts'),
+    path('agreement/', views.agreement, name='agreement'),
 ]
 
