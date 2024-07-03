@@ -197,46 +197,39 @@ setInterval(function() {
 </div>
 
 <div class="side-buttons">
-    <a href="#" class="btn btn-primary" title="119" data-toggle="modal" data-target="#myModal"> <i class="fa fa-phone"></i> </a>
-    <a href="#" class="btn btn-primary" title="해군" data-toggle="modal" data-target="#myModal"> <i class="fa fa-anchor"></i> </a>
-    <a href="#" class="btn btn-primary" title="모의훈련" data-toggle="modal" data-target="#myModal"> <i class="fa fa-file-alt"></i> </a>
-    <a href="#" class="btn btn-primary" title="기상예보" data-toggle="modal" data-target="#myModal"> <i class="fa fa-cloud-sun"></i> </a>                   
+    <a href="#"class="btn btn-primary"title="119"data-toggle="modal"data-target="#myModal"><i class="fa fa-phone"></i></a>  
+    <a href="#"class="btn btn-primary"title="해군"data-toggle="modal"data-target="#myModal"><i class="fa fa-anchor"></i></a>
+    <a href="#"class="btn btn-primary"title="모의훈련"data-toggle="modal"data-target="#myModal"><i class="fa fa-file-alt"></i></a>
+    <a href="#"class="btn btn-primary"title="기상예보"data-toggle="modal"data-target="#myModal"><i class="fa fa-cloud-sun"></i></a>                   
 </div>
-
     <!-- The Modal -->
-    <div class="modal" id="myModal">
+    <div class="modal"id="myModal">
         <div class="modal-dialog">
             <div class="modal-content">
-
-                <!-- Modal Header -->
+    <!-- Modal Header -->
                 <div class="modal-header">
-                    <h4 class="modal-title">전화 걸기</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">전화를 거시겠습니까?</h4>
+                    <button type="button"class="close"data-dismiss="modal">&times;</button>
                 </div>
-
-                <!-- Modal body -->
+   <!-- Modal body -->
                 <div class="modal-body">
-                    전화를 거시겠습니까?
                 </div>
-
-                <!-- Modal footer -->
+    <!-- Modal footer -->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success" id="callBtn">걸기</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">취소</button>
+                    <button type="button"class="btn btn-success"id="callBtn">걸기</button>
+                    <button type="button"class="btn btn-danger"data-dismiss="modal">취소</button>
                 </div>
-
             </div>
         </div>
     </div>
+<script>
+    document.getElementById('callBtn').addEventListener('click', function() {
+        alert('전화를 겁니다.');
+        $('#myModal').modal('hide');
+});
+   </script>
 
-    <script>
-        document.getElementById('callBtn').addEventListener('click', function() {
-            alert('전화를 겁니다.');
-            $('#myModal').modal('hide');
-        });
-    </script>
-
-<div class="warn-alarm">
+    <div class="warn-alarm">
     <h5>경고알람</h5>
     <div id="textbox1" class="textbox">데이터를 가져오는 중...</div>
     <div id="textbox2" class="textbox">데이터를 가져오는 중...</div>
