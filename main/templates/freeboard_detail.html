@@ -130,7 +130,7 @@
                                     <div class="mb-3">
                                         <label for="beach_no" class="form-label">구분</label>
                                         <select class="form-select" id="beach_no" name="beach_no">
-                                            <option value="common" {% if not post.beach_no %}selected{% endif %}>공통</option>
+                                            <option value="" {% if not post.beach_no %}selected{% endif %}>공통</option>
                                             {% for beach in beaches %}
                                             <option value="{{ beach.beach_no }}" {% if post.beach_no and post.beach_no.beach_no == beach.beach_no %}selected{% endif %}>{{ beach.beach_name }}</option>
                                             {% endfor %}

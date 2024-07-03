@@ -14,5 +14,6 @@ urlpatterns = [
     path('delete-notice-boards/', views.delete_notice_boards, name='delete_notice_boards'),
     path('create_notice/', views.create_notice, name='create_notice'),
     path('notice/<int:pk>/', views.notice_detail, name='notice_detail'),
+    path('notice/edit/<int:pk>/', views.edit_notice, name='edit_notice'),
     path('board/<int:pk>/', views.board_detail, name='board_detail'),
 ]

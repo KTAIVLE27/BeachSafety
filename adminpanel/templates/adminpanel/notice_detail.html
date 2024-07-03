@@ -59,11 +59,11 @@
                     </div>
                 </div>
                 <div class="navbar-nav w-100">
-                    <a href="{% url 'adminpanel:admin_home' %}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/home_24dp.png'%}" style="width: 40px; height: 40px;"></i>관리자 홈</a>
-                    <a href="{% url 'adminpanel:user_list_view'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/face_24dp.png'%}" style="width: 40px; height: 40px;"></i>사용자 정보 관리</a>
-                    <a href="{% url 'adminpanel:senario'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/wysiwyg_24dp.png'%}" style="width: 40px; height: 40px;"></i>훈련시나리오 관리</a>
-                    <a href="{% url 'adminpanel:notice_manage'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/chat_24dp.png'%}" style="width: 40px; height: 40px;"></i>공지사항 관리</a>
-                    <a href="{% url 'adminpanel:board_manage'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/chat_24dp.png'%}" style="width: 40px; height: 40px;"></i>자유게시판 관리</a>
+                    <a href="{% url 'adminpanel:admin_home' %}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/home_24dp.png'%}" style="width: 40px; height: 40px;"></a>관리자 홈</a>
+                    <a href="{% url 'adminpanel:user_list_view' %}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/face_24dp.png'%}" style="width: 40px; height: 40px;"></a>사용자 정보 관리</a>
+                    <a href="{% url 'adminpanel:senario' %}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/wysiwyg_24dp.png'%}" style="width: 40px; height: 40px;"></a>훈련시나리오 관리</a>
+                    <a href="{% url 'adminpanel:notice_manage' %}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/chat_24dp.png'%}" style="width: 40px; height: 40px;"></a>공지사항 관리</a>
+                    <a href="{% url 'adminpanel:board_manage' %}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/chat_24dp.png'%}" style="width: 40px; height: 40px;"></a>자유게시판 관리</a>
                 </div>
             </nav>
         </div>
@@ -78,24 +78,21 @@
                 </a>
                 <a href="#" class="sidebar-toggler flex-shrink-0">
                     <i class="fa fa-bars"></i>
-                </a> 
+                </a>
                 
-                <a href="{% url 'adminpanel:admin_home' %}"><img src="{% static 'img/logo.png' %}" width="50" height="50"></i></a>
+                <a href="{% url 'adminpanel:admin_home' %}"><img src="{% static 'img/logo.png' %}" width="50" height="50"></a>
                 <form class="d-none d-md-flex ms-4">
                     <input class="form-control border-0" type="search" placeholder="Search">
                 </form>
                 <div class="navbar-nav align-items-center ms-auto">
                     <div class="nav-item dropdown">
-                        <a href="#"><img src="{% static 'img/logout_24dp.png' %}" width="50" height="50"></i></a>
+                        <a href="#"><img src="{% static 'img/logout_24dp.png' %}" width="50" height="50"></a>
                     </div>
-    
                     <div class="nav-item dropdown">
-                        <a href="#"><img class="rounded-circle me-lg-2" src="{% static 'img/face_24dp.png'%}" alt="" style="width: 40px; height: 40px;">
-                        </a>
-                        
+                        <a href="#"><img class="rounded-circle me-lg-2" src="{% static 'img/face_24dp.png'%}" alt="" style="width: 40px; height: 40px;"></a>
                     </div>
                 </div>
-            </nav> 
+            </nav>
             <!-- Navbar End -->
 
             <!-- Notice Detail Start -->
@@ -112,11 +109,47 @@
                             </div>
                             <hr>
                             <div class="text-start">
-                                <p>{{ post.notice_contents }}</p>
-                                {% if post.notice_img %}
-                                <div>
-                                    <a href="{{ post.notice_img.url }}" target="_blank">첨부파일 다운로드</a>
+                                <div id="viewContent">
+                                    <p>{{ post.notice_contents }}</p>
+                                    {% if post.notice_img %}
+                                    <div>
+                                        <a href="{{ post.notice_img.url }}" target="_blank">첨부파일 다운로드</a>
+                                    </div>
+                                    {% endif %}
                                 </div>
+                                {% if post.user_no == user and user.user_role == 'admin' %}
+                                <form id="editForm" method="POST" enctype="multipart/form-data" style="display:none;">
+                                    {% csrf_token %}
+                                    <div class="mb-3">
+                                        <label for="notice_title" class="form-label">제목</label>
+                                        <input type="text" class="form-control" id="notice_title" name="notice_title" value="{{ post.notice_title }}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="beach_no" class="form-label">구분</label>
+                                        <select class="form-select" id="beach_no" name="beach_no">
+                                            <option value="" {% if not post.beach_no %}selected{% endif %}>공통</option>
+                                            {% for beach in beaches %}
+                                            <option value="{{ beach.beach_no }}" {% if post.beach_no and post.beach_no.beach_no == beach.beach_no %}selected{% endif %}>{{ beach.beach_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="notice_contents" class="form-label">내용</label>
+                                        <textarea class="form-control" id="notice_contents" name="notice_contents" rows="5">{{ post.notice_contents }}</textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="notice_img" class="form-label">첨부파일</label>
+                                        <input type="file" class="form-control" id="notice_img" name="notice_img">
+                                        {% if post.notice_img %}
+                                        <div>
+                                            <a href="{{ post.notice_img.url }}" target="_blank">첨부파일 다운로드</a>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">저장</button>
+                                    <button type="button" id="cancelEditButton" class="btn btn-secondary">취소</button>
+                                </form>
+                                <button id="editButton" class="btn btn-warning">수정</button>
                                 {% endif %}
                             </div>
                             <hr>
@@ -127,13 +160,14 @@
                     </div>
                 </div>
             </div>
-            <!-- Notice Detail End -->
         </div>
-        <!-- Content End -->
-
-        <!-- Back to Top -->
-        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+        <!-- Notice Detail End -->
     </div>
+    <!-- Content End -->
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+ </div>
 
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
@@ -142,12 +176,64 @@
     <script src="{% static 'lib/easing/easing.min.js' %}"></script>
     <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
     <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
-    <script src="{% static 'lib/tempusdominus/js/moment.min.js'%}"></script>
-    <script src="{% static 'lib/tempusdominus/js/moment-timezone.min.js'%}"></script>
-    <script src="{% static 'lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js'%}"></script>
+    <script src="{% static 'lib/tempusdominus/js/moment.min.js' %}"></script>
+    <script src="{% static 'lib/tempusdominus/js/moment-timezone.min.js' %}"></script>
+    <script src="{% static 'lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js' %}"></script>
 
     <!-- Template Javascript -->
-    <script src="{% static 'js/main.js'%}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var editButton = document.getElementById('editButton');
+            var cancelEditButton = document.getElementById('cancelEditButton');
+            var editForm = document.getElementById('editForm');
+            var viewContent = document.getElementById('viewContent');
+
+            if (editButton) {
+                editButton.addEventListener('click', function() {
+                    editForm.style.display = 'block';
+                    viewContent.style.display = 'none';
+                    editButton.style.display = 'none';
+                });
+
+                cancelEditButton.addEventListener('click', function() {
+                    editForm.style.display = 'none';
+                    viewContent.style.display = 'block';
+                    editButton.style.display = 'block';
+                });
+
+                editForm.addEventListener('submit', function(event) {
+                    event.preventDefault();
+
+                    var formData = new FormData(editForm);
+
+                    fetch("{% url 'adminpanel:edit_notice' post.pk %}", {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            location.reload();
+                        } else {
+                            alert('저장에 실패했습니다.');
+                            if (data.errors) {
+                                console.log(data.errors); // 오류 메시지를 콘솔에 출력합니다.
+                            } else {
+                                console.log(data.error); // 오류 메시지를 콘솔에 출력합니다.
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>

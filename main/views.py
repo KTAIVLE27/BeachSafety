@@ -168,7 +168,6 @@ def create_freeboard(request):
 @login_required
 def edit_freeboard(request, pk):
     post = get_object_or_404(Event_board, pk=pk)
-    beaches = Beach.objects.all()
 
     if request.user != post.user_no:
         return JsonResponse({'success': False})
@@ -176,6 +175,9 @@ def edit_freeboard(request, pk):
     if request.method == 'POST':
         form = FreePostForm(request.POST, request.FILES, instance=post)
         if form.is_valid():
+            event = form.save(commit=False)
+            if event.beach_no == '':
+                event.beach_no = None          
             form.save()
             return JsonResponse({'success': True})
         else:

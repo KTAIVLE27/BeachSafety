@@ -4,7 +4,7 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
@@ -110,7 +110,30 @@ def notice_detail(request, pk):
         messages.error(request, "해당 게시글을 찾을 수 없습니다.")
         return redirect('adminpanel:notice_manage')
     
-    return render(request, 'adminpanel/notice_detail.html', {'post': post})
+    beaches = Beach.objects.all()
+    return render(request, 'adminpanel/notice_detail.html', {'post': post, 'beaches':beaches})
+
+@login_required
+def edit_notice(request, pk):
+    post = get_object_or_404(Notice_board, pk=pk)
+
+    # 작성자 검증
+    if request.user != post.user_no and request.user.role != 'admin':
+        return JsonResponse({'success': False, 'error': '권한이 없습니다.'})
+
+    if request.method == 'POST':
+        form = PostForm(request.POST, request.FILES, instance=post)
+        if form.is_valid():
+            notice = form.save(commit=False)
+            if notice.beach_no == '':
+                notice.beach_no = None
+            notice.save()
+            return JsonResponse({'success': True})
+        else:
+            # 폼이 유효하지 않은 경우 오류 메시지를 반환
+            return JsonResponse({'success': False, 'errors': form.errors.as_json()})
+
+    return JsonResponse({'success': False, 'error': '잘못된 요청 방법입니다.'})
 
 
 @login_required
