@@ -115,3 +115,16 @@ def notice_detail(request, pk):
         return redirect('adminpanel:notice_manage')
     
     return render(request, 'adminpanel/notice_detail.html', {'post': post})
+
+
+@login_required
+def board_detail(request, pk):
+    try:
+        post = Event_board.objects.get(pk=pk)
+        post.event_views += 1  # 조회수 증가 => 관리자 입장에서는 안해도 될 듯
+        post.save()
+    except Event_board.DoesNotExist:
+        messages.error(request, "해당 게시글을 찾을 수 없습니다.")
+        return redirect('adminpanel:board_manage')
+    
+    return render(request, 'adminpanel/board_detail.html', {'post': post})

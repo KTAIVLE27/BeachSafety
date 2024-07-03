@@ -131,7 +131,7 @@
                                         <tr data-id="{{ post.event_id }}">
                                             <td><input type="checkbox" class="selectRow"></td>
                                             <td>{{ forloop.counter0|add:page_obj.start_index}}</td>  <!-- 글 번호 자동 생성 -->
-                                            <td>{{ post.event_title }}</td>
+                                            <td><a href="{% url 'adminpanel:board_detail' post.pk %}">{{ post.event_title }}</a></td>
                                             <td>{{ post.user_no.user_name }}</td>
                                             <td>{{ post.event_wdate | date:"Y-m-d H:i" }}</td>
                                             
