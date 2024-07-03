@@ -405,14 +405,14 @@
 
 .warn-alarm {
     position: fixed;
-    top: 80%;
+    top: 70%;
     right: 10px;
-    width: 300px;
-    height: 300px;
+    width: 455px;
+    height: 500px;
     margin: auto;
     border: 1px solid #000000;
     padding: 10px;
-    background-color: rgba(249, 202, 74, 0.5); /* 투명한 배경 */
+    background-color: rgba(249, 202, 74, 0.8); /* 투명한 배경 */
     gap: 10px; /* 박스들 사이의 간격 */
 }
 
@@ -420,8 +420,20 @@
     padding: 10px;
     border: 1px solid #ddd;
     background-color: #fff; /* 진한 배경 */
-  
 }
-.popover {
-    max-width: 200px; /* 팝업창의 최대 너비 설정 */
+
+   /* 모의훈련 모달의 크기 조절 */
+#myModal2 .modal-dialog {
+    max-width: 1200px; /* 원하는 너비를 설정 */
+    margin: auto;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* 기상예보 모달의 크기 조절 */
+#myModal3 .modal-dialog {
+    max-width: 1200px; /* 원하는 너비를 설정 */
+    margin: auto;
+    top: 50%;
+    transform: translateY(-50%);
 }
