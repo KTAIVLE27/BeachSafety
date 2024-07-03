@@ -24,7 +24,14 @@ def admin_panel(request):
 
 @login_required
 def home(request):
-    return render(request, 'home.html')
+    home_notices = Notice_board.objects.all().order_by('-notice_id')[:5]  # 최신 순서로 상위 5개 공지사항
+    home_event = Event_board.objects.all().order_by('-event_id')[:5]  # 최신 순서로 상위 5개 이벤트
+    context = {
+        'home_notices': home_notices,
+        'home_event': home_event,
+    }
+    return render(request, 'home.html', context)
+
 
 @login_required
 def myprofile(request):

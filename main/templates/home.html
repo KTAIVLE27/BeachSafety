@@ -244,22 +244,12 @@ vmap.on("click", function(evt) {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                    <td>제12회 과학수사 아이디어 공모전 개최</td>
-                                                    <td>2024-06-24</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>[24년도 신규R&D사업] 2024년 미래치안도전기술...</td>
-                                                    <td>2024-06-18</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>2024년 외부 인권강사단 인력풀 모집 공고(6.12~6...</td>
-                                                    <td>2024-06-12</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>「차량신호등 보조장치 표준규격」 제정·배포 알...</td>
-                                                    <td>2024-06-12</td>
-                                                </tr>
+                                                {% for notice in home_notices %}
+                                                    <tr>
+                                                        <td>{{ notice.notice_title }}</td>
+                                                        <td>{{ notice.notice_wdate|date:"Y-m-d" }}</td>
+                                                    </tr>
+                                                {% endfor %}
                                             </tbody>
                                         </table>
                                     </div>
@@ -274,22 +264,12 @@ vmap.on("click", function(evt) {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                    <td>자유 게시판 글 1</td>
-                                                    <td>2024-06-24</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>자유 게시판 글 2</td>
-                                                    <td>2024-06-18</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>자유 게시판 글 3</td>
-                                                    <td>2024-06-12</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>자유 게시판 글 4</td>
-                                                    <td>2024-06-12</td>
-                                                </tr>
+                                                {% for event in home_event %}
+                                                    <tr>
+                                                        <td>{{ event.event_title }}</td>
+                                                        <td>{{ event.event_wdate|date:"Y-m-d" }}</td>
+                                                    </tr>
+                                                {% endfor %}
                                             </tbody>
                                         </table>
                                     </div>
@@ -339,6 +319,16 @@ vmap.on("click", function(evt) {
             });
         });
         </script>
+
+   
+    <script>
+
+        function loadHomeNoticeBoard(url) {
+            document.getElementById('cctv-frame').src = url;
+        }
+    </script>
+
+
 </body>
 
 </html>
