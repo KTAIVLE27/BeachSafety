@@ -79,11 +79,14 @@ def myprofile(request):
 
 @login_required
 def board(request):
-    return render(request, 'board.html')
+    notices = Notice_board.objects.all()
+    return render(request, 'board.html', {'notices': notices})
 
 @login_required
 def free_board(request):
-    return render(request, 'free_board.html')
+    event_boards = Event_board.objects.all()
+    context = {'event_boards': event_boards}
+    return render(request, 'free_board.html', context)
 
 @login_required
 def chat(request):
