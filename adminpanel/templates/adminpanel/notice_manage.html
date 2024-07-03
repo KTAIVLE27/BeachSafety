@@ -147,7 +147,7 @@
                             {% for post in posts %}
                             <tr data-id="{{post.notice_id}}">
                                 <td><input type="checkbox" class="selectRow"></td>
-                                {% comment %} <td>{{ post.event_num }}</td> {% endcomment %}  <!-- 여기서 글번호 불러오기 -->
+                                <td>{{ forloop.counter }}</td>  <!-- 글 번호 자동 생성 -->
                                 {% comment %} <td>{{ post.notice_classification }}</td> {% endcomment %}   <!-- 여기서 구분 불러오기 -->
                                 <td>{{ post.notice_title }}</td>
                                 <td>{{ post.notice_wdate | date:"Y-m-d" }}</td>
