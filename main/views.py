@@ -109,16 +109,21 @@ def risk(request):
 @login_required
 def new_post(request):
     if request.method == 'POST':
-        form = PostForm(request.POST)
+        form = PostForm(request.POST, request.FILES)
         if form.is_valid():
-            post = form.save(commit=False)
-            post.author = request.user
-            post.save()
-            messages.success(request, '게시물이 성공적으로 작성되었습니다.')
+            notice = form.save(commit=False)
+            notice.user_no = request.user
+            notice.beach_no = form.cleaned_data['beach']
+            notice.notice_wdate = timezone.now()
+            notice.notice_img = request.FILES.get('fileName').name if request.FILES.get('fileName') else None
+            notice.save()
+            #messages.success(request, '게시물이 성공적으로 작성되었습니다.')
             return redirect('board')
     else:
         form = PostForm()
-    return render(request, 'new_post.html', {'form': form})
+        
+    beaches = Beach.objects.all()
+    return render(request, 'new_post.html', {'form': form, 'beaches':beaches})
 
 def signin(request):
     user = None

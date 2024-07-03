@@ -77,10 +77,18 @@ class SignUpForm(UserCreationForm):
         fields = ('user_id', 'user_email', 'user_name', 'user_phone', 'user_birth', 'user_address', 'password1', 'password2')
 
 class PostForm(forms.ModelForm):
-    class Meta:
-        model = Notice_board  # Assuming you are using the Notice_board model for posts
-        fields = ['notice_title', 'notice_contents']
+    beach_no = forms.ModelChoiceField(queryset=Beach.objects.all(), required=True, label='해수욕장')
 
+    class Meta:
+        model = Notice_board
+        fields = ['notice_title', 'notice_contents', 'beach_no', 'notice_img']
+        widgets = {
+            'notice_title': forms.TextInput(attrs={'class': 'form-control', 'maxlength': 200, 'required': True}),
+            'notice_contents': forms.Textarea(attrs={'class': 'form-control', 'rows': 10, 'required': True}),
+            'notice_img': forms.FileInput(attrs={'class': 'form-control-file'}),
+        }
+        
+        
 class SignUpForm(UserCreationForm):
     user_id = forms.CharField(
         max_length=50, 
@@ -155,10 +163,6 @@ class SignUpForm(UserCreationForm):
         fields = ('user_id', 'user_email', 'user_name', 'user_phone', 'user_birth', 'user_address', 'password1', 'password2')
 
     
-class PostForm(forms.ModelForm):
-    class Meta:
-        model = Notice_board
-        fields = ['notice_title', 'notice_contents']
 
 class PasswordResetForm(forms.Form):
     user_id = forms.CharField(

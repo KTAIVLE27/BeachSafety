@@ -60,7 +60,7 @@ class Beach(models.Model):
         db_table = 'beach'
 
 class Notice_board(models.Model):
-    notice_id = models.CharField(max_length=20, primary_key=True)  # 게시물 고유 번호
+    notice_id = models.AutoField(max_length=20, primary_key=True)  # 게시물 고유 번호
     user_no = models.ForeignKey(User, on_delete=models.RESTRICT, db_column='user_no')  # 회원번호
     beach_no = models.ForeignKey(Beach, on_delete=models.RESTRICT, db_column='beach_no')
     notice_title = models.CharField(max_length=200, blank=False)  # 제목
@@ -73,7 +73,7 @@ class Notice_board(models.Model):
         db_table = 'notice_board'
 
 class Event_board(models.Model):
-    event_id = models.CharField(max_length=20, primary_key=True)  # 게시물 고유 번호
+    event_id = models.AutoField(max_length=20, primary_key=True)  # 게시물 고유 번호
     user_no = models.ForeignKey(User, on_delete=models.RESTRICT, db_column='user_no')  # 회원번호
     beach_no = models.ForeignKey(Beach, on_delete=models.RESTRICT, db_column='beach_no')
     event_title = models.CharField(max_length=200, blank=False)  # 제목
@@ -94,15 +94,6 @@ class CCTV(models.Model):
     class Meta:
         db_table = 'cctv'
 
-class RipApi(models.Model):
-    beach_code = models.CharField(max_length=20, primary_key=True)  # 해안 코드
-    beach_no = models.OneToOneField(Beach, on_delete=models.CASCADE, db_column='beach_no')  # 해수욕장 번호
-    date_type = models.CharField(max_length=10, blank=False)  # 데이터 종류
-    date = models.DateTimeField(blank=False)  # 날짜
-    result_type = models.CharField(max_length=10, blank=False)  # 결과 타입 (json, xml 등)
-
-    class Meta:
-        db_table = 'rip_api'
 
 # 댓글 일단 보류
 # class Comment(models.Model):
