@@ -149,7 +149,7 @@
                                         {% for event in event_boards %}
                                             <tr>
                                                 <td>{{ event.event_title }}</td>
-                                                <td>{{ event.event_rdate | date:"Y-m-d"}}</td>
+                                                <td>{{ event.event_wdate | date:"Y-m-d"}}</td>
                                                 <td>{{ event.user_no.user_name }}</td>
                                                 <td>{{ event.event_views }}</td>
                                             </tr>
