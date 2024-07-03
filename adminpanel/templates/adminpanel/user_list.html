@@ -120,10 +120,10 @@
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
                                         <td>{{ user.user_name }}</td>
-                                        <td>{{ user.user_id }}</td>
+                                        <td>{{ user.user_role }}</td>
                                         <td>{{ user.user_phone }}</td>
                                         <td>{{ user.user_email }}</td>
-                                        <td>{{ user.user_joinday|date:"Y-m-d H:i:s" }}</td>
+                                        <td>{{ user.user_joinday|date:"Y-m-d" }}</td>
                                         <td>{{ user.last_login|date:"Y-m-d H:i:s" }}</td>
                                     </tr>
                                     {% empty %}
