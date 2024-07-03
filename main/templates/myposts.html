@@ -1,10 +1,9 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
-    <title>CCTV</title>
+    <title>내 게시물</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -30,65 +29,28 @@
 
     <!-- Template Stylesheet -->
     <link href="{% static 'css/style.css'%}" rel="stylesheet">
-    
+
+    <!-- Custom Stylesheet -->
+    <link href="{% static 'css/myposts.css'%}" rel="stylesheet">
+
+    <!-- Custom CSS for alert messages -->
     <style>
-        .toggle-key {
-            cursor: pointer;
-            position: relative;
-            display: inline-block;
-            width: 30px;
-            height: 30px;
-            background-color: #f1f1f1;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-        .toggle-key::after {
-            content: "\f078"; /* Font Awesome down arrow */
-            font-family: "Font Awesome 5 Free";
-            font-weight: 900;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-        .toggle-key.active::after {
-            content: "\f077"; /* Font Awesome up arrow */
-        }
-        .beach-list {
+        .alert-message {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            z-index: 1050;
             display: none;
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            background: #f1f1f1;
-            border: 1px solid #ddd;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-        .beach-list li {
-            padding: 10px;
-            cursor: pointer;
-        }
-        .beach-list li:hover {
-            background: #ddd;
         }
     </style>
 </head>
-
 <body>
     <div class="container-fluid position-relative bg-white d-flex p-0">
-        <!-- Spinner Start -->
-        <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
-        </div>
-        <!-- Spinner End -->
-
         <!-- Sidebar Start -->
         <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-light navbar-light">
                 <a class="navbar-brand mx-4 mb-3">
-                    <h3 class="text-primary">CCTV</h3>
+                    <h3 class="text-primary"><i></i>MY Page</h3>
                 </a>
                 <div class="d-flex align-items-center ms-4 mb-4">
                     <div class="position-relative">
@@ -97,7 +59,7 @@
                     </div>
                     <div class="ms-3">
                         <h6 class="mb-0">27조</h6>
-                        <span>Admin</span>
+                        <span>{{ user.user_name }}</span>
                     </div>
                 </div>
                 <div class="navbar-nav w-100">
@@ -146,53 +108,62 @@
                 <a href="#" class="sidebar-toggler flex-shrink-0">
                     <i class="fa fa-bars"></i>
                 </a> 
-
-                <a href="{% url 'home' %}"><img src="{% static 'img/logo.png' %}" width="50" height="50"></a>
+                
+                <a href="{% url 'home' %}"><img src="{% static 'img/logo.png' %}" width="50" height="50"></i></a>
+                <form class="d-none d-md-flex ms-4">
+                    <input class="form-control border-0" type="search" placeholder="Search">
+                </form>
                 <div class="navbar-nav align-items-center ms-auto">
                     <div class="nav-item dropdown">
-                        <a href="#"><img src="{% static 'img/logout_24dp.png' %}" width="50" height="50"></a>
+                        <form method="post" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" style="border:none; background:none;">
+                                <img src="{% static 'img/logout_24dp.png' %}" width="50" height="50" alt="Logout">
+                            </button>
+                        </form>
                     </div>
-
+    
                     <div class="nav-item dropdown">
-                        <a href="myprofile"><img class="rounded-circle me-lg-2" src="{% static 'img/face_24dp.png'%}" alt="" style="width: 40px; height: 40px;"></a>
+                        <a href="#"><img class="rounded-circle me-lg-2" src="{% static 'img/face_24dp.png'%}" alt="" style="width: 40px; height: 40px;">
+                        </a>
                     </div>
                 </div>
             </nav>
             <!-- Navbar End -->
 
-            <!-- CCTV Display Start -->
+            <!-- My Posts Section Start -->
             <div class="container-fluid pt-4 px-4">
-                <div class="row g-4">
-                    <div class="col-12">
+                <div class="row g-4 justify-content-center">
+                    <div class="col-lg-8">
                         <div class="bg-light text-center rounded p-4">
                             <div class="d-flex align-items-center justify-content-between mb-4">
-                                <h6 class="mb-0">해당 CCTV 팝업창</h6>
+                                <h3 class="mb-0">내 게시물</h3>
                             </div>
-
-                            <!-- Dropdown menu for beach selection -->
-                            <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                    해수욕장 선택
-                                </button>
-                                <ul id="beach-list" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    {% for beach in beaches %}
-                                        {% for cctv in cctvs %}
-                                            {% if cctv.beach_no_id == beach.beach_no %}
-                                                <li><a class="dropdown-item" onclick="loadCCTV('{{ cctv.cctv_url }}')">{{ beach.beach_name }}</li>
-                                            {% endif %}
-                                        {% endfor %}
-                                    {% endfor %}
-                                </ul>
-                                <iframe id="cctv-frame" width="960" height="540" frameborder="0" allowfullscreen></iframe>
+                            <div class="posts-box">
+                                {% for post in posts %}
+                                    <div class="post-item mb-3">
+                                        <h5>{{ post.title }}</h5>
+                                        <p>{{ post.content }}</p>
+                                        <small>작성일: {{ post.created_at|date:"Y-m-d H:i" }}</small>
+                                        <div class="d-flex justify-content-end">
+                                            <a href="{% url 'edit_post' post.id %}" class="btn btn-sm btn-primary me-2">수정</a>
+                                            <form method="post" action="{% url 'delete_post' post.id %}">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-sm btn-danger">삭제</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                {% empty %}
+                                    <p>작성된 게시물이 없습니다.</p>
+                                {% endfor %}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- CCTV Display End -->
+            <!-- My Posts Section End -->
 
             <!-- Footer Start -->
-            
             <!-- Footer End -->
         </div>
         <!-- Content End -->
@@ -214,23 +185,33 @@
 
     <!-- Template Javascript -->
     <script src="{% static 'js/main.js'%}"></script>
+    <!-- Custom Javascript -->
+    <script src="{% static 'js/myposts.js'%}"></script>
 
-    <!-- 추가된 자바스크립트 -->
+    <!-- Custom JavaScript for alert messages -->
     <script>
-        function toggleSearch() {
-            const toggleKey = document.querySelector('.toggle-key');
-            const beachList = document.getElementById('beach-list');
-            toggleKey.classList.toggle('active');
-            if (beachList.style.display === 'none' || beachList.style.display === '') {
-                beachList.style.display = 'block';
-            } else {
-                beachList.style.display = 'none';
-            }
+        // Display alert message
+        function showAlert(message, alertType) {
+            const alertBox = document.createElement('div');
+            alertBox.className = `alert alert-${alertType} alert-message`;
+            alertBox.textContent = message;
+
+            document.body.appendChild(alertBox);
+
+            alertBox.style.display = 'block';
+
+            setTimeout(() => {
+                alertBox.style.display = 'none';
+                alertBox.remove();
+            }, 3000);
         }
 
-        function loadCCTV(url) {
-            document.getElementById('cctv-frame').src = url;
-        }
+        // Handle messages from Django
+        {% if messages %}
+            {% for message in messages %}
+                showAlert("{{ message }}", "{% if message.tags %}{{ message.tags }}{% else %}info{% endif %}");
+            {% endfor %}
+        {% endif %}
     </script>
 
     <script>
