@@ -150,7 +150,7 @@
                                                     공통
                                                 {% endif %}
                                             </td>
-                                            <td>{{ post.notice_title }}</td>
+                                            <td><a href="{% url 'adminpanel:notice_detail' post.pk %}">{{ post.notice_title }}</a></td>
                                             <td>{{ post.user_no.user_name }}</td>
                                             <td>{{ post.notice_wdate |date:"Y-m-d H:i" }}</td>                         
                                         </tr>

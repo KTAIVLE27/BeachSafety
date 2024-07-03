@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from main.models import User
 from main.models import Event_board, Notice_board
+from django.contrib import messages
 import json
 from main.forms import *
 import logging
@@ -93,3 +94,18 @@ def create_notice(request):
         form = PostForm()
     beaches = Beach.objects.all()
     return render(request, 'adminpanel/create_notice.html', {'beaches': beaches})
+
+
+
+
+@login_required
+def notice_detail(request, pk):
+    try:
+        post = Notice_board.objects.get(pk=pk)
+        post.notice_views += 1  # 조회수 증가 => 관리자 입장에서는 안해도 될 듯
+        post.save()
+    except Notice_board.DoesNotExist:
+        messages.error(request, "해당 게시글을 찾을 수 없습니다.")
+        return redirect('adminpanel:notice_manage')
+    
+    return render(request, 'adminpanel/notice_detail.html', {'post': post})

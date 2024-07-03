@@ -13,4 +13,5 @@ urlpatterns = [
     path('notice_manage/', views.notice_manage, name='notice_manage'),
     path('delete-notice-boards/', views.delete_notice_boards, name='delete_notice_boards'),
     path('create_notice/', views.create_notice, name='create_notice'),
+    path('notice/<int:pk>/', views.notice_detail, name='notice_detail'),
 ]
