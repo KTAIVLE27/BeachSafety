@@ -119,7 +119,12 @@
                                         <td>
                                             <div class="input-group">
                                                 <input type="text" class="form-control" placeholder="글 제목" name="bbsTitle" maxlength="50" required style="width: 70%;">
-                                                <input type="text" class="form-control" placeholder="작성자" name="bbsAuthor" maxlength="50" required style="width: 30%;">
+                                                <select class="form-control" name="beachNo" required style="width: 30%;">
+                                                    <option value="" disabled selected>해수욕장 선택</option>
+                                                    {% for beach in beaches %}
+                                                        <option value="{{ beach.beach_no }}">{{ beach.beach_name }}</option>
+                                                    {% endfor %}
+                                                </select>
                                             </div>
                                         </td>
                                     </tr>
