@@ -22,8 +22,14 @@ def senario(request):
     return render(request, 'adminpanel/senario.html')
 
 def board_manage(request):
-    posts = Event_board.objects.all()
-    return render(request, 'adminpanel/board_manage.html', {'posts': posts})
+    posts = Event_board.objects.all().order_by('-event_wdate')
+    
+    # 페이징 처리
+    paginator = Paginator(posts, 10)  # 페이지당 10개의 게시물
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'adminpanel/board_manage.html', {'posts': posts, 'page_obj': page_obj})
 
 @require_POST
 def delete_boards(request):

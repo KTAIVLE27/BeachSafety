@@ -141,7 +141,7 @@
                                         {% for post in page_obj %}
                                         <tr data-id="{{ post.notice_id }}">
                                             <td><input type="checkbox" class="selectRow"></td>
-                                            <td>{{ forloop.counter }}</td>  <!-- 글 번호 자동 생성 -->
+                                            <td>{{ forloop.counter0|add:page_obj.start_index}}</td>
                                             {% comment %} <td>{{ post.notice_classification }}</td> {% endcomment %}   <!-- 여기서 구분 불러오기 -->
                                             <td>
                                                 {% if post.beach_no %}
