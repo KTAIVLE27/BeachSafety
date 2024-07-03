@@ -151,8 +151,8 @@
                                                 {% endif %}
                                             </td>
                                             <td>{{ post.notice_title }}</td>
-                                            <td>{{ post.notice_wdate | date:"Y-m-d" }}</td>
                                             <td>{{ post.user_no.user_name }}</td>
+                                            <td>{{ post.notice_wdate |date:"Y-m-d H:i" }}</td>                         
                                         </tr>
                                         {% empty %}
                                         <tr>
