@@ -30,6 +30,13 @@
 
     <!-- Template Stylesheet -->
     <link href="{% static 'css/style.css'%}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </head>
 
 <body>
@@ -189,22 +196,55 @@ setInterval(function() {
     <a href="{% url 'myprofile' %}"><img src="{% static 'img/face_24dp.png' %}" style="width: 40px; height: 40px;"></a>  
 </div>
 
-
 <div class="side-buttons">
-    <a href="#" class="btn btn-primary" title="119" data-bs-toggle="tooltip" data-bs-placement="left"> <i class="fa fa-phone"></i> </a>
-    <a href="#" class="btn btn-primary" title="해군" data-bs-toggle="tooltip" data-bs-placement="left"> <i class="fa fa-anchor"></i> </a>
-    <a href="#" class="btn btn-primary" title="모의훈련" data-bs-toggle="tooltip" data-bs-placement="left"> <i class="fa fa-file-alt"></i> </a>
-    <a href="#" class="btn btn-primary" title="기상예보" data-bs-toggle="tooltip" data-bs-placement="left"> <i class="fa fa-cloud-sun"></i> </a>                   
+    <a href="#" class="btn btn-primary" title="119" data-toggle="modal" data-target="#myModal"> <i class="fa fa-phone"></i> </a>
+    <a href="#" class="btn btn-primary" title="해군" data-toggle="modal" data-target="#myModal"> <i class="fa fa-anchor"></i> </a>
+    <a href="#" class="btn btn-primary" title="모의훈련" data-toggle="modal" data-target="#myModal"> <i class="fa fa-file-alt"></i> </a>
+    <a href="#" class="btn btn-primary" title="기상예보" data-toggle="modal" data-target="#myModal"> <i class="fa fa-cloud-sun"></i> </a>                   
 </div>
+
+    <!-- The Modal -->
+    <div class="modal" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">전화 걸기</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    전화를 거시겠습니까?
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" id="callBtn">걸기</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">취소</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('callBtn').addEventListener('click', function() {
+            alert('전화를 겁니다.');
+            $('#myModal').modal('hide');
+        });
+    </script>
+
+<div class="warn-alarm">
+    <h5>경고알람</h5>
+    <div id="textbox1" class="textbox">데이터를 가져오는 중...</div>
+    <div id="textbox2" class="textbox">데이터를 가져오는 중...</div>
+    <div id="textbox3" class="textbox">데이터를 가져오는 중...</div>
 </div>
 
-
-
-
-
-
+</div>
         <!-- Back to Top -->
-        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
 
     <!-- JavaScript Libraries -->
