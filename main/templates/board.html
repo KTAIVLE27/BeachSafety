@@ -65,14 +65,36 @@
                     </div>
                 </div>
                 <div class="navbar-nav w-100">
-                    <a href="{% url 'home'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/home_24dp.png'%}" style="width: 40px; height: 40px;"></i>홈</a>
-                    <a href="{% url 'myprofile'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/face_24dp.png'%}" style="width: 40px; height: 40px;"></i>마이 페이지</a>
-                    <a href="{% url 'cctv'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/videocam.png'%}" style="width: 40px; height: 40px;"></i>CCTV</a>
-                    <a href="{% url 'weather'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/partly.png'%}" style="width: 40px; height: 40px;"></i>날씨</a>
-                    <a href="{% url 'risk'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/fmd.png'%}" style="width: 40px; height: 40px;"></i>위험도</a>
-                    <a href="{% url 'board'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/wysiwyg_24dp.png'%}" style="width: 40px; height: 40px;"></i>공지사항</a>
-                    <a href="{% url 'free_board'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/wysiwyg_24dp.png'%}" style="width: 40px; height: 40px;"></i>자유 게시판</a>
-                    <a href="{% url 'chat'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/chat_24dp.png'%}" style="width: 40px; height: 40px;"></i>모의 훈련</a>
+                    <a href="{% url 'home'%}" class="nav-item nav-link">
+                        <img class="fa fa-th me-2" src="{% static 'img/home_24dp.png'%}" style="width: 40px; height: 40px;">홈
+                    </a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" id="myProfileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img class="fa fa-th me-2" src="{% static 'img/face_24dp.png'%}" style="width: 40px; height: 40px;">마이 페이지
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="myProfileDropdown">
+                            <li><a class="dropdown-item" href="{% url 'myprofile' %}">내 정보 수정</a></li>
+                            <li><a class="dropdown-item" href="{% url 'myposts' %}">내가 쓴 글 관리</a></li>
+                        </ul>
+                    </div>
+                    <a href="{% url 'cctv'%}" class="nav-item nav-link">
+                        <img class="fa fa-th me-2" src="{% static 'img/videocam.png'%}" style="width: 40px; height: 40px;">CCTV
+                    </a>
+                    <a href="{% url 'weather'%}" class="nav-item nav-link">
+                        <img class="fa fa-th me-2" src="{% static 'img/partly.png'%}" style="width: 40px; height: 40px;">날씨
+                    </a>
+                    <a href="{% url 'risk'%}" class="nav-item nav-link">
+                        <img class="fa fa-th me-2" src="{% static 'img/fmd.png'%}" style="width: 40px; height: 40px;">위험도
+                    </a>
+                    <a href="{% url 'board'%}" class="nav-item nav-link">
+                        <img class="fa fa-th me-2" src="{% static 'img/wysiwyg_24dp.png'%}" style="width: 40px; height: 40px;">공지사항
+                    </a>
+                    <a href="{% url 'free_board'%}" class="nav-item nav-link">
+                        <img class="fa fa-th me-2" src="{% static 'img/wysiwyg_24dp.png'%}" style="width: 40px; height: 40px;">자유 게시판
+                    </a>
+                    <a href="{% url 'chat'%}" class="nav-item nav-link">
+                        <img class="fa fa-th me-2" src="{% static 'img/chat_24dp.png'%}" style="width: 40px; height: 40px;">모의 훈련
+                    </a>
                 </div>
             </nav>
         </div>

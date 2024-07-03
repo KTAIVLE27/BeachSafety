@@ -198,3 +198,7 @@ def forgotpw(request):
         form = PasswordResetForm()
     return render(request, 'forgotpw.html', {'form': form})
 
+def myposts(request):
+    # 내가 쓴 글을 가져오는 로직을 추가하세요.
+    return render(request, 'myposts.html')
+
