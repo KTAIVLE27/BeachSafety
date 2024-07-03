@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.shortcuts import render, redirect, get_object_or_404
+from django.core.paginator import Paginator
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
@@ -40,13 +41,37 @@ def delete_boards(request):
     except Exception as e:
         return JsonResponse({"status": "error", "message": str(e)}, status=400)
     
+# def user_list_view(request):
+#     users = User.objects.all()
+#     context = {
+#         'users': users
+#     }
+#     return render(request, 'adminpanel/user_list.html', context)
+
 def user_list_view(request):
-    users = User.objects.all()
+    users = User.objects.all().order_by('user_no')  # Order by 'user_no' or another appropriate field
+    paginator = Paginator(users, 10)  # Show 10 users per page
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        'users': users
+        'page_obj': page_obj
     }
     return render(request, 'adminpanel/user_list.html', context)
-  
+
+@csrf_exempt
+def delete_users(request):
+    if request.method == 'POST':
+        user_ids = request.POST.getlist('ids[]')
+        if user_ids:
+            User.objects.filter(user_no__in=user_ids).delete()
+            return JsonResponse({'status': 'success'})
+        else:
+            return JsonResponse({'status': 'no ids provided'}, status=400)
+    return JsonResponse({'status': 'invalid request'}, status=400)
+
+
 def notice_manage(request):
     #posts = Notice_board.objects.prefetch_related('beach_no').all()
     beach_no = request.GET.get('beach_no')

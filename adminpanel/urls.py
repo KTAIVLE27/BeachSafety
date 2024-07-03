@@ -10,6 +10,7 @@ urlpatterns = [
     path('delete-boards/', views.delete_boards, name='delete_boards'),
     path('senario/', views.senario, name='senario'),
     path('user_list/', views.user_list_view, name='user_list_view'),
+    path('delete_users/', views.delete_users, name='delete_users'),
     path('notice_manage/', views.notice_manage, name='notice_manage'),
     path('delete-notice-boards/', views.delete_notice_boards, name='delete_notice_boards'),
     path('create_notice/', views.create_notice, name='create_notice'),
