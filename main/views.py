@@ -10,6 +10,7 @@ from django.http import HttpResponseForbidden
 from .models import *
 from .forms import SignUpForm, PostForm, PasswordResetForm
 from .utils import get_weather_item
+from django.core.paginator import Paginator
 
 def is_admin(user):
     return user.is_authenticated and user.user_id == 'admin' and user.user_name == 'admin' and user.check_password('aivle2024!')
@@ -80,7 +81,39 @@ def myprofile(request):
 @login_required
 def board(request):
     notices = Notice_board.objects.all()
-    return render(request, 'board.html', {'notices': notices})
+    beach_no = request.GET.get('beach_no')
+    
+    if beach_no == 'common':
+        posts = Notice_board.objects.filter(beach_no__isnull=True).order_by('-notice_wdate')
+    elif beach_no:
+        posts = Notice_board.objects.filter(beach_no=beach_no).order_by('-notice_wdate')
+    else:
+        posts = Notice_board.objects.all().order_by('-notice_wdate')
+    
+    
+    # 페이징 처리
+    paginator = Paginator(posts, 10)  # 페이지당 10개의 게시물
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    beaches = Beach.objects.all()
+    beaches = Beach.objects.all()
+    
+    
+    return render(request, 'board.html', {'notices': posts, 'beaches': beaches, 'selected_beach_no': beach_no, 'page_obj': page_obj})
+
+@login_required
+def board_detail(request, pk):
+    try:
+        post = Notice_board.objects.get(pk=pk)
+        post.notice_views += 1  # 조회수 증가 => 관리자 입장에서는 안해도 될 듯
+        post.save()
+    except Notice_board.DoesNotExist:
+        messages.error(request, "해당 게시글을 찾을 수 없습니다.")
+        return redirect('board')
+    
+    return render(request, 'board_detail.html', {'post': post})
+
 
 @login_required
 def free_board(request):

@@ -13,7 +13,6 @@ from main.models import Event_board, Notice_board
 from django.contrib import messages
 import json
 from main.forms import *
-import logging
 
 def admin_home(request):
     return render(request, 'adminpanel/admin_home.html')
