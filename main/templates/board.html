@@ -147,7 +147,7 @@
                                         {% for notice in notices %}
                                             <tr>
                                                 <td>{{ notice.notice_title }}</td>
-                                                <td>{{ notice.notice_rdate | date:"Y-m-d"}}</td>
+                                                <td>{{ notice.notice_wdate|date:"Y-m-d"}}</td>
                                                 <td>{{ notice.user_no.user_name }}</td>
                                                 <td>{{ notice.notice_views }}</td>
                                             </tr>
