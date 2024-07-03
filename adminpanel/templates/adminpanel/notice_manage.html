@@ -125,38 +125,18 @@
                             </tr>
                         </thead>
                         <tbody id="noticeTableBody">
-                            <!-- Example rows, replace with dynamic data -->
-                            <tr>
+                            {% for post in posts %}
+                            <tr data-id="{{post.board_id}}">
                                 <td><input type="checkbox" class="selectRow"></td>
-                                <td>예시 제목 1</td>
-                                <td>2024-07-01</td>
-                                <td>Admin</td>
+                                <td>{{ post.notice_title }}</td>
+                                <td>{{ post.notice_wdate | date:"Y-m-d" }}</td>
+                                <td>{{ post.notice_writer }}</td>
                             </tr>
+                            {% empty %}
                             <tr>
-                                <td><input type="checkbox" class="selectRow"></td>
-                                <td>예시 제목 2</td>
-                                <td>2024-06-30</td>
-                                <td>User</td>
+                                <td colspan="4">No posts found.</td>
                             </tr>
-                            <tr>
-                                <td><input type="checkbox" class="selectRow"></td>
-                                <td>예시 제목 3</td>
-                                <td>2024-06-29</td>
-                                <td>Admin</td>
-                            </tr>
-                            <tr>
-                                <td><input type="checkbox" class="selectRow"></td>
-                                <td>예시 제목 4</td>
-                                <td>2024-06-28</td>
-                                <td>User</td>
-                            </tr>
-                            <tr>
-                                <td><input type="checkbox" class="selectRow"></td>
-                                <td>예시 제목 5</td>
-                                <td>2024-06-27</td>
-                                <td>Admin</td>
-                            </tr>
-                            <!-- End of example rows -->
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
@@ -206,10 +186,33 @@
         }
     });
 
+    // post 삭제
     document.getElementById('deleteButton').addEventListener('click', function() {
         var checkboxes = document.querySelectorAll('.selectRow:checked');
-        for (var checkbox of checkboxes) {
-            checkbox.closest('tr').remove();
+        var idsToDelete = [];
+        checkboxes.forEach(function(checkbox) {
+            idsToDelete.push(checkbox.closest('tr').getAttribute('data-id'));
+        });
+        console.log(idsToDelete)
+        if (idsToDelete.length > 0) {
+            fetch('{% url 'adminpanel:delete_notice_boards' %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ ids: idsToDelete })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data.status === "success") {
+                    location.reload(); // 성공시 페이지 리로드
+                } else {
+                    alert("Error: " + data.message); // 실패시 메시지 출력
+                }
+            })
+            .catch(error => console.error('Error:', error));
         }
     });
 </script>
