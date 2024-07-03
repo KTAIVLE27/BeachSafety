@@ -60,11 +60,10 @@ class Beach(models.Model):
         db_table = 'beach'
 
 class Notice_board(models.Model):
-    board_id = models.CharField(max_length=20, primary_key=True)  # 게시물 고유 번호
+    notice_id = models.CharField(max_length=20, primary_key=True)  # 게시물 고유 번호
     user_no = models.ForeignKey(User, on_delete=models.RESTRICT, db_column='user_no')  # 회원번호
     beach_no = models.ForeignKey(Beach, on_delete=models.RESTRICT, db_column='beach_no')
     notice_title = models.CharField(max_length=200, blank=False)  # 제목
-    notice_writer = models.CharField(max_length=100, blank=False)  # 작성자
     notice_img = models.CharField(max_length=255, blank=True, null=True)  # 이미지
     notice_views = models.IntegerField(default=0)  # 조회수
     notice_wdate = models.DateTimeField(blank=False, default=timezone.now)  # 작성일
@@ -74,11 +73,10 @@ class Notice_board(models.Model):
         db_table = 'notice_board'
 
 class Event_board(models.Model):
-    board_id = models.CharField(max_length=20, primary_key=True)  # 게시물 고유 번호
+    event_id = models.CharField(max_length=20, primary_key=True)  # 게시물 고유 번호
     user_no = models.ForeignKey(User, on_delete=models.RESTRICT, db_column='user_no')  # 회원번호
     beach_no = models.ForeignKey(Beach, on_delete=models.RESTRICT, db_column='beach_no')
     event_title = models.CharField(max_length=200, blank=False)  # 제목
-    event_writer = models.CharField(max_length=100, blank=False)  # 작성자
     event_img = models.CharField(max_length=255, blank=True, null=True)  # 이미지
     event_views = models.IntegerField(default=0)  # 조회수
     event_wdate = models.DateTimeField( blank=False, default=timezone.now)  # 작성일
