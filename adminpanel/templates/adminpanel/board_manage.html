@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>게시판 관리</title>
+    <title>자유게시판 관리</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -107,7 +107,10 @@
             <div class="bg-light text-center rounded p-4">
                 <div class="d-flex align-items-center justify-content-between mb-4">
                     <h4 class="mb-0">자유게시판 목록</h4> <!-- Increased font size for Notices -->
-                    <button id="deleteButton" class="btn btn-primary">삭제</button> <!-- Delete Button -->
+                    <div>
+                        <button class="btn btn-secondary">글쓰기</button> <!-- Write Button -->
+                        <button id="deleteButton" class="btn btn-primary">삭제</button> <!-- Delete Button -->
+                    </div>
                 </div>
                 <!-- Table for Notices -->
                 <div class="table-responsive" style="height: 400px; overflow-y: scroll;">
@@ -127,14 +130,14 @@
                             {% for post in posts %}
                             <tr data-id="{{post.event_id}}">
                                 <td><input type="checkbox" class="selectRow"></td>
-                                {% comment %} <td>{{ post.event_num }}</td> {% endcomment %}  <!-- 여기서 글 번호 불러오기 -->
+                                <td>{{ forloop.counter }}</td>  <!-- 글 번호 자동 생성 -->
                                 <td>{{ post.event_title }}</td>
                                 <td>{{ post.event_wdate | date:"Y-m-d" }}</td>
                                 <td>{{ post.user_no.user_name }}</td>
                             </tr>
                             {% empty %}
                             <tr>
-                                <td colspan="4">No posts found.</td>
+                                <td colspan="5">No posts found.</td> <!-- Adjusted colspan -->
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -215,7 +218,6 @@
         }
     });
 </script>
-
 
         
         </div>
