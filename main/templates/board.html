@@ -30,12 +30,6 @@
 
     <!-- Template Stylesheet -->
     <link href="{% static 'css/style.css'%}" rel="stylesheet">
-
-    <script type="text/javascript">
-        function openNewWindow() {
-            window.open("{% url 'new_post' %}", "_blank", "width=800,height=600");
-        }
-    </script>
 </head>
 
 <body>
@@ -136,7 +130,7 @@
                         <div class="bg-light text-center rounded p-4">
                             <div class="d-flex align-items-center justify-content-between mb-4">
                                 <h4 class="mb-0">공지사항</h4> <!-- Increased font size for Notices -->
-                                <a href="#" class="btn btn-primary" onclick="openNewWindow()">글쓰기</a> <!-- Write Button -->
+                                <a href="{% url 'new_post' %}" class="btn btn-primary">글쓰기</a> <!-- Write Button -->
                             </div>
                             <!-- Table for Notices -->
                             <div class="table-responsive" style="height: 400px; overflow-y: scroll;">
@@ -256,7 +250,7 @@
                 }
             });
         });
-        </script>
+    </script>
 </body>
 
 </html>
