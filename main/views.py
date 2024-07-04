@@ -12,6 +12,9 @@ from .models import *
 from .forms import *
 from .utils import get_weather_item
 from django.core.paginator import Paginator
+from django.views.decorators.http import require_POST
+import json
+from control.utils import *
 
 def is_admin(user):
     return user.is_authenticated and user.user_id == 'admin' and user.user_name == 'admin' and user.check_password('aivle2024!')
@@ -32,7 +35,58 @@ def home(request):
         'home_notices': home_notices,
         'home_event': home_event,
     }
-    return render(request, 'home.html', context)
+    
+    context_rip = {
+        'GYEONGPO_score_msg': get_GYEONGPO_score_msg(),
+        'GORAEBUL_score_msg': get_GORAEBUL_score_msg(),
+        'NAKSAN_score_msg': get_NAKSAN_score_msg(),
+        'DAECHON_score_msg': get_DAECHON_score_msg(),
+        'MANGSANG_score_msg': get_MANGSANG_score_msg(),
+        'SOKCHO_score_msg': get_SOKCHO_score_msg(),
+        'SONGJUNG_score_msg': get_SONGJUNG_score_msg(),
+        'IMRANG_score_msg': get_IMRANG_score_msg(),
+        'JUNGMUN_score_msg': get_JUNGMUN_score_msg(),
+        'HAE_score_msg': get_HAE_score_msg(),
+        
+        'GYEONGPO_lon': get_GYEONGPO_lon(),
+        'GORAEBUL_lon': get_GORAEBUL_lon(),
+        'NAKSAN_lon': get_NAKSAN_lon(),
+        'DAECHON_lon': get_DAECHON_lon(),
+        'MANGSANG_lon': get_MANGSANG_lon(),
+        'SOKCHO_lon': get_SOKCHO_lon(),
+        'SONGJUNG_lon': get_SONGJUNG_lon(),
+        'IMRANG_lon': get_IMRANG_lon(),
+        'JUNGMUN_lon': get_JUNGMUN_lon(),
+        'HAE_lon': get_HAE_lon(),
+        
+        'GYEONGPO_lat': get_GYEONGPO_lat(),
+        'GORAEBUL_lat': get_GORAEBUL_lat(),
+        'NAKSAN_lat': get_NAKSAN_lat(),
+        'DAECHON_lat': get_DAECHON_lat(),
+        'MANGSANG_lat': get_MANGSANG_lat(),
+        'SOKCHO_lat': get_SOKCHO_lat(),
+        'SONGJUNG_lat': get_SONGJUNG_lat(),
+        'IMRANG_lat': get_IMRANG_lat(),
+        'JUNGMUN_lat': get_JUNGMUN_lat(),
+        'HAE_lat': get_HAE_lat(),
+        
+        
+
+        
+    }
+    
+    context_json = json.dumps(context_rip)  # JSON 형식의 문자열로 변환
+    
+    combined_context = {
+        **context,
+        'context_rip_json': context_json  # JSON 문자열을 포함
+    }
+    
+    return render(request, 'home.html', combined_context)
+
+
+
+
 
 
 @login_required
@@ -43,6 +97,7 @@ def myprofile(request):
         user_email = request.POST.get('user_email')
         user_phone = request.POST.get('user_phone')
         user_address = request.POST.get('user_address')
+        user_detail_address = request.POST.get('user_detail_address')
         password1 = request.POST.get('password1')
         password2 = request.POST.get('password2')
 
@@ -72,6 +127,10 @@ def myprofile(request):
         # 주소 변경
         if user_address and user_address != user.user_address:
             user.user_address = user_address
+            
+        # 상세 주소 변경
+        if user_detail_address and user_detail_address != user.user_detail_address:
+            user.user_detail_address = user_detail_address
 
         user.save()
         messages.success(request, '프로필 정보가 성공적으로 변경되었습니다.')
@@ -184,6 +243,13 @@ def edit_freeboard(request, pk):
             return JsonResponse({'success': False})
     return JsonResponse({'success': False})
 
+#자유게시판 삭제
+@require_POST
+def delete_freeboard(request, post_id):
+    post = get_object_or_404(Event_board, pk=post_id, user_no=request.user)
+    post.delete()
+    return JsonResponse({'success': True})
+
 
 @login_required
 def chat(request):
@@ -227,6 +293,12 @@ def signin(request):
         form = AuthenticationForm()
     return render(request, 'signin.html', {'form': form})
 
+import logging
+from django.contrib import messages
+
+# 로거 인스턴스 생성
+logger = logging.getLogger('django')
+
 def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -237,7 +309,10 @@ def signup(request):
             login(request, user)
             return redirect('signin')
         else:
-            # 유효성 검사 오류가 발생하면 다시 회원가입 페이지를 렌더링합니다.
+            for field, errors in form.errors.items():
+                for error in errors:
+                    logger.error(f"Validation error in {field}: {error}")
+                    messages.error(request, f"{field}: {error}")
             return render(request, 'signup.html', {'form': form})
     else:
         form = SignUpForm()
@@ -292,37 +367,38 @@ def forgotpw(request):
     return render(request, 'forgotpw.html', {'form': form})
 
 
-# def myposts(request):
-#     if request.method == 'POST':
-#         user = request.user
-
-#         user_no = request.POST.get('user_no')
-
-
-
-#     else:
-#         return render(request, 'myposts.html')
-
 @login_required
 def myposts(request):
     if request.method == 'GET':
         try:
             user_no = request.user.user_no  # 로그인된 사용자의 user_no 가져오기
-            event_boards = Event_board.objects.filter(user_no=user_no)  # user_no와 일치하는 게시물 필터링
-            return render(request, 'myposts.html', {'event_boards': event_boards, 'user': request.user})
+            beach_no = request.GET.get('beach_no')  # 요청에서 beach_no 가져오기
+
+            # beach_no에 따른 게시물 필터링
+            if beach_no == 'common':
+                event_boards = Event_board.objects.filter(user_no=user_no, beach_no__isnull=True)
+            elif beach_no:
+                event_boards = Event_board.objects.filter(user_no=user_no, beach_no=beach_no)
+            else:
+                event_boards = Event_board.objects.filter(user_no=user_no)
+            
+            # 페이징 처리
+            paginator = Paginator(event_boards, 10)  # 페이지당 10개의 게시물
+            page_number = request.GET.get('page')
+            page_obj = paginator.get_page(page_number)
+            beaches = Beach.objects.all()
+
+            return render(request, 'myposts.html', {'event_boards': event_boards, 'page_obj': page_obj, 'beaches': beaches, 'user': request.user})
         except AttributeError:
             # 로그인된 사용자가 없는 경우 처리
-            return redirect('login')  # 로그인 페이지로 리디렉션
+            return redirect('/')  # 로그인 페이지로 리디렉션
         except Event_board.DoesNotExist:
             # 일치하는 게시물이 없는 경우 처리
             return render(request, 'myposts.html', {'event_boards': [], 'user': request.user})
     else:
-        render(request, 'myposts.html')
+        return render(request, 'myposts.html')   
+    
 
-    
-    
-    
-    
     
 
 def agreement(request):

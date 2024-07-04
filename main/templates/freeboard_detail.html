@@ -59,11 +59,36 @@
                     </div>
                 </div>
                 <div class="navbar-nav w-100">
-                    <a href="{% url 'adminpanel:admin_home' %}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/home_24dp.png'%}" style="width: 40px; height: 40px;"></i>관리자 홈</a>
-                    <a href="{% url 'adminpanel:user_list_view'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/face_24dp.png'%}" style="width: 40px; height: 40px;"></i>사용자 정보 관리</a>
-                    <a href="{% url 'adminpanel:senario'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/wysiwyg_24dp.png'%}" style="width: 40px; height: 40px;"></i>훈련시나리오 관리</a>
-                    <a href="{% url 'adminpanel:notice_manage'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/chat_24dp.png'%}" style="width: 40px; height: 40px;"></i>공지사항 관리</a>
-                    <a href="{% url 'adminpanel:board_manage'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/chat_24dp.png'%}" style="width: 40px; height: 40px;"></i>자유게시판 관리</a>
+                    <a href="{% url 'home' %}" class="nav-item nav-link">
+                        <img class="fa fa-th me-2" src="{% static 'img/home_24dp.png' %}" style="width: 40px; height: 40px;">홈
+                    </a>
+                    <div class="nav-item">
+                        <a href="#" class="nav-link" id="myProfileLink">
+                            <img class="fa fa-th me-2" src="{% static 'img/face_24dp.png' %}" style="width: 40px; height: 40px;">마이 페이지
+                        </a>
+                        <div class="dropdown-menu" id="myProfileMenu">
+                            <a class="dropdown-item" href="{% url 'myprofile' %}">내 정보 수정</a>
+                            <a class="dropdown-item" href="{% url 'myposts' %}">내가 쓴 글 관리</a>
+                        </div>
+                    </div>
+                    <a href="{% url 'cctv' %}" class="nav-item nav-link">
+                        <img class="fa fa-th me-2" src="{% static 'img/videocam.png' %}" style="width: 40px; height: 40px;">CCTV
+                    </a>
+                    <a href="{% url 'weather' %}" class="nav-item nav-link">
+                        <img class="fa fa-th me-2" src="{% static 'img/partly.png' %}" style="width: 40px; height: 40px;">날씨
+                    </a>
+                    <a href="{% url 'risk' %}" class="nav-item nav-link">
+                        <img class="fa fa-th me-2" src="{% static 'img/fmd.png' %}" style="width: 40px; height: 40px;">위험도
+                    </a>
+                    <a href="{% url 'board' %}" class="nav-item nav-link">
+                        <img class="fa fa-th me-2" src="{% static 'img/wysiwyg_24dp.png' %}" style="width: 40px; height: 40px;">공지사항
+                    </a>
+                    <a href="{% url 'free_board' %}" class="nav-item nav-link">
+                        <img class="fa fa-th me-2" src="{% static 'img/wysiwyg_24dp.png' %}" style="width: 40px; height: 40px;">자유 게시판
+                    </a>
+                    <a href="{% url 'chat' %}" class="nav-item nav-link">
+                        <img class="fa fa-th me-2" src="{% static 'img/chat_24dp.png' %}" style="width: 40px; height: 40px;">모의 훈련
+                    </a>
                 </div>
             </nav>
         </div>
@@ -153,6 +178,7 @@
                                     <button type="button" id="cancelEditButton" class="btn btn-secondary">취소</button>
                                 </form>
                                 <button id="editButton" class="btn btn-warning">수정</button>
+                                <button id="deleteButton" class="btn btn-danger">삭제</button>
                                 {% endif %}
                             </div>
                             <hr>
@@ -184,53 +210,77 @@
 
     <!-- Template Javascript -->
     <script src="{% static 'js/main.js' %}"></script>
-
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var editButton = document.getElementById('editButton');
-            var cancelEditButton = document.getElementById('cancelEditButton');
-            var editForm = document.getElementById('editForm');
-            var viewContent = document.getElementById('viewContent');
-
-            if (editButton) {
-                editButton.addEventListener('click', function() {
-                    editForm.style.display = 'block';
-                    viewContent.style.display = 'none';
-                    editButton.style.display = 'none';
+    document.addEventListener('DOMContentLoaded', function() {
+        var editButton = document.getElementById('editButton');
+        var cancelEditButton = document.getElementById('cancelEditButton');
+        var deleteButton = document.getElementById('deleteButton');
+        var editForm = document.getElementById('editForm');
+        var viewContent = document.getElementById('viewContent');
+    
+        if (editButton) {
+            editButton.addEventListener('click', function() {
+                editForm.style.display = 'block';
+                viewContent.style.display = 'none';
+                editButton.style.display = 'none';
+            });
+    
+            cancelEditButton.addEventListener('click', function() {
+                editForm.style.display = 'none';
+                viewContent.style.display = 'block';
+                editButton.style.display = 'block';
+            });
+    
+            editForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+    
+                var formData = new FormData(editForm);
+    
+                fetch("{% url 'edit_freeboard' post.pk %}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('저장에 실패했습니다.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
                 });
-
-                cancelEditButton.addEventListener('click', function() {
-                    editForm.style.display = 'none';
-                    viewContent.style.display = 'block';
-                    editButton.style.display = 'block';
-                });
-
-                editForm.addEventListener('submit', function(event) {
-                    event.preventDefault();
-
-                    var formData = new FormData(editForm);
-
-                    fetch("{% url 'edit_freeboard' post.pk %}", {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRFToken': '{{ csrf_token }}'
-                        },
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            location.reload();
-                        } else {
-                            alert('저장에 실패했습니다.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
+            });
+    
+            if (deleteButton) {
+                deleteButton.addEventListener('click', function() {
+                    if (confirm('정말로 삭제하시겠습니까?')) {
+                        fetch("{% url 'delete_freeboard' post.pk %}", {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                window.location.href = "{% url 'free_board' %}";
+                            } else {
+                                alert('삭제에 실패했습니다.');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                    }
                 });
             }
-        });
+        }
+    });
     </script>
 </body>
 

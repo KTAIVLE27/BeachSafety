@@ -115,58 +115,133 @@
                 </form>
                 <div class="navbar-nav align-items-center ms-auto">
                     <div class="nav-item dropdown">
-                        <form method="post" action="{% url 'logout' %}">
-                            {% csrf_token %}
-                            <button type="submit" style="border:none; background:none;">
-                                <img src="{% static 'img/logout_24dp.png' %}" width="50" height="50" alt="Logout">
-                            </button>
-                        </form>
+                        <a href="#"><img src="{% static 'img/logout_24dp.png' %}" width="50" height="50"></i></a>
                     </div>
     
                     <div class="nav-item dropdown">
-                        <a href="#"><img class="rounded-circle me-lg-2" src="{% static 'img/face_24dp.png'%}" alt="" style="width: 40px; height: 40px;">
+                        <a href="myprofile"><img class="rounded-circle me-lg-2" src="{% static 'img/face_24dp.png'%}" alt="" style="width: 40px; height: 40px;">
                         </a>
+                        
                     </div>
                 </div>
             </nav>
             <!-- Navbar End -->
 
-                       <!-- My Posts Section Start -->
-                       <div class="container-fluid pt-4 px-4">
-                        <div class="row g-4">
-                            <div class="col-lg-12">
-                                <div class="bg-light text-center rounded p-4">
-                                    <div class="d-flex align-items-center justify-content-between mb-4">
-                                        <h4 class="mb-0">내 게시글</h4> <!-- Changed to '내가 쓴 글 관리' -->
-                                        <a href="#" class="btn btn-primary">글쓰기</a> <!-- Write Button -->
+            <!-- Notices Start -->
+            <div class="container-fluid pt-4 px-4">
+                <div class="row g-4">
+                    <div class="col-lg-12">
+                        <div class="bg-light text-center rounded p-4">
+                            <div class="d-flex align-items-center justify-content-between mb-4">
+                                <h4 class="mb-0">내 게시글</h4> <!-- Increased font size for Notices -->
+                                <div class="d-flex">
+                                    <a href="{% url 'adminpanel:create_notice' %}" class="btn btn-secondary me-2">글쓰기</a> <!-- Write Button -->
+                                    <div class="dropdown me-2">
+                                        <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                            구분
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item" href="?">전체</a>
+                                            <a class="dropdown-item" href="?beach_no=common">공통</a>
+                                            {% for beach in beaches %}
+                                                <a class="dropdown-item" href="?beach_no={{ beach.beach_no }}">{{ beach.beach_name }}</a>
+                                            {% endfor %}
+                                        </div>
                                     </div>
-                                    <!-- Table for My Posts -->
-                                    <div class="table-responsive" style="height: 400px; overflow-y: scroll;">
-                                        <table class="table table-bordered">
-                                            <thead>
-                                                <tr>
-                                                    <th scope="col" style="width: 40%;">제목</th> <!-- Adjusted width for Title -->
-                                                    <th scope="col" style="width: 20%;">작성일</th> <!-- Adjusted width for Date -->
-                                                    <th scope="col" style="width: 20%;">조회수</th> <!-- Adjusted width for Views -->
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {% for event in event_boards %}
-                                                    <tr>
-                                                        <td>{{ event.event_title }}</td>
-                                                        <td>{{ event.event_wdate | date:"Y-m-d" }}</td>
-                                                        <td>{{ event.event_views }}</td>
-                                                    </tr>
-                                                {% endfor %}
-                                            </tbody>
-                                        </table>
+                                    <button id="deleteButton" class="btn btn-primary">삭제</button> <!-- Delete Button -->
+                                </div>
+                            </div>
+                            <!-- Table for Notices -->
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" style="width: 5%;">
+                                            <input type="checkbox" id="selectAll">
+                                            </th>
+                                            <th scope="col" style="width: 5%;">글 번호</th> <!-- Adjusted width for Title -->
+                                            <th scope="col" style="width: 15%;">구분</th> <!-- Adjusted width for Title -->
+                                            <th scope="col" style="width: 50%;">제목</th> <!-- Adjusted width for Date -->
+                                            <th scope="col" style="width: 10%;">작성자</th> <!-- Adjusted width for Author -->
+                                            <th scope="col" style="width: 10%;">등록일시</th>
+                                            <th scope="col" style="width: 10%;">조회수</th> <!-- Adjusted width for Views -->
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for event in page_obj %}
+                                            <tr data-id="{{ event.event_id }}">
+                                                <td><input type="checkbox" class="selectRow"></td>
+                                                <td>{{ forloop.counter0|add:page_obj.start_index }}</td>
+                                                <td>
+                                                    {% if event.beach_no %}
+                                                        {{ event.beach_no.beach_name }}
+                                                    {% else %}
+                                                        공통
+                                                    {% endif %}
+                                                </td>
+                                                <td><a href="{% url 'freeboard_detail' event.pk %}">{{ event.event_title }}</a></td>
+                                                <td>{{ event.user_no.user_name }}</td>
+                                                <td>{{ event.event_wdate | date:"Y-m-d" }}</td>
+                                                <td>{{ event.event_views }}</td>
+                                            </tr>
+                                        {% empty %}
+                                            <tr>
+                                                <td colspan="6">No posts found.</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- Pagination Controls -->
+                            <div class="d-flex justify-content-center">
+                                <nav>
+                                    <ul class="pagination">
+                                        <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+                                            <a class="page-link" href="?page=1{% if request.GET.beach_no %}&beach_no={{ request.GET.beach_no }}{% endif %}&q={{ search_query }}" aria-label="First">
+                                                <span aria-hidden="true">&laquo;&laquo;</span>
+                                            </a>
+                                        </li>
+                                        {% for num in page_obj.paginator.page_range %}
+                                        {% if page_obj.number == num %}
+                                        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                                        {% elif num > page_obj.number|add:'-5' and num < page_obj.number|add:'5' %}
+                                        <li class="page-item"><a class="page-link" href="?page={{ num }}{% if request.GET.beach_no %}&beach_no={{ request.GET.beach_no }}{% endif %}&q={{ search_query }}">{{ num }}</a></li>
+                                        {% endif %}
+                                        {% endfor %}
+                                        <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+                                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.beach_no %}&beach_no={{ request.GET.beach_no }}{% endif %}&q={{ search_query }}" aria-label="Last">
+                                                <span aria-hidden="true">&raquo;&raquo;</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                            <!-- End of Pagination Controls -->
+                              <!-- Search Bar -->
+                              <div class="container pt-4">
+                                <div class="row justify-content-center"> <!-- 중앙 정렬 -->
+                                    <div class="col-lg-6">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <select class="form-select">
+                                                    <option selected>제목</option>
+                                                    <option value="1">작성자</option>
+                                                </select>
+                                            </div>
+                                            <input class="form-control" type="search" placeholder="검색" aria-label="Search">
+                                            <button class="btn btn-outline-primary" type="submit">검색</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                            <!-- End of Search Bar -->                                                        
                         </div>
                     </div>
-            <!-- Footer Start -->
-            <!-- Footer End -->
+                </div>
+            </div>
+            <!-- Notices End -->
+
+        
         </div>
         <!-- Content End -->
 
@@ -192,6 +267,44 @@
 
     <!-- Custom JavaScript for alert messages -->
     <script>
+        document.getElementById('selectAll').addEventListener('change', function() {
+            var checkboxes = document.querySelectorAll('.selectRow');
+            for (var checkbox of checkboxes) {
+                checkbox.checked = this.checked;
+            }
+        });
+       // post 삭제
+        document.getElementById('deleteButton').addEventListener('click', function() {
+            if(confirm('정말로 삭제하시겠습니까?')) {
+                var checkboxes = document.querySelectorAll('.selectRow:checked');
+                var idsToDelete = [];
+                checkboxes.forEach(function(checkbox) {
+                    idsToDelete.push(checkbox.closest('tr').getAttribute('data-id'));
+                });
+                if (idsToDelete.length > 0) {
+                    fetch('{% url 'adminpanel:delete_boards' %}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: JSON.stringify({ ids: idsToDelete })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        if (data.status === "success") {
+                            location.reload(); // 성공시 페이지 리로드
+                        } else {
+                            alert("Error: " + data.message); // 실패시 메시지 출력
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+                }
+            }
+        });
+
+
         // Display alert message
         function showAlert(message, alertType) {
             const alertBox = document.createElement('div');
@@ -208,6 +321,8 @@
             }, 3000);
         }
 
+
+        
         // Handle messages from Django
         {% if messages %}
             {% for message in messages %}

@@ -204,32 +204,34 @@
 
                 // post 삭제
                 document.getElementById('deleteButton').addEventListener('click', function() {
-                    var checkboxes = document.querySelectorAll('.selectRow:checked');
-                    var idsToDelete = [];
-                    checkboxes.forEach(function(checkbox) {
-                        idsToDelete.push(checkbox.closest('tr').getAttribute('data-id'));
-                    });
-                    if (idsToDelete.length > 0) {
-                        fetch('{% url 'adminpanel:delete_boards' %}', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRFToken': '{{ csrf_token }}'
-                            },
-                            body: JSON.stringify({ ids: idsToDelete })
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            console.log(data);
-                            if (data.status === "success") {
-                                location.reload(); // 성공시 페이지 리로드
-                            } else {
-                                alert("Error: " + data.message); // 실패시 메시지 출력
-                            }
-                        })
-                        .catch(error => console.error('Error:', error));
+                    if(confirm('정말로 삭제하시겠습니까?')) {
+                        var checkboxes = document.querySelectorAll('.selectRow:checked');
+                        var idsToDelete = [];
+                        checkboxes.forEach(function(checkbox) {
+                            idsToDelete.push(checkbox.closest('tr').getAttribute('data-id'));
+                        });
+                        if (idsToDelete.length > 0) {
+                            fetch('{% url 'adminpanel:delete_boards' %}', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRFToken': '{{ csrf_token }}'
+                                },
+                                body: JSON.stringify({ ids: idsToDelete })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log(data);
+                                if (data.status === "success") {
+                                    location.reload(); // 성공시 페이지 리로드
+                                } else {
+                                    alert("Error: " + data.message); // 실패시 메시지 출력
+                                }
+                            })
+                            .catch(error => console.error('Error:', error));
+                        }
                     }
-                });
+                });        
             </script>
         </div>
         <!-- Content End -->
