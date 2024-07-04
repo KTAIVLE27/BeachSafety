@@ -132,83 +132,104 @@
                         <div class="bg-light text-center rounded p-4">
                             <div class="d-flex align-items-center justify-content-between mb-4">
                                 <h4 class="mb-0">자유게시판</h4> <!-- Increased font size for Notices -->
-                                <a href="#" class="btn btn-primary">글쓰기</a> <!-- Write Button -->
+                                <a href="{% url 'create_freeboard' %}" class="btn btn-secondary me-2">글쓰기</a>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-between mb-4">
+                                <div class="d-flex">
+                                    <div class="dropdown me-2">
+                                        <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                            구분
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item" href="?">전체</a>
+                                            <a class="dropdown-item" href="?beach_no=common">공통</a>
+                                            {% for beach in beaches %}
+                                                <a class="dropdown-item" href="?beach_no={{ beach.beach_no }}">{{ beach.beach_name }}</a>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <!-- Table for Notices -->
-                            <div class="table-responsive" style="height: 400px; overflow-y: scroll;">
+                            <div class="table-responsive">
                                 <table class="table table-bordered">
                                     <thead>
                                         <tr>
-                                            <th scope="col" style="width: 60%;">제목</th> <!-- Adjusted width for Title -->
-                                            <th scope="col" style="width: 20%;">작성일</th> <!-- Adjusted width for Date -->
-                                            <th scope="col" style="width: 20%;">작성자</th> <!-- Adjusted width for Author -->
+                                            <th scope="col" style="width: 5%;">글 번호</th> <!-- Adjusted width for Title -->
+                                            <th scope="col" style="width: 15%;">구분</th> <!-- Adjusted width for Title -->
+                                            <th scope="col" style="width: 50%;">제목</th> <!-- Adjusted width for Date -->
+                                            <th scope="col" style="width: 10%;">작성자</th> <!-- Adjusted width for Author -->
+                                            <th scope="col" style="width: 10%;">등록일시</th>
+                                            <th scope="col" style="width: 10%;">조회수</th> <!-- Adjusted width for Views -->
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <!-- Example rows, replace with dynamic data -->
-                                        <tr>
-                                            <td>예시 제목 1</td>
-                                            <td>2024-07-01</td>
-                                            <td>Admin</td>
-                                        </tr>
-                                        <tr>
-                                            <td>예시 제목 2</td>
-                                            <td>2024-06-30</td>
-                                            <td>User</td>
-                                        </tr>
-                                        <tr>
-                                            <td>예시 제목 3</td>
-                                            <td>2024-06-29</td>
-                                            <td>Admin</td>
-                                        </tr>
-                                        <tr>
-                                            <td>예시 제목 4</td>
-                                            <td>2024-06-28</td>
-                                            <td>User</td>
-                                        </tr>
-                                        <tr>
-                                            <td>예시 제목 5</td>
-                                            <td>2024-06-27</td>
-                                            <td>Admin</td>
-                                        </tr>
-                                        <!-- End of example rows -->
+                                        {% for event in page_obj %}
+                                            <tr data-id="{{ event.event_id }}">
+                                                <td>{{ forloop.counter0|add:page_obj.start_index }}</td>
+                                                <td>
+                                                    {% if event.beach_no %}
+                                                        {{ event.beach_no.beach_name }}
+                                                    {% else %}
+                                                        공통
+                                                    {% endif %}
+                                                </td>
+                                                <td><a href="{% url 'freeboard_detail' event.pk %}">{{ event.event_title }}</a></td>
+                                                <td>{{ event.user_no.user_name }}</td>
+                                                <td>{{ event.event_wdate | date:"Y-m-d H:i" }}</td>
+                                                <td>{{ event.event_views }}</td>
+                                            </tr>
+                                        {% empty %}
+                                            <tr>
+                                                <td colspan="6">No posts found.</td>
+                                            </tr>
+                                        {% endfor %}
                                     </tbody>
                                 </table>
                             </div>
-                            <!-- Search Bar -->
-<div class="container pt-4">
-    <div class="row justify-content-center"> <!-- 중앙 정렬 -->
-        <div class="col-lg-6">
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <select class="form-select">
-                        <option selected>제목</option>
-                        <option value="1">작성자</option>
-                    </select>
-                </div>
-                <input class="form-control" type="search" placeholder="검색" aria-label="Search">
-                <button class="btn btn-outline-primary" type="submit">검색</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- End of Search Bar -->
-
-
-                  
-                            <!-- Pagination -->
-                            <nav aria-label="Page navigation example">
-                                <ul class="pagination justify-content-center"> <!-- Centered pagination -->
-                                    <li class="page-item disabled">
-                                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true"><</a>
-                                    </li>
-                                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                    <li class="page-item">
-                                        <a class="page-link" href="#">></a>
-                                    </li>
-                                </ul>
-                            </nav>
+                            <!-- Pagination Controls -->
+                            <div class="d-flex justify-content-center">
+                                <nav>
+                                    <ul class="pagination">
+                                        <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+                                            <a class="page-link" href="?page=1{% if request.GET.beach_no %}&beach_no={{ request.GET.beach_no }}{% endif %}&q={{ search_query }}" aria-label="First">
+                                                <span aria-hidden="true">&laquo;&laquo;</span>
+                                            </a>
+                                        </li>
+                                        {% for num in page_obj.paginator.page_range %}
+                                        {% if page_obj.number == num %}
+                                        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                                        {% elif num > page_obj.number|add:'-5' and num < page_obj.number|add:'5' %}
+                                        <li class="page-item"><a class="page-link" href="?page={{ num }}{% if request.GET.beach_no %}&beach_no={{ request.GET.beach_no }}{% endif %}&q={{ search_query }}">{{ num }}</a></li>
+                                        {% endif %}
+                                        {% endfor %}
+                                        <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+                                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.beach_no %}&beach_no={{ request.GET.beach_no }}{% endif %}&q={{ search_query }}" aria-label="Last">
+                                                <span aria-hidden="true">&raquo;&raquo;</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                            <!-- End of Pagination Controls -->
+                              <!-- Search Bar -->
+                              <div class="container pt-4">
+                                <div class="row justify-content-center"> <!-- 중앙 정렬 -->
+                                    <div class="col-lg-6">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <select class="form-select">
+                                                    <option selected>제목</option>
+                                                    <option value="1">작성자</option>
+                                                </select>
+                                            </div>
+                                            <input class="form-control" type="search" placeholder="검색" aria-label="Search">
+                                            <button class="btn btn-outline-primary" type="submit">검색</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End of Search Bar -->                                                        
                         </div>
                     </div>
                 </div>

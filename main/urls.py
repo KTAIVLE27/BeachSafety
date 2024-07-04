@@ -17,8 +17,13 @@ urlpatterns = [
     path("risk", views.risk,name='risk'),
     path('forgotpw/', views.forgotpw, name='forgotpw'),
     path('adminpanel/', views.admin_panel, name='admin_panel'),
-    path('new_post/', views.new_post, name='new_post'),  # Added path for new_post
+    path('create_freeboard/', views.create_freeboard, name='create_freeboard'),  
     path('myposts/', views.myposts, name='myposts'),
     path('agreement/', views.agreement, name='agreement'),
+    path('board/<int:pk>/', views.board_detail, name='board_detail'),
+    path('create_freeboard/', views.create_freeboard, name='create_freeboard'),
+    path('free_board/<int:pk>/', views.freeboard_detail, name='freeboard_detail'),
+    path('freeboard/edit/<int:pk>/', views.edit_freeboard, name='edit_freeboard'),
+
 ]
 

@@ -1,9 +1,10 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
-    <title>내 게시물</title>
+    <title>공지사항</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -29,28 +30,23 @@
 
     <!-- Template Stylesheet -->
     <link href="{% static 'css/style.css'%}" rel="stylesheet">
-
-    <!-- Custom Stylesheet -->
-    <link href="{% static 'css/myposts.css'%}" rel="stylesheet">
-
-    <!-- Custom CSS for alert messages -->
-    <style>
-        .alert-message {
-            position: fixed;
-            top: 70px;
-            right: 20px;
-            z-index: 1050;
-            display: none;
-        }
-    </style>
 </head>
+
 <body>
     <div class="container-fluid position-relative bg-white d-flex p-0">
+        <!-- Spinner Start -->
+        <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+        <!-- Spinner End -->
+
         <!-- Sidebar Start -->
         <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-light navbar-light">
                 <a class="navbar-brand mx-4 mb-3">
-                    <h3 class="text-primary"><i></i>MY Page</h3>
+                    <h3 class="text-primary">Board</h3>
                 </a>
                 <div class="d-flex align-items-center ms-4 mb-4">
                     <div class="position-relative">
@@ -59,7 +55,7 @@
                     </div>
                     <div class="ms-3">
                         <h6 class="mb-0">27조</h6>
-                        <span>{{ user.user_name }}</span>
+                        <span>Admin</span>
                     </div>
                 </div>
                 <div class="navbar-nav w-100">
@@ -115,60 +111,51 @@
                 </form>
                 <div class="navbar-nav align-items-center ms-auto">
                     <div class="nav-item dropdown">
-                        <form method="post" action="{% url 'logout' %}">
-                            {% csrf_token %}
-                            <button type="submit" style="border:none; background:none;">
-                                <img src="{% static 'img/logout_24dp.png' %}" width="50" height="50" alt="Logout">
-                            </button>
-                        </form>
+                        <a href="#"><img src="{% static 'img/logout_24dp.png' %}" width="50" height="50"></i></a>
                     </div>
     
                     <div class="nav-item dropdown">
-                        <a href="#"><img class="rounded-circle me-lg-2" src="{% static 'img/face_24dp.png'%}" alt="" style="width: 40px; height: 40px;">
+                        <a href="myprofile"><img class="rounded-circle me-lg-2" src="{% static 'img/face_24dp.png'%}" alt="" style="width: 40px; height: 40px;">
                         </a>
+                        
                     </div>
                 </div>
             </nav>
             <!-- Navbar End -->
-
-                       <!-- My Posts Section Start -->
-                       <div class="container-fluid pt-4 px-4">
-                        <div class="row g-4">
-                            <div class="col-lg-12">
-                                <div class="bg-light text-center rounded p-4">
-                                    <div class="d-flex align-items-center justify-content-between mb-4">
-                                        <h4 class="mb-0">내 게시글</h4> <!-- Changed to '내가 쓴 글 관리' -->
-                                        <a href="#" class="btn btn-primary">글쓰기</a> <!-- Write Button -->
-                                    </div>
-                                    <!-- Table for My Posts -->
-                                    <div class="table-responsive" style="height: 400px; overflow-y: scroll;">
-                                        <table class="table table-bordered">
-                                            <thead>
-                                                <tr>
-                                                    <th scope="col" style="width: 40%;">제목</th> <!-- Adjusted width for Title -->
-                                                    <th scope="col" style="width: 20%;">작성일</th> <!-- Adjusted width for Date -->
-                                                    <th scope="col" style="width: 20%;">조회수</th> <!-- Adjusted width for Views -->
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {% for event in event_boards %}
-                                                    <tr>
-                                                        <td>{{ event.event_title }}</td>
-                                                        <td>{{ event.event_wdate | date:"Y-m-d" }}</td>
-                                                        <td>{{ event.event_views }}</td>
-                                                    </tr>
-                                                {% endfor %}
-                                            </tbody>
-                                        </table>
-                                    </div>
+            <!-- Notice Detail Start -->
+            <div class="container-fluid pt-4 px-4">
+                <div class="row g-4">
+                    <div class="col-lg-12">
+                        <div class="bg-light text-center rounded p-4">
+                            <h4 class="mb-3">{{ post.notice_title }}</h4> <!-- Notice Title -->
+                            <div class="d-flex justify-content-between">
+                                <span>작성자: {{ post.user_no.user_name }}</span>
+                                <span>구분: {% if post.beach_no %}{{ post.beach_no.beach_name }}{% else %}공통{% endif %}</span>
+                                <span>작성일시: {{ post.notice_wdate|date:"Y-m-d H:i" }}</span>
+                                <span>조회수: {{ post.notice_views }}</span>
+                            </div>
+                            <hr>
+                            <div class="text-start">
+                                <p>{{ post.notice_contents }}</p>
+                                {% if post.notice_img %}
+                                <div>
+                                    <a href="{{ post.notice_img.url }}" target="_blank">첨부파일 다운로드</a>
                                 </div>
+                                {% endif %}
+                            </div>
+                            <hr>
+                            <div class="text-end">
+                                <a href="{% url 'board' %}" class="btn btn-primary">목록으로</a>
                             </div>
                         </div>
                     </div>
-            <!-- Footer Start -->
-            <!-- Footer End -->
+                </div>
+            </div>
+            <!-- Notice Detail End -->
+        
         </div>
         <!-- Content End -->
+
 
         <!-- Back to Top -->
         <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
@@ -187,34 +174,6 @@
 
     <!-- Template Javascript -->
     <script src="{% static 'js/main.js'%}"></script>
-    <!-- Custom Javascript -->
-    <script src="{% static 'js/myposts.js'%}"></script>
-
-    <!-- Custom JavaScript for alert messages -->
-    <script>
-        // Display alert message
-        function showAlert(message, alertType) {
-            const alertBox = document.createElement('div');
-            alertBox.className = `alert alert-${alertType} alert-message`;
-            alertBox.textContent = message;
-
-            document.body.appendChild(alertBox);
-
-            alertBox.style.display = 'block';
-
-            setTimeout(() => {
-                alertBox.style.display = 'none';
-                alertBox.remove();
-            }, 3000);
-        }
-
-        // Handle messages from Django
-        {% if messages %}
-            {% for message in messages %}
-                showAlert("{{ message }}", "{% if message.tags %}{{ message.tags }}{% else %}info{% endif %}");
-            {% endfor %}
-        {% endif %}
-    </script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -232,6 +191,7 @@
                 }
             });
         });
-        </script>
+    </script>
 </body>
+
 </html>

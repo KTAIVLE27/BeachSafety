@@ -29,7 +29,7 @@ if response.status_code == 200:
             'wave_height': beach['wave_height'],
             'wave_period': beach['wave_period'],
             'score_msg': beach['score_msg'],
-            'score': beach['score']
+            # 'score': beach['score'],
         }
     
     # 결과 출력

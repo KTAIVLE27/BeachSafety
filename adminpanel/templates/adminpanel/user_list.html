@@ -1,8 +1,8 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+    {% load static %}
     <meta charset="utf-8">
     <title>사용자 정보 관리</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -10,7 +10,7 @@
     <meta content="" name="description">
 
     <!-- Favicon -->
-    <link href="{% static 'img/favicon.ico'%}" rel="icon">
+    <link href="{% static 'img/favicon.ico' %}" rel="icon">
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,14 +22,14 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
 
     <!-- Libraries Stylesheet -->
-    <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css'%}" rel="stylesheet">
-    <link href="{% static 'lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css'%}" rel="stylesheet" />
+    <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+    <link href="{% static 'lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css' %}" rel="stylesheet" />
 
     <!-- Customized Bootstrap Stylesheet -->
-    <link href="{% static 'css/bootstrap.min.css'%}" rel="stylesheet">
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
 
     <!-- Template Stylesheet -->
-    <link href="{% static 'css/style.css'%}" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
 </head>
 
 <body>
@@ -50,7 +50,7 @@
                 </a>
                 <div class="d-flex align-items-center ms-4 mb-4">
                     <div class="position-relative">
-                        <img class="rounded-circle" src="{% static 'img/face_24dp.png'%}" alt="" style="width: 40px; height: 40px;">
+                        <img class="rounded-circle" src="{% static 'img/face_24dp.png' %}" alt="" style="width: 40px; height: 40px;">
                         <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
                     </div>
                     <div class="ms-3">
@@ -59,11 +59,11 @@
                     </div>
                 </div>
                 <div class="navbar-nav w-100">
-                    <a href="{% url 'adminpanel:admin_home' %}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/home_24dp.png'%}" style="width: 40px; height: 40px;"></i>관리자 홈</a>
-                    <a href="{% url 'adminpanel:user_list_view'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/face_24dp.png'%}" style="width: 40px; height: 40px;"></i>사용자 정보 관리</a>
-                    <a href="{% url 'adminpanel:senario'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/wysiwyg_24dp.png'%}" style="width: 40px; height: 40px;"></i>훈련시나리오 관리</a>
-                    <a href="{% url 'adminpanel:notice_manage'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/chat_24dp.png'%}" style="width: 40px; height: 40px;"></i>공지사항 관리</a>
-                    <a href="{% url 'adminpanel:board_manage'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/chat_24dp.png'%}" style="width: 40px; height: 40px;"></i>자유게시판 관리</a>
+                    <a href="{% url 'adminpanel:admin_home' %}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/home_24dp.png' %}" style="width: 40px; height: 40px;"></i>관리자 홈</a>
+                    <a href="{% url 'adminpanel:user_list_view' %}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/face_24dp.png' %}" style="width: 40px; height: 40px;"></i>사용자 정보 관리</a>
+                    <a href="{% url 'adminpanel:senario' %}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/wysiwyg_24dp.png' %}" style="width: 40px; height: 40px;"></i>훈련시나리오 관리</a>
+                    <a href="{% url 'adminpanel:notice_manage' %}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/chat_24dp.png' %}" style="width: 40px; height: 40px;"></i>공지사항 관리</a>
+                    <a href="{% url 'adminpanel:board_manage' %}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/chat_24dp.png' %}" style="width: 40px; height: 40px;"></i>자유게시판 관리</a>
                 </div>
             </nav>
         </div>
@@ -89,7 +89,7 @@
                         <a href="#"><img src="{% static 'img/logout_24dp.png' %}" width="50" height="50"></i></a>
                     </div>
                     <div class="nav-item dropdown">
-                        <a href="#"><img class="rounded-circle me-lg-2" src="{% static 'img/face_24dp.png'%}" alt="" style="width: 40px; height: 40px;"></a>
+                        <a href="#"><img class="rounded-circle me-lg-2" src="{% static 'img/face_24dp.png' %}" alt="" style="width: 40px; height: 40px;"></a>
                     </div>
                 </div>
             </nav>
@@ -99,32 +99,83 @@
             <div class="container-fluid pt-4 px-4">
                 <div class="row g-4">
                     <div class="bg-light text-center rounded p-4">
-                        <div class="d-flex align-items-center justify-content-between mb-4">
+                        <div class="d-flex align-items-center justify-content-between mb_4">
                             <h6 class="mb-0">사용자 정보</h6>
+                            <button id="deleteButton" class="btn btn-primary">삭제</button> <!-- Delete Button -->
                         </div>
                         <div class="table-responsive">
                             <table class="table table-striped table-bordered">
                                 <thead>
                                     <tr>
+                                        <th scope="col" style="width: 5%;">
+                                            <input type="checkbox" id="selectAll">
+                                        </th>
+                                        <th>번호</th>
                                         <th>이름</th>
+                                        <th>권한</th>
+                                        <th>휴대폰 번호</th>
+                                        <th>이메일</th>
                                         <th>계정 생성 날짜</th>
                                         <th>최근 로그인 시간</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for user in users %}
+                                    {% for user in page_obj %}
                                     <tr>
+                                        <td><input type="checkbox" class="selectRow" data-id="{{ user.user_no }}"></td>
+                                        <td>{{ forloop.counter }}</td>
                                         <td>{{ user.user_name }}</td>
-                                        <td>{{ user.user_joinday|date:"Y-m-d H:i:s" }}</td>
+                                        <td>{{ user.user_role }}</td>
+                                        <td>{{ user.user_phone }}</td>
+                                        <td>{{ user.user_email }}</td>
+                                        <td>{{ user.user_joinday|date:"Y-m-d" }}</td>
                                         <td>{{ user.last_login|date:"Y-m-d H:i:s" }}</td>
                                     </tr>
                                     {% empty %}
                                     <tr>
-                                        <td colspan="3">No users found.</td>
+                                        <td colspan="8">No users found.</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
+                        </div>
+                        <!-- Pagination Controls -->
+                        <div class="d-flex justify-content-center">
+                            <nav>
+                                <ul class="pagination">
+                                    {% if page_obj.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=1" aria-label="First">
+                                            <span aria-hidden="true">&laquo;&laquo;</span>
+                                        </a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                    {% endif %}
+                                    {% for num in page_obj.paginator.page_range %}
+                                    {% if page_obj.number == num %}
+                                    <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                                    {% elif num > page_obj.number|add:'-5' and num < page_obj.number|add:'5' %}
+                                    <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                                    {% endif %}
+                                    {% endfor %}
+                                    {% if page_obj.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
+                                            <span aria-hidden="true">&raquo;&raquo;</span>
+                                        </a>
+                                    </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
                         </div>
                     </div>
                 </div>
@@ -153,6 +204,43 @@
 
     <!-- Template Javascript -->
     <script src="{% static 'js/main.js' %}"></script>
+    <script>
+        $(document).ready(function() {
+            // Select/Deselect all checkboxes
+            $('#selectAll').click(function() {
+                $('.selectRow').prop('checked', this.checked);
+            });
+
+            // Delete selected users
+            $('#deleteButton').click(function() {
+                var selectedIds = [];
+                $('.selectRow:checked').each(function() {
+                    selectedIds.push($(this).data('id'));
+                });
+
+                if (selectedIds.length > 0) {
+                    if (confirm('Are you sure you want to delete the selected users?')) {
+                        $.ajax({
+                            url: "{% url 'adminpanel:delete_users' %}",
+                            method: 'POST',
+                            data: {
+                                ids: selectedIds,
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                            },
+                            success: function(response) {
+                                location.reload(); // Reload the page on success
+                            },
+                            error: function(response) {
+                                alert('An error occurred while deleting users.');
+                            }
+                        });
+                    }
+                } else {
+                    alert('Please select at least one user to delete.');
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

@@ -5,11 +5,13 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
+from django.http import JsonResponse
 import logging
 from django.http import HttpResponseForbidden
 from .models import *
-from .forms import SignUpForm, PostForm, PasswordResetForm
+from .forms import *
 from .utils import get_weather_item
+from django.core.paginator import Paginator
 
 def is_admin(user):
     return user.is_authenticated and user.user_id == 'admin' and user.user_name == 'admin' and user.check_password('aivle2024!')
@@ -24,7 +26,14 @@ def admin_panel(request):
 
 @login_required
 def home(request):
-    return render(request, 'home.html')
+    home_notices = Notice_board.objects.all().order_by('-notice_id')[:5]  # 최신 순서로 상위 5개 공지사항
+    home_event = Event_board.objects.all().order_by('-event_id')[:5]  # 최신 순서로 상위 5개 이벤트
+    context = {
+        'home_notices': home_notices,
+        'home_event': home_event,
+    }
+    return render(request, 'home.html', context)
+
 
 @login_required
 def myprofile(request):
@@ -72,11 +81,109 @@ def myprofile(request):
 
 @login_required
 def board(request):
-    return render(request, 'board.html')
+    beach_no = request.GET.get('beach_no')
+    
+    if beach_no == 'common':
+        posts = Notice_board.objects.filter(beach_no__isnull=True).order_by('-notice_wdate')
+    elif beach_no:
+        posts = Notice_board.objects.filter(beach_no=beach_no).order_by('-notice_wdate')
+    else:
+        posts = Notice_board.objects.all().order_by('-notice_wdate')
+    
+    
+    # 페이징 처리
+    paginator = Paginator(posts, 10)  # 페이지당 10개의 게시물
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    beaches = Beach.objects.all()
+    beaches = Beach.objects.all()
+    
+    
+    return render(request, 'board.html', {'notices': posts, 'beaches': beaches, 'selected_beach_no': beach_no, 'page_obj': page_obj})
+
+@login_required
+def board_detail(request, pk):
+    try:
+        post = Notice_board.objects.get(pk=pk)
+        post.notice_views += 1  # 조회수 증가 
+        post.save()
+    except Notice_board.DoesNotExist:
+        messages.error(request, "해당 게시글을 찾을 수 없습니다.")
+        return redirect('board')
+    
+    return render(request, 'board_detail.html', {'post': post})
+
 
 @login_required
 def free_board(request):
-    return render(request, 'free_board.html')
+    beach_no = request.GET.get('beach_no')
+    if beach_no == 'common':
+        posts = Event_board.objects.filter(beach_no__isnull=True).order_by('-event_wdate')
+    elif beach_no:
+        posts = Event_board.objects.filter(beach_no=beach_no).order_by('-event_wdate')
+    else:
+        posts = Event_board.objects.all().order_by('-event_wdate')
+    
+    # 페이징 처리
+    paginator = Paginator(posts, 10)  # 페이지당 10개의 게시물
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    beaches = Beach.objects.all()
+    return render(request, 'free_board.html', {'posts': posts, 'page_obj': page_obj, 'beaches':beaches})
+
+# 자유게시판 조회
+@login_required
+def freeboard_detail(request, pk):
+    try:
+        post = Event_board.objects.get(pk=pk)
+        post.event_views += 1  # 조회수 증가
+        post.save()
+    except Event_board.DoesNotExist:
+        messages.error(request, "해당 게시글을 찾을 수 없습니다.")
+        return redirect('free_board')
+    beaches = Beach.objects.all()
+    return render(request, 'freeboard_detail.html', {'post': post, 'beaches':beaches})
+
+#자유게시판 생성
+@login_required
+def create_freeboard(request):
+    if request.method == 'POST':
+        form = FreePostForm(request.POST, request.FILES)
+        if form.is_valid():
+            event = form.save(commit=False)
+            event.user_no = request.user
+            event.event_wdate = timezone.now()
+            if not event.beach_no:
+                event.beach_no = None         
+            event.save()
+            return redirect('free_board')
+    else:
+        form = FreePostForm()
+        
+    beaches = Beach.objects.all()
+    return render(request, 'create_freeboard.html', {'beaches': beaches})
+
+# 자유게시판 수정
+@login_required
+def edit_freeboard(request, pk):
+    post = get_object_or_404(Event_board, pk=pk)
+
+    if request.user != post.user_no:
+        return JsonResponse({'success': False})
+
+    if request.method == 'POST':
+        form = FreePostForm(request.POST, request.FILES, instance=post)
+        if form.is_valid():
+            event = form.save(commit=False)
+            if event.beach_no == '':
+                event.beach_no = None          
+            form.save()
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'success': False})
+    return JsonResponse({'success': False})
+
 
 @login_required
 def chat(request):
@@ -95,20 +202,6 @@ def cctv(request):
 @login_required
 def risk(request):
     return render(request, 'risk.html')
-
-@login_required
-def new_post(request):
-    if request.method == 'POST':
-        form = PostForm(request.POST)
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.author = request.user
-            post.save()
-            messages.success(request, '게시물이 성공적으로 작성되었습니다.')
-            return redirect('board')
-    else:
-        form = PostForm()
-    return render(request, 'new_post.html', {'form': form})
 
 def signin(request):
     user = None
@@ -199,9 +292,38 @@ def forgotpw(request):
     return render(request, 'forgotpw.html', {'form': form})
 
 
+# def myposts(request):
+#     if request.method == 'POST':
+#         user = request.user
+
+#         user_no = request.POST.get('user_no')
+
+
+
+#     else:
+#         return render(request, 'myposts.html')
+
+@login_required
 def myposts(request):
-    # 내가 쓴 글을 가져오는 로직을 추가하세요.
-    return render(request, 'myposts.html')
+    if request.method == 'GET':
+        try:
+            user_no = request.user.user_no  # 로그인된 사용자의 user_no 가져오기
+            event_boards = Event_board.objects.filter(user_no=user_no)  # user_no와 일치하는 게시물 필터링
+            return render(request, 'myposts.html', {'event_boards': event_boards, 'user': request.user})
+        except AttributeError:
+            # 로그인된 사용자가 없는 경우 처리
+            return redirect('login')  # 로그인 페이지로 리디렉션
+        except Event_board.DoesNotExist:
+            # 일치하는 게시물이 없는 경우 처리
+            return render(request, 'myposts.html', {'event_boards': [], 'user': request.user})
+    else:
+        render(request, 'myposts.html')
+
+    
+    
+    
+    
+    
 
 def agreement(request):
     # 내가 쓴 글을 가져오는 로직을 추가하세요.
