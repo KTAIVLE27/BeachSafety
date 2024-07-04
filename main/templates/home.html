@@ -126,102 +126,90 @@
             <!-- Main Content Start -->
             <div class="container-fluid pt-4 px-4">
                 <div class="row g-4">
-                    <!-- Map Image Section -->
-                    <div class="col-sm-12 col-xl-6">
+                    <!-- Map Section -->
+                    <div class="col-sm-12 col-xl-8">
                         <div class="bg-light text-center rounded p-4">
-                            <div class="d-flex align-items-center justify-content-between mb-4">
-                                <h6 class="mb-0">지도 이미지</h6>
-                            </div>
-                            <div id="vmap" style="width:100%;height:370px;left:0px;top:0px"></div> 
-<script type="text/javascript" src="http://map.vworld.kr/js/vworldMapInit.js.do?version=2.0
-&apiKey=80973894-487D-3977-BA22-621594681047&domain=www.test.com/map.html"></script> 
-<script type="text/javascript">
-   
-vw.ol3.CameraPosition.center = [14086424.137257246, 4301029.874526409];
-vw.ol3.CameraPosition.zoom =9;
-                                        //지도의 초기 위치값을 설정
-
-vw.ol3.MapOptions = {
- 
-  basemapType: vw.ol3.BasemapType.GRAPHIC
-, controlDensity: vw.ol3.DensityType.EMPTY
-, interactionDensity: vw.ol3.DensityType.BASIC
-, controlsAutoArrange: true
-, homePosition: vw.ol3.CameraPosition
-, initPosition: vw.ol3.CameraPosition
-};
- 
-let vmap = new vw.ol3.Map("vmap",  vw.ol3.MapOptions); 
- 
-let coordinates = [[14377620.227912728, 4185281.4261198505],
-[14377621.118468653, 4185356.885308024],
-[14377789.544858223, 4185356.885308024],
-[14377789.544858223, 4185332.921309485]]; //좌표 설정
- 
-let polygon_feature = new ol.Feature({
-    geometry : new ol.geom.Polygon([ coordinates ])
-    ,name : "사각형"
-}); // polygon_feature 생성
- 
-//마커찍기
-var markerLayer = new vw.ol3.layer.Marker(vmap); 
-//마커 레이어 생성
-
-vw.ol3.markerOption = {
-x : 14377620.227912728,
-y : 4185281.4261198505,
-epsg : "EPSG:900913",
-title : '테스트마커2',
-contents : '테스트마커2 본문내용<br>테스트마커2 본문내용',
-iconUrl : "{% static 'img/marker.png' %}",
-}; //마커 옵션 설정
-markerLayer.addMarker(vw.ol3.markerOption);// 마커를 레이어에 등록
-vmap.addLayer(markerLayer) //마커를 vmap에 등록
-
- 
-let style = new ol.style.Style({
-    stroke : new ol.style.Stroke({
-        color : [ 0, 255, 0, .7 ],
-        width : 3
-    }),
-    fill : new ol.style.Fill({
-        color : [ 255, 0, 0, .4 ]
-    })
-}); // 스타일 정의
- 
-polygon_feature.setStyle(style); // 정의한 스타일을 적용
- 
-let vector_layer = new ol.layer.Vector({
-    source : new ol.source.Vector({
-        features : [ polygon_feature ]
-    })
-})
- 
-vmap.addLayer(vector_layer); // 폴리곤 객체 등록
- 
-vmap.on("click", function(evt) {
-         
-        let coordinate = evt.coordinate //좌표 정보
-        let pixel = evt.pixel //선택한 픽셀 값
-         
-        vmap.forEachFeatureAtPixel(pixel, function(feature, layer) {
-            let name = feature.get("name");
-            alert(name);
-        });
-    })
-     </script>
- </div>
- </div>
+                            <div id="vmap" style="width:100%;height:650px;"></div>
+                            <script type="text/javascript" src="http://map.vworld.kr/js/vworldMapInit.js.do?version=2.0&apiKey=80973894-487D-3977-BA22-621594681047&domain=www.test.com/map.html"></script> 
+                            <script type="text/javascript">
+                                vw.ol3.CameraPosition.center = [14086424.137257246, 4301029.874526409];
+                                vw.ol3.CameraPosition.zoom = 9;
+                                vw.ol3.MapOptions = {
+                                    basemapType: vw.ol3.BasemapType.GRAPHIC,
+                                    controlDensity: vw.ol3.DensityType.EMPTY,
+                                    interactionDensity: vw.ol3.DensityType.BASIC,
+                                    controlsAutoArrange: true,
+                                    homePosition: vw.ol3.CameraPosition,
+                                    initPosition: vw.ol3.CameraPosition
+                                };
+                                let vmap = new vw.ol3.Map("vmap", vw.ol3.MapOptions); 
+                                let coordinates = [[14377620.227912728, 4185281.4261198505],
+                                                    [14377621.118468653, 4185356.885308024],
+                                                    [14377789.544858223, 4185356.885308024],
+                                                    [14377789.544858223, 4185332.921309485]]; //좌표 설정
+                                let polygon_feature = new ol.Feature({
+                                    geometry: new ol.geom.Polygon([coordinates]),
+                                    name: "사각형"
+                                }); // polygon_feature 생성
+            
+                                //마커찍기
+                                var markerLayer = new vw.ol3.layer.Marker(vmap); 
+                                vw.ol3.markerOption = {
+                                    x: 14377620.227912728,
+                                    y: 4185281.4261198505,
+                                    epsg: "EPSG:900913",
+                                    title: '테스트마커2',
+                                    contents: '테스트마커2 본문내용<br>테스트마커2 본문내용',
+                                    iconUrl: "{% static 'img/marker.png' %}",
+                                }; //마커 옵션 설정
+                                markerLayer.addMarker(vw.ol3.markerOption);// 마커를 레이어에 등록
+                                vmap.addLayer(markerLayer) //마커를 vmap에 등록
+            
+                                let style = new ol.style.Style({
+                                    stroke: new ol.style.Stroke({
+                                        color: [0, 255, 0, .7],
+                                        width: 3
+                                    }),
+                                    fill: new ol.style.Fill({
+                                        color: [255, 0, 0, .4]
+                                    })
+                                }); // 스타일 정의
+            
+                                polygon_feature.setStyle(style); // 정의한 스타일을 적용
+            
+                                let vector_layer = new ol.layer.Vector({
+                                    source: new ol.source.Vector({
+                                        features: [polygon_feature]
+                                    })
+                                });
+            
+                                vmap.addLayer(vector_layer); // 폴리곤 객체 등록
+            
+                                vmap.on("click", function(evt) {
+                                    let coordinate = evt.coordinate //좌표 정보
+                                    let pixel = evt.pixel //선택한 픽셀 값
+                                    vmap.forEachFeatureAtPixel(pixel, function(feature, layer) {
+                                        let name = feature.get("name");
+                                        alert(name);
+                                    });
+                                })
+                            </script>
                         </div>
                     </div>
-                    <!-- Buttons Section -->
-                    <div class="col-sm-12 col-xl-6">
-                        <div class="bg-light text-center rounded p-4">
-                            <a href="{% url 'cctv' %}" class="btn btn-primary btn-lg btn-block mb-2">CCTV</a>
-                            <a href="{% url 'weather' %}" class="btn btn-primary btn-lg btn-block mb-2">날씨</a>
-                            <a href="{% url 'risk' %}" class="btn btn-primary btn-lg btn-block">위험도</a>
+                    
+                    <!-- Button Section -->
+                    <!-- Button Section -->
+                    <div class="col-sm-12 col-md-4">
+                        <div class="bg-light text-center rounded p-2 d-flex flex-column h-100 justify-content-around">
+                            <a href="{% url 'cctv' %}" class="btn btn-primary btn-lg btn-block mb-1">CCTV</a>
+                            <a href="{% url 'weather' %}" class="btn btn-primary btn-lg btn-block my-1">날씨</a>
+                            <a href="{% url 'risk' %}" class="btn btn-primary btn-lg btn-block mt-1">위험도</a>
                         </div>
                     </div>
+                </div>
+            </div>
+            
+            
                     <!-- Notice and Free Board Tabs -->
                     <div class="col-sm-12 col-xl-12">
                         <div class="bg-light text-center rounded p-4">
