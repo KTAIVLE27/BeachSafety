@@ -18,26 +18,28 @@ if response.status_code == 200:
     for beach in data['result']['data']:
         beach_code = beach['beach_code']
         beach_data_dict[beach_code] = {
-            'beach_name': beach['beach_name'],
-            'obs_time': beach['obs_time'],
-            'water_temp': beach['water_temp'],
-            'air_temp': beach['air_temp'],
-            'wind_speed': beach['wind_speed'],
+            #'beach_name': beach['beach_name'],
+            #'obs_time': beach['obs_time'],
+            #'water_temp': beach['water_temp'],
+            #'air_temp': beach['air_temp'],
+            #'wind_speed': beach['wind_speed'],
             'lon': beach['lon'],
             'lat': beach['lat'],
-            'wind_direct': beach['wind_direct'],
-            'wave_height': beach['wave_height'],
-            'wave_period': beach['wave_period'],
+            #'wind_direct': beach['wind_direct'],
+            #'wave_height': beach['wave_height'],
+            #'wave_period': beach['wave_period'],
             'score_msg': beach['score_msg'],
-            # 'score': beach['score'],
+            #'score': beach['score'],
         }
     
-    # 결과 출력
+    #결과 출력
     # for beach_code, details in beach_data_dict.items():
     #     print(f"Beach Code: {beach_code}")
     #     for key, value in details.items():
     #         print(f"{key}: {value}")
     #     print("\n")
+    
+    #print(beach_data_dict['HAE']['lon'])
 else:
     print(f"Failed to retrieve data: {response.status_code}")
     
@@ -45,66 +47,168 @@ else:
 
 #이안류 위험 지수
 def get_GYEONGPO_score_msg():
-    return beach_data_dict['GYEONGPO']['score_msg']
+    try:
+        return beach_data_dict['GYEONGPO']['score_msg']
+    except KeyError:
+        return "NaN"  # 값이 없을 때 반환할 기본 메시지
+    
 def get_GORAEBUL_score_msg():
-    return beach_data_dict['GORAEBUL']['score_msg']
+    try:
+        return beach_data_dict['GORAEBUL']['score_msg']
+    except KeyError:
+        return "NaN"  # 값이 없을 때 반환할 기본 메시지
 def get_NAKSAN_score_msg():
-    return beach_data_dict['NAKSAN']['score_msg']
+    try:
+        return beach_data_dict['NAKSAN']['score_msg']
+    except KeyError:
+        return "NaN"  # 값이 없을 때 반환할 기본 메시지
+
 def get_DAECHON_score_msg():
-    return beach_data_dict['DAECHON']['score_msg']
+    try:
+        return beach_data_dict['DAECHON']['score_msg']
+    except KeyError:
+        return "NaN"  # 값이 없을 때 반환할 기본 메시지
+
 def get_MANGSANG_score_msg():
-    return beach_data_dict['MANGSANG']['score_msg']
+    try:
+        return beach_data_dict['MANGSANG']['score_msg']
+    except KeyError:
+        return "NaN"  # 값이 없을 때 반환할 기본 메시지
 def get_SOKCHO_score_msg():
-    return beach_data_dict['SOKCHO']['score_msg']
+    try:
+        return beach_data_dict['SOKCHO']['score_msg']
+    except KeyError:
+        return "NaN"  # 값이 없을 때 반환할 기본 메시지
 def get_SONGJUNG_score_msg():
-    return beach_data_dict['SONGJUNG']['score_msg']
+    try:
+        return beach_data_dict['SONGJUNG']['score_msg']
+    except KeyError:
+        return "NaN"  # 값이 없을 때 반환할 기본 메시지
+    
 def get_IMRANG_score_msg():
-    return beach_data_dict['IMRANG']['score_msg']
+    try:
+        return beach_data_dict['IMRANG']['score_msg']
+    except KeyError:
+        return "NaN"  # 값이 없을 때 반환할 기본 메시지
+
 def get_JUNGMUN_score_msg():
-    return beach_data_dict['JUNGMUN']['score_msg']
+    try:
+        return beach_data_dict['JUNGMUN']['score_msg']
+    except KeyError:
+        return "NaN"  # 값이 없을 때 반환할 기본 메시지
+    
 def get_HAE_score_msg():
-    return beach_data_dict['HAE']['score_msg']
+    try:
+        return beach_data_dict['HAE']['score_msg']
+    except KeyError:
+        return "NaN"  # 값이 없을 때 반환할 기본 메시지
+   
 
 #경도
 def get_GYEONGPO_lon():
-    return beach_data_dict['GYEONGPO']['lon']
+    try:
+        return beach_data_dict['GYEONGPO']['lon']
+    except KeyError:
+        return 0  # 값이 없을 때 반환할 기본 메시지
 def get_GORAEBUL_lon():
-    return beach_data_dict['GORAEBUL']['lon']
+    try:
+        return beach_data_dict['GORAEBUL']['lon']
+    except KeyError:
+        return 0  # 값이 없을 때 반환할 기본 메시지
 def get_NAKSAN_lon():
-    return beach_data_dict['NAKSAN']['lon']
+    try:
+        return beach_data_dict['NAKSAN']['lon']
+    except KeyError:
+        return 0  # 값이 없을 때 반환할 기본 메시지
 def get_DAECHON_lon():
-    return beach_data_dict['DAECHON']['lon']
+    try:
+        return beach_data_dict['DAECHON']['lon']
+    except KeyError:
+        return 0  # 값이 없을 때 반환할 기본 메시지
 def get_MANGSANG_lon():
-    return beach_data_dict['MANGSANG']['lon']
+    try:
+        return beach_data_dict['MANGSANG']['lon']
+    except KeyError:
+        return 0  # 값이 없을 때 반환할 기본 메시지
 def get_SOKCHO_lon():
-    return beach_data_dict['SOKCHO']['lon']
+    try:
+        return beach_data_dict['SOKCHO']['lon']
+    except KeyError:
+        return 0  # 값이 없을 때 반환할 기본 메시지
 def get_SONGJUNG_lon():
-    return beach_data_dict['SONGJUNG']['lon']
+    try:
+        return beach_data_dict['SONGJUNG']['lon']
+    except KeyError:
+        return 0  # 값이 없을 때 반환할 기본 메시지    
 def get_IMRANG_lon():
-    return beach_data_dict['IMRANG']['lon']
+    try:
+        return beach_data_dict['IMRANG']['lon']
+    except KeyError:
+        return 0  # 값이 없을 때 반환할 기본 메시지    
 def get_JUNGMUN_lon():
-    return beach_data_dict['JUNGMUN']['lon']
+    try:
+        return beach_data_dict['JUNGMUN']['lon']
+    except KeyError:
+        return 0  # 값이 없을 때 반환할 기본 메시지   
+
 def get_HAE_lon():
-    return beach_data_dict['HAE']['lon']
+    try:
+        return beach_data_dict['HAE']['lon']
+    except KeyError:
+        return 0  # 값이 없을 때 반환할 기본 메시지   
+
 
 #위도
 def get_GYEONGPO_lat():
-    return beach_data_dict['GYEONGPO']['lat']
+    try:
+        return beach_data_dict['GYEONGPO']['lat']
+    except KeyError:
+        return 0  # 값이 없을 때 반환할 기본 메시지   
 def get_GORAEBUL_lat():
-    return beach_data_dict['GORAEBUL']['lat']
+    try:
+        return beach_data_dict['GORAEBUL']['lat']
+    except KeyError:
+        return 0  # 값이 없을 때 반환할 기본 메시지   
 def get_NAKSAN_lat():
-    return beach_data_dict['NAKSAN']['lat']
+    try:
+        return beach_data_dict['NAKSAN']['lat']
+    except KeyError:
+        return 0  # 값이 없을 때 반환할 기본 메시지   
 def get_DAECHON_lat():
-    return beach_data_dict['DAECHON']['lat']
+    try:
+        return beach_data_dict['DAECHON']['lat']
+    except KeyError:
+        return 0  # 값이 없을 때 반환할 기본 메시지   
 def get_MANGSANG_lat():
-    return beach_data_dict['MANGSANG']['lat']
+    try:
+        return beach_data_dict['MANGSANG']['lat']
+    except KeyError:
+        return 0  # 값이 없을 때 반환할 기본 메시지  
 def get_SOKCHO_lat():
-    return beach_data_dict['SOKCHO']['lat']
+    try:
+        return beach_data_dict['SOKCHO']['lat']
+    except KeyError:
+        return 0  # 값이 없을 때 반환할 기본 메시지
 def get_SONGJUNG_lat():
-    return beach_data_dict['SONGJUNG']['lat']
+    try:
+        return beach_data_dict['SONGJUNG']['lat']
+    except KeyError:
+        return 0  # 값이 없을 때 반환할 기본 메시지
+
 def get_IMRANG_lat():
-    return beach_data_dict['IMRANG']['lat']
+    try:
+        return beach_data_dict['IMRANG']['lat']
+    except KeyError:
+        return 0  # 값이 없을 때 반환할 기본 메시지
+    
 def get_JUNGMUN_lat():
-    return beach_data_dict['JUNGMUN']['lat']
+    try:
+        return beach_data_dict['JUNGMUN']['lat']
+    except KeyError:
+        return 0  # 값이 없을 때 반환할 기본 메시지
+    
 def get_HAE_lat():
-    return beach_data_dict['HAE']['lat']
+    try:
+        return beach_data_dict['HAE']['lat']
+    except KeyError:
+        return 0  # 값이 없을 때 반환할 기본 메시지
