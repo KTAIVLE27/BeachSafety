@@ -12,6 +12,7 @@ from .models import *
 from .forms import *
 from .utils import get_weather_item
 from django.core.paginator import Paginator
+from django.views.decorators.http import require_POST
 
 def is_admin(user):
     return user.is_authenticated and user.user_id == 'admin' and user.user_name == 'admin' and user.check_password('aivle2024!')
@@ -183,6 +184,13 @@ def edit_freeboard(request, pk):
         else:
             return JsonResponse({'success': False})
     return JsonResponse({'success': False})
+
+#자유게시판 삭제
+@require_POST
+def delete_freeboard(request, post_id):
+    post = get_object_or_404(Event_board, pk=post_id, user_no=request.user)
+    post.delete()
+    return JsonResponse({'success': True})
 
 
 @login_required

@@ -24,6 +24,6 @@ urlpatterns = [
     path('create_freeboard/', views.create_freeboard, name='create_freeboard'),
     path('free_board/<int:pk>/', views.freeboard_detail, name='freeboard_detail'),
     path('freeboard/edit/<int:pk>/', views.edit_freeboard, name='edit_freeboard'),
-
+    path('delete/<int:post_id>/', views.delete_freeboard, name='delete_freeboard'),
 ]
 
