@@ -235,7 +235,7 @@ def signup(request):
             user.user_role = 'police'
             user.save()
             login(request, user)
-            return redirect('home')
+            return redirect('signin')
         else:
             # 유효성 검사 오류가 발생하면 다시 회원가입 페이지를 렌더링합니다.
             return render(request, 'signup.html', {'form': form})
