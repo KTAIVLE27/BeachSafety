@@ -68,26 +68,14 @@ def home(request):
         'SONGJUNG_lat': get_SONGJUNG_lat(),
         'IMRANG_lat': get_IMRANG_lat(),
         'JUNGMUN_lat': get_JUNGMUN_lat(),
-        'HAE_lat': get_HAE_lat(),
-        
-        
-
-        
+        'HAE_lat': get_HAE_lat(),   
     }
-    
     context_json = json.dumps(context_rip)  # JSON 형식의 문자열로 변환
-    
     combined_context = {
         **context,
         'context_rip_json': context_json  # JSON 문자열을 포함
     }
-    
     return render(request, 'home.html', combined_context)
-
-
-
-
-
 
 @login_required
 def myprofile(request):
@@ -319,28 +307,28 @@ def signup(request):
     return render(request, 'signup.html', {'form': form})
 
 
-def control_view(request):
-    forecast_data_items = get_weather_item()
-    forecast_data = dict(forecast_data_items)
+# def control_view(request):
+#     forecast_data_items = get_weather_item()
+#     forecast_data = dict(forecast_data_items)
 
-    weather_data = {
-        'weather_of_today': forecast_data.get('TMP', 'N/A'),
-        'highest_temp_of_today': forecast_data.get('TMX', 'N/A'),
-        'lowest_temp_of_today': forecast_data.get('TMN', 'N/A'),
-        'temperature': forecast_data.get('TMP', 'N/A'),
-        'rainfall': forecast_data.get('PCP', 'N/A'),
-        'wind_ew': forecast_data.get('UUU', 'N/A'),
-        'wind_ns': forecast_data.get('VVV', 'N/A'),
-        'humidity': forecast_data.get('REH', 'N/A'),
-        'precipitation': forecast_data.get('PTY', 'N/A'),
-        'wind_direction': forecast_data.get('VEC', 'N/A'),
-        'wind_speed': forecast_data.get('WSD', 'N/A'),
-    }
+#     weather_data = {
+#         'weather_of_today': forecast_data.get('TMP', 'N/A'),
+#         'highest_temp_of_today': forecast_data.get('TMX', 'N/A'),
+#         'lowest_temp_of_today': forecast_data.get('TMN', 'N/A'),
+#         'temperature': forecast_data.get('TMP', 'N/A'),
+#         'rainfall': forecast_data.get('PCP', 'N/A'),
+#         'wind_ew': forecast_data.get('UUU', 'N/A'),
+#         'wind_ns': forecast_data.get('VVV', 'N/A'),
+#         'humidity': forecast_data.get('REH', 'N/A'),
+#         'precipitation': forecast_data.get('PTY', 'N/A'),
+#         'wind_direction': forecast_data.get('VEC', 'N/A'),
+#         'wind_speed': forecast_data.get('WSD', 'N/A'),
+#     }
 
-    context = {
-        'weather_data': weather_data
-    }
-    return render(request, 'weather.html', context)
+#     context = {
+#         'weather_data': weather_data
+#     }
+#     return render(request, 'weather.html', context)
 
 
 def forgotpw(request):
@@ -398,10 +386,46 @@ def myposts(request):
     else:
         return render(request, 'myposts.html')   
     
-
-    
-
 def agreement(request):
     # 내가 쓴 글을 가져오는 로직을 추가하세요.
     return render(request, 'agreement.html')
 
+
+from django.shortcuts import render
+from .utils import fetch_weather_data
+
+def control_view(request):
+    beach_no = request.GET.get('beach_no')
+    
+    beaches = {
+        "경포 해수욕장": {"nx": 92, "ny": 132},
+        "고래불 해수욕장": {"nx": 103, "ny": 107},
+        "낙산 해수욕장": {"nx": 87, "ny": 140},
+        "대천 해수욕장": {"nx": 53, "ny": 100},
+        "망상 해수욕장": {"nx": 96, "ny": 127},
+        "속초 해수욕장": {"nx": 87, "ny": 140},
+        "송정 해수욕장": {"nx": 61, "ny": 126},
+        "임랑 해수욕장": {"nx": 101, "ny": 79},
+        "중문 해수욕장": {"nx": 51, "ny": 32},
+        "해운대 해수욕장": {"nx": 99, "ny": 75},
+    }
+
+    selected_beach = None
+    weather_data = None
+
+    if beach_no:
+        try:
+            nx, ny = eval(beach_no)['nx'], eval(beach_no)['ny']
+            selected_beach = next((name for name, coords in beaches.items() if coords == {"nx": nx, "ny": ny}), None)
+            if selected_beach:
+                weather_data = fetch_weather_data({'nx': nx, 'ny': ny})
+        except (SyntaxError, KeyError):
+            pass
+
+    context = {
+        'weather_data': weather_data,
+        'beaches': beaches,
+        'selected_beach': selected_beach
+    }
+    
+    return render(request, 'weather.html', context)
