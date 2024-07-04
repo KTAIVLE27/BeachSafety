@@ -71,10 +71,20 @@ class SignUpForm(UserCreationForm):
             'max_length': 'Address cannot exceed 255 characters'
         }
     )
+    #<!-- 상세 주소 -->
+    # user_address_Detail = forms.CharField(
+    #     max_length=255, 
+    #     required=True, 
+    #     widget=forms.TextInput(), 
+    #     error_messages={
+    #         'required': 'Address is required',
+    #         'max_length': 'Address cannot exceed 255 characters'
+    #     }
+    # )
 
     class Meta:
         model = User
-        fields = ('user_id', 'user_email', 'user_name', 'user_phone', 'user_birth', 'user_address', 'password1', 'password2')
+        fields = ('user_id', 'user_email', 'user_name', 'user_phone', 'user_birth', 'user_address', 'password1', 'password2') #'user_address_Detail')
 
 class PostForm(forms.ModelForm):
     beach_no = forms.ModelChoiceField(queryset=Beach.objects.all(), required=False, label='해수욕장')
@@ -169,10 +179,20 @@ class SignUpForm(UserCreationForm):
             'max_length': 'Address cannot exceed 255 characters'
         }
     )
+    #<!-- 상세 주소 -->
+    # user_address_Detail = forms.CharField(
+    #     max_length=255, 
+    #     required=True, 
+    #     widget=forms.TextInput(), 
+    #     error_messages={
+    #         'required': 'Address is required',
+    #         'max_length': 'Address cannot exceed 255 characters'
+    #     }
+    # )
 
     class Meta:
         model = User
-        fields = ('user_id', 'user_email', 'user_name', 'user_phone', 'user_birth', 'user_address', 'password1', 'password2')
+        fields = ('user_id', 'user_email', 'user_name', 'user_phone', 'user_birth', 'user_address', 'password1', 'password2') #'user_address_Detail')
 
     
 

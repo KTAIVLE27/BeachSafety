@@ -15,7 +15,6 @@
     <link href="{% static 'lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
-    <!-- Bootstrap Datepicker CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
 </head>
 <body>
@@ -34,42 +33,42 @@
                         <div class="form-floating mb-3">
                             <input type="text" class="form-control" name="user_id" id="id_id" placeholder="ID" required maxlength="150" oninput="validateField(this)">
                             <label for="id_id">ID</label>
-                            <div class="text-danger" id="id_id_error"></div>
+                            <div class="text-danger" id="id_id_error">{{ form.user_id.errors }}</div>
                         </div>
                         <div class="form-floating mb-3">
                             <input type="password" class="form-control" name="password1" id="id_password1" placeholder="비밀번호" required oninput="validateField(this)">
                             <label for="id_password1">비밀번호</label>
-                            <div class="text-danger" id="id_password1_error"></div>
+                            <div class="text-danger" id="id_password1_error">{{ form.password1.errors }}</div>
                         </div>
                         <div class="form-floating mb-3">
                             <input type="password" class="form-control" name="password2" id="id_password2" placeholder="비밀번호 확인" required oninput="validateField(this)">
                             <label for="id_password2">비밀번호 재입력</label>
-                            <div class="text-danger" id="id_password2_error"></div>
+                            <div class="text-danger" id="id_password2_error">{{ form.password2.errors }}</div>
                         </div>
                         <div class="form-floating mb-3">
                             <input type="email" class="form-control" name="user_email" id="id_email" placeholder="name@example.com" oninput="validateField(this)">
                             <label for="id_email">이메일</label>
-                            <div class="text-danger" id="id_email_error"></div>
+                            <div class="text-danger" id="id_email_error">{{ form.user_email.errors }}</div>
                         </div>
                         <div class="form-floating mb-3">
                             <input type="text" class="form-control" name="user_name" id="id_username" placeholder="이름" required maxlength="150" oninput="validateField(this)">
                             <label for="id_username">이름</label>
-                            <div class="text-danger" id="id_username_error"></div>
+                            <div class="text-danger" id="id_username_error">{{ form.user_name.errors }}</div>
                         </div>
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" name="user_phone" id="id_PhoneNumber" placeholder="핸드폰번호" required maxlength="150" oninput="validateField(this)">
+                            <input type="text" class="form-control" name="user_phone" id="id_PhoneNumber" placeholder="핸드폰번호" required maxlength="150" onfocus="startPASSAuth()">
                             <label for="id_PhoneNumber">전화번호</label>
-                            <div class="text-danger" id="id_PhoneNumber_error"></div>
+                            <div class="text-danger" id="id_PhoneNumber_error">{{ form.user_phone.errors }}</div>
                         </div>
                         <div class="form-floating mb-3">
                             <input type="text" class="form-control" name="user_address" id="id_address" placeholder="주소" required maxlength="150" onclick="execDaumPostcode()">
                             <label for="id_address">주소</label>
-                            <div class="text-danger" id="id_address_error"></div>
+                            <div class="text-danger" id="id_address_error">{{ form.user_address.errors }}</div>
                         </div>
                         <div class="form-floating mb-3">
                             <input type="text" class="form-control" name="user_birth" id="id_birth" placeholder="yyyy-mm-dd" required oninput="validateField(this)">
                             <label for="id_birth">생년월일</label>
-                            <div class="text-danger" id="id_birth_error"></div>
+                            <div class="text-danger" id="id_birth_error">{{ form.user_birth.errors }}</div>
                         </div>                        
                         <button type="submit" class="btn btn-primary py-3 w-100 mb-4">회원 가입 완료</button>
                     </form>
@@ -79,7 +78,6 @@
         </div>
     </div>
 
-    <!-- 필요한 JavaScript 파일 포함 -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
@@ -92,27 +90,26 @@
     <script src="{% static 'lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
 
-    <!-- Datepicker 초기화 스크립트 -->
+    <!-- PASS 인증 스크립트 로드 -->
+    <script src="https://pass-api-url.com/pass-api.js"></script>
+
     <script>
         $(document).ready(function() {
             $('#id_birth').datepicker({
-                format: 'yyyy-mm-dd', // 날짜 형식 지정
+                format: 'yyyy-mm-dd',
                 autoclose: true,
                 todayHighlight: true
             });
         });
 
-        // Daum 우편번호 검색 API 초기화 스크립트
         function execDaumPostcode() {
             new daum.Postcode({
                 oncomplete: function(data) {
-                    // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분입니다.
                     document.getElementById('id_address').value = data.address;
                 }
             }).open();
         }
 
-        // 실시간 입력 검증 스크립트
         function validateField(field) {
             let errorDiv = document.getElementById(field.id + "_error");
             if (field.name === "user_id") {
@@ -156,15 +153,27 @@
             if (field.name === "user_birth") {
                 let birthPattern = /^\d{4}-\d{2}-\d{2}$/;
                 if (!birthPattern.test(field.value)) {
-                    errorDiv.textContent = "생년월일은 y-mm-dd 형식이어야 합니다.";
+                    errorDiv.textContent = "생년월일은 yyyy-mm-dd 형식이어야 합니다.";
                 } else {
                     errorDiv.textContent = "";
                 }
             }
         }
+
+        function startPASSAuth() {
+            // PASS 인증 API 호출
+            passAuth({
+                oncomplete: function(data) {
+                    document.getElementById('id_PhoneNumber').value = data.phoneNumber;
+                    // 추가 데이터 처리가 필요한 경우 여기에 작성
+                }
+            });
+        }
     </script>
 
-    <!-- Daum 우편번호 검색 API 스크립트 -->
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <!-- PASS 인증 스크립트 로드 -->
+    <script src="https://pass-api-url.com/pass-api.js"></script>
+
 </body>
 </html>
