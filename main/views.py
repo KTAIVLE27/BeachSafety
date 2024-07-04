@@ -186,6 +186,13 @@ def edit_freeboard(request, pk):
             return JsonResponse({'success': False})
     return JsonResponse({'success': False})
 
+#자유게시판 삭제
+@require_POST
+def delete_freeboard(request, post_id):
+    post = get_object_or_404(Event_board, pk=post_id, user_no=request.user)
+    post.delete()
+    return JsonResponse({'success': True})
+
 
 @login_required
 def chat(request):
