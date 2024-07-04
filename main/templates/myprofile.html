@@ -223,6 +223,16 @@
                                             <input type="text" id="profile-address" name="user_address" class="form-control" value="{{ user.user_address }}" onclick="execDaumPostcode()">
                                         </div>
                                     </div>
+
+                                    <!-- 상세 주소 -->
+                                    {% comment %} <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <label for="profile-address_Detail" class="form-label">상세 주소</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <input type="text" id="profile-address_Detail" name="user_address_Detail" class="form-control" value="{{ user.user_address_Detail }}">
+                                        </div>
+                                    </div> {% endcomment %}
                                     
                                     <button type="submit" class="btn btn-primary w-100">저장</button>
                                     <p id="password-error" class="text-danger mt-2"></p>
