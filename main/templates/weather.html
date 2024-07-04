@@ -46,7 +46,7 @@
         <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-light navbar-light">
                 <a href="{% url 'home' %}" class="navbar-brand mx-4 mb-3">
-                    <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>해양안전</h3>
+                    <h3 class="text-primary">Weather</h3>
                 </a>
                 <div class="d-flex align-items-center ms-4 mb-4">
                     <div class="position-relative">
@@ -124,13 +124,19 @@
             <!-- Weather Information Start -->
             <div class="container-fluid pt-4 px-4">
                 <div class="row g-4">
-                    <div class="bg-light text-center rounded p-4">
-                        <div class="d-flex align-items-center justify-content-between mb-4">
-                            <h6 class="mb-0">날씨 이미지 정보 박스</h6>
+                    <div class="dropdown me-2">
+                        <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            구분
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="?beach_no=common">강릉</a>
+                            <a class="dropdown-item" href="?beach_no=common">송정</a>
+                            <a class="dropdown-item" href="?beach_no=common">여수</a>
+                            <a class="dropdown-item" href="?beach_no=common">해운대</a>
+                            {% for beach in beaches %}
+                                <a class="dropdown-item" href="?beach_no={{ beach.beach_no }}">{{ beach.beach_name }}</a>
+                            {% endfor %}
                         </div>
-                        <img src="{% static 'img/weather_image.png' %}" alt="Weather Image" style="width: 100%; height: auto;">
-                    </div>
-
                     <div class="bg-light text-center rounded p-4">
                         <div class="d-flex align-items-center justify-content-between mb-4">
                             <h6 class="mb-0">날씨 텍스트 정보 박스</h6>

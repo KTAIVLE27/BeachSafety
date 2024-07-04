@@ -41,12 +41,6 @@ def delete_boards(request):
     except Exception as e:
         return JsonResponse({"status": "error", "message": str(e)}, status=400)
     
-# def user_list_view(request):
-#     users = User.objects.all()
-#     context = {
-#         'users': users
-#     }
-#     return render(request, 'adminpanel/user_list.html', context)
 
 def user_list_view(request):
     users = User.objects.all().order_by('user_no')  # Order by 'user_no' or another appropriate field
