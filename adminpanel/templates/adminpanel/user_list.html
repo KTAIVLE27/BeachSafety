@@ -219,7 +219,7 @@
                 });
 
                 if (selectedIds.length > 0) {
-                    if (confirm('Are you sure you want to delete the selected users?')) {
+                    if (confirm('선택한 사용자를 삭제하시겠습니까?')) {
                         $.ajax({
                             url: "{% url 'adminpanel:delete_users' %}",
                             method: 'POST',
@@ -231,12 +231,12 @@
                                 location.reload(); // Reload the page on success
                             },
                             error: function(response) {
-                                alert('An error occurred while deleting users.');
+                                alert('사용자를 삭제하는 동안 오류가 발생했습니다.');
                             }
                         });
                     }
                 } else {
-                    alert('Please select at least one user to delete.');
+                    alert('삭제할 사용자를 하나 이상 선택하십시오.');
                 }
             });
         });
