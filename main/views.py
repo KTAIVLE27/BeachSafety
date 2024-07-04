@@ -12,6 +12,8 @@ from .models import *
 from .forms import *
 from .utils import get_weather_item
 from django.core.paginator import Paginator
+from django.views.decorators.http import require_POST
+import json
 
 def is_admin(user):
     return user.is_authenticated and user.user_id == 'admin' and user.user_name == 'admin' and user.check_password('aivle2024!')
@@ -316,15 +318,14 @@ def myposts(request):
             return render(request, 'myposts.html', {'event_boards': event_boards, 'page_obj': page_obj, 'beaches': beaches, 'user': request.user})
         except AttributeError:
             # 로그인된 사용자가 없는 경우 처리
-            return redirect('login')  # 로그인 페이지로 리디렉션
+            return redirect('/')  # 로그인 페이지로 리디렉션
         except Event_board.DoesNotExist:
             # 일치하는 게시물이 없는 경우 처리
             return render(request, 'myposts.html', {'event_boards': [], 'user': request.user})
     else:
         return render(request, 'myposts.html')   
     
-    
-    
+
     
 
 def agreement(request):

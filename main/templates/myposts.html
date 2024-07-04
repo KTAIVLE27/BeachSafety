@@ -134,9 +134,8 @@
                         <div class="bg-light text-center rounded p-4">
                             <div class="d-flex align-items-center justify-content-between mb-4">
                                 <h4 class="mb-0">내 게시글</h4> <!-- Increased font size for Notices -->
-                            </div>
-                            <div class="d-flex align-items-center justify-content-between mb-4">
                                 <div class="d-flex">
+                                    <a href="{% url 'adminpanel:create_notice' %}" class="btn btn-secondary me-2">글쓰기</a> <!-- Write Button -->
                                     <div class="dropdown me-2">
                                         <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                                             구분
@@ -149,6 +148,7 @@
                                             {% endfor %}
                                         </div>
                                     </div>
+                                    <button id="deleteButton" class="btn btn-primary">삭제</button> <!-- Delete Button -->
                                 </div>
                             </div>
                             <!-- Table for Notices -->
@@ -156,6 +156,9 @@
                                 <table class="table table-bordered">
                                     <thead>
                                         <tr>
+                                            <th scope="col" style="width: 5%;">
+                                            <input type="checkbox" id="selectAll">
+                                            </th>
                                             <th scope="col" style="width: 5%;">글 번호</th> <!-- Adjusted width for Title -->
                                             <th scope="col" style="width: 15%;">구분</th> <!-- Adjusted width for Title -->
                                             <th scope="col" style="width: 50%;">제목</th> <!-- Adjusted width for Date -->
@@ -165,8 +168,9 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {% for event in event_boards %}
+                                        {% for event in page_obj %}
                                             <tr data-id="{{ event.event_id }}">
+                                                <td><input type="checkbox" class="selectRow"></td>
                                                 <td>{{ forloop.counter0|add:page_obj.start_index }}</td>
                                                 <td>
                                                     {% if event.beach_no %}
@@ -263,6 +267,41 @@
 
     <!-- Custom JavaScript for alert messages -->
     <script>
+        document.getElementById('selectAll').addEventListener('change', function() {
+            var checkboxes = document.querySelectorAll('.selectRow');
+            for (var checkbox of checkboxes) {
+                checkbox.checked = this.checked;
+            }
+        });
+        // post 삭제
+        document.getElementById('deleteButton').addEventListener('click', function() {
+            var checkboxes = document.querySelectorAll('.selectRow:checked');
+            var idsToDelete = [];
+            checkboxes.forEach(function(checkbox) {
+                idsToDelete.push(checkbox.closest('tr').getAttribute('data-id'));
+            });
+            if (idsToDelete.length > 0) {
+                fetch('{% url 'adminpanel:delete_boards' %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({ ids: idsToDelete })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    if (data.status === "success") {
+                        location.reload(); // 성공시 페이지 리로드
+                    } else {
+                        alert("Error: " + data.message); // 실패시 메시지 출력
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        });
+
         // Display alert message
         function showAlert(message, alertType) {
             const alertBox = document.createElement('div');
@@ -279,6 +318,8 @@
             }, 3000);
         }
 
+
+        
         // Handle messages from Django
         {% if messages %}
             {% for message in messages %}
