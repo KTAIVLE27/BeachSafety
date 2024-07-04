@@ -14,6 +14,7 @@ from .utils import get_weather_item
 from django.core.paginator import Paginator
 from django.views.decorators.http import require_POST
 import json
+from control.utils import *
 
 def is_admin(user):
     return user.is_authenticated and user.user_id == 'admin' and user.user_name == 'admin' and user.check_password('aivle2024!')
@@ -34,7 +35,58 @@ def home(request):
         'home_notices': home_notices,
         'home_event': home_event,
     }
-    return render(request, 'home.html', context)
+    
+    context_rip = {
+        'GYEONGPO_score_msg': get_GYEONGPO_score_msg(),
+        'GORAEBUL_score_msg': get_GORAEBUL_score_msg(),
+        'NAKSAN_score_msg': get_NAKSAN_score_msg(),
+        'DAECHON_score_msg': get_DAECHON_score_msg(),
+        'MANGSANG_score_msg': get_MANGSANG_score_msg(),
+        'SOKCHO_score_msg': get_SOKCHO_score_msg(),
+        'SONGJUNG_score_msg': get_SONGJUNG_score_msg(),
+        'IMRANG_score_msg': get_IMRANG_score_msg(),
+        'JUNGMUN_score_msg': get_JUNGMUN_score_msg(),
+        'HAE_score_msg': get_HAE_score_msg(),
+        
+        'GYEONGPO_lon': get_GYEONGPO_lon(),
+        'GORAEBUL_lon': get_GORAEBUL_lon(),
+        'NAKSAN_lon': get_NAKSAN_lon(),
+        'DAECHON_lon': get_DAECHON_lon(),
+        'MANGSANG_lon': get_MANGSANG_lon(),
+        'SOKCHO_lon': get_SOKCHO_lon(),
+        'SONGJUNG_lon': get_SONGJUNG_lon(),
+        'IMRANG_lon': get_IMRANG_lon(),
+        'JUNGMUN_lon': get_JUNGMUN_lon(),
+        'HAE_lon': get_HAE_lon(),
+        
+        'GYEONGPO_lat': get_GYEONGPO_lat(),
+        'GORAEBUL_lat': get_GORAEBUL_lat(),
+        'NAKSAN_lat': get_NAKSAN_lat(),
+        'DAECHON_lat': get_DAECHON_lat(),
+        'MANGSANG_lat': get_MANGSANG_lat(),
+        'SOKCHO_lat': get_SOKCHO_lat(),
+        'SONGJUNG_lat': get_SONGJUNG_lat(),
+        'IMRANG_lat': get_IMRANG_lat(),
+        'JUNGMUN_lat': get_JUNGMUN_lat(),
+        'HAE_lat': get_HAE_lat(),
+        
+        
+
+        
+    }
+    
+    context_json = json.dumps(context_rip)  # JSON 형식의 문자열로 변환
+    
+    combined_context = {
+        **context,
+        'context_rip_json': context_json  # JSON 문자열을 포함
+    }
+    
+    return render(request, 'home.html', combined_context)
+
+
+
+
 
 
 @login_required
