@@ -292,24 +292,28 @@ def forgotpw(request):
     return render(request, 'forgotpw.html', {'form': form})
 
 
-# def myposts(request):
-#     if request.method == 'POST':
-#         user = request.user
-
-#         user_no = request.POST.get('user_no')
-
-
-
-#     else:
-#         return render(request, 'myposts.html')
-
 @login_required
 def myposts(request):
     if request.method == 'GET':
         try:
             user_no = request.user.user_no  # 로그인된 사용자의 user_no 가져오기
-            event_boards = Event_board.objects.filter(user_no=user_no)  # user_no와 일치하는 게시물 필터링
-            return render(request, 'myposts.html', {'event_boards': event_boards, 'user': request.user})
+            beach_no = request.GET.get('beach_no')  # 요청에서 beach_no 가져오기
+
+            # beach_no에 따른 게시물 필터링
+            if beach_no == 'common':
+                event_boards = Event_board.objects.filter(user_no=user_no, beach_no__isnull=True)
+            elif beach_no:
+                event_boards = Event_board.objects.filter(user_no=user_no, beach_no=beach_no)
+            else:
+                event_boards = Event_board.objects.filter(user_no=user_no)
+            
+            # 페이징 처리
+            paginator = Paginator(event_boards, 10)  # 페이지당 10개의 게시물
+            page_number = request.GET.get('page')
+            page_obj = paginator.get_page(page_number)
+            beaches = Beach.objects.all()
+
+            return render(request, 'myposts.html', {'event_boards': event_boards, 'page_obj': page_obj, 'beaches': beaches, 'user': request.user})
         except AttributeError:
             # 로그인된 사용자가 없는 경우 처리
             return redirect('login')  # 로그인 페이지로 리디렉션
@@ -317,9 +321,7 @@ def myposts(request):
             # 일치하는 게시물이 없는 경우 처리
             return render(request, 'myposts.html', {'event_boards': [], 'user': request.user})
     else:
-        render(request, 'myposts.html')
-
-    
+        return render(request, 'myposts.html')   
     
     
     
