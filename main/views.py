@@ -258,7 +258,9 @@ def risk(request):
     return render(request, 'risk.html')
 
 def signin(request):
-    user = None
+    if request.user.is_authenticated:
+        return redirect('home')
+    
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
@@ -281,11 +283,6 @@ def signin(request):
         form = AuthenticationForm()
     return render(request, 'signin.html', {'form': form})
 
-import logging
-from django.contrib import messages
-
-# 로거 인스턴스 생성
-logger = logging.getLogger('django')
 
 def signup(request):
     if request.method == 'POST':
@@ -294,13 +291,8 @@ def signup(request):
             user = form.save()
             user.user_role = 'police'
             user.save()
-            login(request, user)
             return redirect('signin')
         else:
-            for field, errors in form.errors.items():
-                for error in errors:
-                    logger.error(f"Validation error in {field}: {error}")
-                    messages.error(request, f"{field}: {error}")
             return render(request, 'signup.html', {'form': form})
     else:
         form = SignUpForm()

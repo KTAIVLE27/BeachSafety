@@ -61,7 +61,7 @@ class Beach(models.Model):
         db_table = 'beach'
 
 class Notice_board(models.Model):
-    notice_id = models.AutoField(max_length=20, primary_key=True)  # 게시물 고유 번호
+    notice_id = models.AutoField(primary_key=True)  # 게시물 고유 번호
     user_no = models.ForeignKey(User, on_delete=models.SET_NULL, null = True, db_column='user_no')  # 회원번호 - user 가 삭제되어도 데이터 남아있도록
     beach_no = models.ForeignKey(Beach, on_delete=models.RESTRICT, db_column='beach_no', null=True, blank=True)
     notice_title = models.CharField(max_length=200, blank=False)  # 제목
@@ -74,7 +74,7 @@ class Notice_board(models.Model):
         db_table = 'notice_board'
 
 class Event_board(models.Model):
-    event_id = models.AutoField(max_length=20, primary_key=True)  # 게시물 고유 번호
+    event_id = models.AutoField(primary_key=True)  # 게시물 고유 번호
     user_no = models.ForeignKey(User, on_delete=models.SET_NULL, db_column='user_no', null=True)  # 회원번호
     beach_no = models.ForeignKey(Beach, on_delete=models.RESTRICT, db_column='beach_no',null=True, blank=True)
     event_title = models.CharField(max_length=200, blank=False)  # 제목
