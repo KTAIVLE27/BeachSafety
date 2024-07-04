@@ -45,6 +45,7 @@ def myprofile(request):
         user_email = request.POST.get('user_email')
         user_phone = request.POST.get('user_phone')
         user_address = request.POST.get('user_address')
+        user_detail_address = request.POST.get('user_detail_address')
         password1 = request.POST.get('password1')
         password2 = request.POST.get('password2')
 
@@ -74,6 +75,10 @@ def myprofile(request):
         # 주소 변경
         if user_address and user_address != user.user_address:
             user.user_address = user_address
+            
+        # 상세 주소 변경
+        if user_detail_address and user_detail_address != user.user_detail_address:
+            user.user_detail_address = user_detail_address
 
         user.save()
         messages.success(request, '프로필 정보가 성공적으로 변경되었습니다.')
@@ -236,6 +241,12 @@ def signin(request):
         form = AuthenticationForm()
     return render(request, 'signin.html', {'form': form})
 
+import logging
+from django.contrib import messages
+
+# 로거 인스턴스 생성
+logger = logging.getLogger('django')
+
 def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -246,7 +257,10 @@ def signup(request):
             login(request, user)
             return redirect('signin')
         else:
-            # 유효성 검사 오류가 발생하면 다시 회원가입 페이지를 렌더링합니다.
+            for field, errors in form.errors.items():
+                for error in errors:
+                    logger.error(f"Validation error in {field}: {error}")
+                    messages.error(request, f"{field}: {error}")
             return render(request, 'signup.html', {'form': form})
     else:
         form = SignUpForm()
