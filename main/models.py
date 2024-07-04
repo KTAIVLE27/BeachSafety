@@ -35,7 +35,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     user_phone = models.CharField(max_length=20, blank=False)  # 휴대폰번호
     user_name = models.CharField(max_length=100, blank=False)  # 이름
     user_birth = models.DateField(blank=False)  # 생일
-    user_address = models.CharField(max_length=255, blank=True, null=True)  # 주소
+    user_address = models.CharField(max_length=255, blank=False, null=False)  # 주소
+    user_detail_address = models.CharField(max_length=255, blank=False, null=False) # 상세 주소
     user_id = models.CharField(max_length=50, unique=True, blank=False)  # 회원 ID
     user_email = models.EmailField(unique=True, blank=False)  # 회원 이메일
     user_joinday = models.DateTimeField(auto_now_add=True, blank=False)  # 회원 가입날짜
@@ -46,7 +47,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
     
     USERNAME_FIELD = 'user_id'
-    REQUIRED_FIELDS = ['user_email', 'user_name', 'user_phone', 'user_birth']
+    REQUIRED_FIELDS = ['user_email', 'user_name', 'user_phone', 'user_birth', 'user_address', 'user_detail_address']
 
     class Meta:
         db_table = 'user'
@@ -61,7 +62,7 @@ class Beach(models.Model):
 
 class Notice_board(models.Model):
     notice_id = models.AutoField(max_length=20, primary_key=True)  # 게시물 고유 번호
-    user_no = models.ForeignKey(User, on_delete=models.RESTRICT, db_column='user_no')  # 회원번호
+    user_no = models.ForeignKey(User, on_delete=models.SET_NULL, null = True, db_column='user_no')  # 회원번호 - user 가 삭제되어도 데이터 남아있도록
     beach_no = models.ForeignKey(Beach, on_delete=models.RESTRICT, db_column='beach_no', null=True, blank=True)
     notice_title = models.CharField(max_length=200, blank=False)  # 제목
     notice_img = models.CharField(max_length=255, blank=True, null=True)  # 이미지
@@ -74,7 +75,7 @@ class Notice_board(models.Model):
 
 class Event_board(models.Model):
     event_id = models.AutoField(max_length=20, primary_key=True)  # 게시물 고유 번호
-    user_no = models.ForeignKey(User, on_delete=models.RESTRICT, db_column='user_no')  # 회원번호
+    user_no = models.ForeignKey(User, on_delete=models.SET_NULL, db_column='user_no', null=True)  # 회원번호
     beach_no = models.ForeignKey(Beach, on_delete=models.RESTRICT, db_column='beach_no',null=True, blank=True)
     event_title = models.CharField(max_length=200, blank=False)  # 제목
     event_img = models.CharField(max_length=255, blank=True, null=True)  # 이미지
