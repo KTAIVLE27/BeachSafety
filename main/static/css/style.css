@@ -437,3 +437,14 @@
     top: 50%;
     transform: translateY(-50%);
 }
+
+
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #333; /* 원하는 배경색 */
+    color: white; /* 텍스트 색상 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+    padding: 10px 0; /* 내부 여백 */
+}
