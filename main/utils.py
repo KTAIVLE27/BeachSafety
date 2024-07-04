@@ -29,6 +29,8 @@ params = {
     'nx': '99',
     'ny': '75',
 }
+print(now.strftime('%Y%m%d'))
+print(closest_base_time)
 
 # API 요청 보내기
 response = requests.get(api_url, params=params)
@@ -57,8 +59,8 @@ if response.status_code == 200:
                 forecast_data[category] = fcst_value
 
         # 저장된 데이터 출력
-        # for category, value in forecast_data.items():
-        #     print(f"{category}: {value}")
+        for category, value in forecast_data.items():
+            print(f"{category}: {value}")
     else:
         print("No forecast data available.")
 else:
