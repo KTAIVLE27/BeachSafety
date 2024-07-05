@@ -19,7 +19,7 @@ if response.status_code == 200:
         beach_code = beach['beach_code']
         beach_data_dict[beach_code] = {
             #'beach_name': beach['beach_name'],
-            #'obs_time': beach['obs_time'],
+            'obs_time': beach['obs_time'],
             #'water_temp': beach['water_temp'],
             #'air_temp': beach['air_temp'],
             #'wind_speed': beach['wind_speed'],
@@ -65,3 +65,10 @@ def get_beach_lat(beach_name):
         return beach.beach_lat
     except Beach.DoesNotExist:
         return 0  # 값이 없을 때 반환할 기본 메시지
+    
+    
+def get_beach_obs_time(beach_API_CODE):
+    try:
+        return beach_data_dict[beach_API_CODE]['obs_time']
+    except KeyError:
+        return "NaN"  # 값이 없을 때 반환할 기본 메시지
