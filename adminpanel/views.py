@@ -219,3 +219,10 @@ def board_detail(request, pk):
         return redirect('adminpanel:board_manage')
     
     return render(request, 'adminpanel/board_detail.html', {'post': post})
+
+
+def control_load(request):
+    return render(request, 'control.html')
+
+def main_load(request):
+    return render(request, 'home.html')

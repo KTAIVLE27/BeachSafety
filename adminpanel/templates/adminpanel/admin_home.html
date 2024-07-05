@@ -55,8 +55,8 @@
                         <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
                     </div>
                     <div class="ms-3">
-                        <h6 class="mb-0">27조</h6>
-                        <span>Admin</span>
+                        <h6 class="mb-0">27조 {{user.user_name}}</h6>
+                        <span>{{user.user_id}}</span>
                     </div>
                 </div>
                 <div class="navbar-nav w-100">
@@ -82,7 +82,7 @@
             <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
                 <a href="#" class="sidebar-toggler flex-shrink-0">
                     <i class="fa fa-bars"></i>
-                </a> 
+                </a>
                 
                 <a href="{% url 'adminpanel:admin_home' %}"><img src="{% static 'img/logo.png' %}" width="50" height="50"></i></a>
                 <form class="d-none d-md-flex ms-4">
@@ -90,13 +90,18 @@
                 </form>
                 <div class="navbar-nav align-items-center ms-auto">
                     <div class="nav-item dropdown">
-                        <a href="#"><img src="{% static 'img/logout_24dp.png' %}" width="50" height="50"></i></a>
+                        <form method="post" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" style="border:none; background:none;">
+                                <img src="{% static 'img/logout_24dp.png' %}" width="50" height="50" alt="Logout">
+                            </button>
+                        </form>
                     </div>
-    
                     <div class="nav-item dropdown">
-                        <a href="#"><img class="rounded-circle me-lg-2" src="{% static 'img/face_24dp.png'%}" alt="" style="width: 40px; height: 40px;">
-                        </a>
-                        
+                        <a href="{% url 'home' %}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/home_24dp.png' %}" style="width: 50px; height: 50px;"></a>
+                    </div>
+                    <div class="nav-item dropdown">
+                        <a href="{% url 'control:control' %}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/videocam.png' %}" style="width: 50px; height: 50px;"></a>
                     </div>
                 </div>
             </nav>

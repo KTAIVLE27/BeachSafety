@@ -19,4 +19,8 @@ urlpatterns = [
     path('notice/<int:pk>/', views.notice_detail, name='notice_detail'),
     path('notice/edit/<int:pk>/', views.edit_notice, name='edit_notice'),
     path('board/<int:pk>/', views.board_detail, name='board_detail'),
+    path("control/", views.control_load,name='control'),
+    path("home/", views.main_load,name='home'),
+
+
 ]
