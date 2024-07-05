@@ -56,6 +56,8 @@ class Beach(models.Model):
     beach_no = models.AutoField(primary_key=True)  # 해수욕장 번호
     beach_name = models.CharField(max_length=100, blank=False)  # 해수욕장 이름
     beach_region = models.CharField(max_length=100, blank=False)  # 지역
+    beach_lat = models.FloatField(null = False,blank=False) # 위도
+    beach_lon = models.FloatField(null= False, blank=False) # 경도
 
     class Meta:
         db_table = 'beach'
@@ -107,14 +109,19 @@ class CCTV(models.Model):
 #         db_table = 'comment'
 
 
-# 다음에 생각 ㅋㅋㅋㅋㅋㅋ
-# class Scenario(models.Model):
-#     scenario_code = models.CharField(max_length=20, primary_key=True)  # 시나리오 코드
-#     scenario_process = models.TextField(blank=False)  # 시나리오 본문
-#     scenario_category = models.CharField(max_length=100, blank=False)  # 분류
+# 인덱스, 유형, 시간(시간 포맷?), 상황, 절차(길게), 목표
+# csv 파일 업로드 목적 
+class Scenario(models.Model):
+    scenario_id = models.AutoField(primary_key=True) # 인덱스 
+    scenario_code = models.CharField(max_length=20)  # 시나리오 유형
+    scenario_time = models.DateTimeField(blank=False, null=False)  #시나리오 발생 시각
+    scenario_situation = models.TextField(blank=False, null=False) # 시나리오 상황
+    scenario_process = models.TextField(blank=False, null=False)  # 시나리오 절차
+    scenario_goals = models.TextField(blank=False, null=False) # 시나리오 목표
 
-#     class Meta:
-#         db_table = 'scenario'
+
+    class Meta:
+        db_table = 'scenario'
 
 
 

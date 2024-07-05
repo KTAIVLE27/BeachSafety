@@ -1,8 +1,11 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.core.validators import RegexValidator
+from django.core.exceptions import ValidationError
+from django.contrib.auth.password_validation import validate_password
 from .models import *
 
+# error_message 지워도 될 듯, js 에서 작동 중 -> 아님 앞단에서 못잡아준거 여기서 잡아줘야함
 class SignUpForm(UserCreationForm):
     user_id = forms.CharField(
         max_length=50, 
@@ -85,7 +88,7 @@ class SignUpForm(UserCreationForm):
     class Meta:
         model = User
         fields = ('user_id', 'user_email', 'user_name', 'user_phone', 'user_birth', 'user_address', 'password1', 'password2', 'user_address', 'user_detail_address')
-
+        
 class PostForm(forms.ModelForm):
     beach_no = forms.ModelChoiceField(queryset=Beach.objects.all(), required=False, label='해수욕장')
 

@@ -2,7 +2,7 @@ from django.db.models.signals import post_migrate
 from django.dispatch import receiver
 from django.utils import timezone
 from datetime import date
-from .models import User  # 커스텀 유저 모델 임포트
+from .models import User, UserManager  # 커스텀 유저 모델 임포트
 
 #시그널이 여러 번 호출되는 것을 방지하기 위해 플래그를 사용하여 처음 실행될 때만 코드가 수행되도록 함.
 user_created = False
