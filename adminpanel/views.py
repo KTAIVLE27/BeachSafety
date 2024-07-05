@@ -14,6 +14,7 @@ from main.models import Event_board, Notice_board
 from django.contrib import messages
 import json
 from main.forms import *
+from django.db.models import Q
 
 def admin_home(request):
     return render(request, 'adminpanel/admin_home.html')
@@ -67,10 +68,10 @@ def delete_users(request):
             return JsonResponse({'status': 'no ids provided'}, status=400)
     return JsonResponse({'status': 'invalid request'}, status=400)
 
-
+# 공지사항
 def notice_manage(request):
-    #posts = Notice_board.objects.prefetch_related('beach_no').all()
     beach_no = request.GET.get('beach_no')
+
     
     if beach_no == 'common':
         posts = Notice_board.objects.filter(beach_no__isnull=True).order_by('-notice_wdate')
@@ -79,6 +80,26 @@ def notice_manage(request):
     else:
         posts = Notice_board.objects.all().order_by('-notice_wdate')
     
+    # 검색 기능
+    search_keyword = request.GET.get('q', '')
+    search_type  = request.GET.get('type', '')
+    
+    if search_keyword:
+        if len(search_keyword) > 1:
+            if search_type == 'all': # 전체
+                posts = posts.filter(Q (notice_title__icontains=search_keyword) 
+                                              | Q (notice_contents__icontains=search_keyword) 
+                                              | Q (user_no__user_name__icontains=search_keyword) )
+            elif search_type =='title':
+                posts = posts.filter(notice_title__icontains=search_keyword)
+                
+            elif search_type == 'content' :
+                posts = posts.filter(notice_contents__icontains=search_keyword)
+                
+            elif search_type == 'writer' :
+                posts = posts.filter(user_no__user_name__icontains=search_keyword)
+        else:
+            messages.error(request, '검색어는 2글자 이상 입력해주세요!')
     
     # 페이징 처리
     paginator = Paginator(posts, 10)  # 페이지당 10개의 게시물
@@ -86,8 +107,6 @@ def notice_manage(request):
     page_obj = paginator.get_page(page_number)
 
     beaches = Beach.objects.all()
-    beaches = Beach.objects.all()
-    
     
     return render(request, 'adminpanel/notice_manage.html', {'posts': posts, 'beaches': beaches, 'selected_beach_no': beach_no, 'page_obj': page_obj})
 
