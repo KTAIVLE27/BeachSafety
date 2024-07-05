@@ -258,8 +258,16 @@ def risk(request):
     return render(request, 'risk.html')
 
 def signin(request):
+    # 사용자가 이미 로그인한 상태인지 확인
     if request.user.is_authenticated:
-        return redirect('home')
+        if request.user.user_role == 'police':
+            return redirect('home')
+        elif request.user.user_role == 'admin':
+            return redirect('adminpanel:admin_home')
+        elif request.user.user_role == 'supervisor':
+            return redirect('control:control')
+
+    # POST 요청 처리
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
@@ -268,19 +276,17 @@ def signin(request):
             user = authenticate(request, username=user_id, password=password)
             if user is not None:
                 login(request, user)
-                if user.user_role == 'supervisor':
-                    return redirect('supervisor_dashboard')
-                elif user.user_role == 'police':
-                    return redirect('home')
-                elif user.user_role == 'admin':
-                    return redirect('admin_panel')
+                return redirect('home') if user.user_role == 'police' else redirect('adminpanel:admin_home') if user.user_role == 'admin' else redirect('control:control')
             else:
                 messages.error(request, '아이디 또는 비밀번호가 잘못되었습니다.')
         else:
             messages.error(request, '아이디 또는 비밀번호가 잘못되었습니다.')
     else:
         form = AuthenticationForm()
+
+    # 로그인 폼 렌더링
     return render(request, 'signin.html', {'form': form})
+
 
 
 def signup(request):

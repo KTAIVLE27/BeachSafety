@@ -5,7 +5,7 @@ from . import views
 app_name = 'adminpanel'  # Define the app name for namespacing
 
 urlpatterns = [
-    path('admin_home/', views.admin_home, name='admin_home'),
+    path('', views.admin_home, name='admin_home'),
     path('board_manage/', views.board_manage, name='board_manage'),
     path('delete-boards/', views.delete_boards, name='delete_boards'),
     path('senario/', views.senario, name='senario'),
