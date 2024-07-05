@@ -24,8 +24,13 @@ def senario(request):
     ## 이후 작업 필요
     return render(request, 'adminpanel/senario.html')
 
+# 관리자 자유게시판
 def board_manage(request):
     posts = Event_board.objects.all().order_by('-event_wdate')
+    
+    #검색
+    search_fields = ['event_title', 'event_contents', 'user_no__user_name']
+    posts = search_query(request, posts, search_fields)
     
     # 페이징 처리
     paginator = Paginator(posts, 10)  # 페이지당 10개의 게시물
@@ -80,26 +85,9 @@ def notice_manage(request):
     else:
         posts = Notice_board.objects.all().order_by('-notice_wdate')
     
-    # 검색 기능
-    search_keyword = request.GET.get('q', '')
-    search_type  = request.GET.get('type', '')
-    
-    if search_keyword:
-        if len(search_keyword) > 1:
-            if search_type == 'all': # 전체
-                posts = posts.filter(Q (notice_title__icontains=search_keyword) 
-                                              | Q (notice_contents__icontains=search_keyword) 
-                                              | Q (user_no__user_name__icontains=search_keyword) )
-            elif search_type =='title':
-                posts = posts.filter(notice_title__icontains=search_keyword)
-                
-            elif search_type == 'content' :
-                posts = posts.filter(notice_contents__icontains=search_keyword)
-                
-            elif search_type == 'writer' :
-                posts = posts.filter(user_no__user_name__icontains=search_keyword)
-        else:
-            messages.error(request, '검색어는 2글자 이상 입력해주세요!')
+    #검색
+    search_fields = ['notice_title', 'notice_contents', 'user_no__user_name']
+    posts = search_query(request, posts, search_fields)
     
     # 페이징 처리
     paginator = Paginator(posts, 10)  # 페이지당 10개의 게시물
@@ -186,3 +174,20 @@ def board_detail(request, pk):
         return redirect('adminpanel:board_manage')
     
     return render(request, 'adminpanel/board_detail.html', {'post': post})
+
+
+# 검색 기능
+def search_query(request, queryset, search_fields):
+    search_keyword = request.GET.get('q', '')
+    search_type = request.GET.get('type', '')
+    if search_keyword and len(search_keyword) > 1:
+        query = Q()
+        if search_type == 'all':  # 전체 검색
+            for field in search_fields:
+                query |= Q(**{f"{field}__icontains": search_keyword})
+        elif search_type in search_fields:  # 특정 필드 검색
+            query = Q(**{f"{search_type}__icontains": search_keyword})
+        return queryset.filter(query)
+    elif search_keyword:
+        messages.error(request, '검색어는 2글자 이상 입력해주세요!')
+    return queryset
