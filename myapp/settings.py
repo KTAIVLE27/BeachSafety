@@ -50,6 +50,9 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    #'adminpanel.middleware.RoleBasedMiddleware', # adminpanel 권한자만(admin) 접근 가능
+    'control.middleware.RoleBasedMiddleware', # control 권한자(admin, supervisor)만 접근 가능
+
 ]
 
 ROOT_URLCONF = "myapp.urls"
