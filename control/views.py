@@ -46,7 +46,8 @@ def control_view(request):
         'IMRANG_lat': get_beach_lat('임랑 해수욕장'),
         'JUNGMUN_lat': get_beach_lat('중문 해수욕장'),
         'HAE_lat': get_beach_lat('해운대 해수욕장'),
-
+        
+        'RIP_api_time': get_beach_obs_time('HAE'),
 
         
     }
