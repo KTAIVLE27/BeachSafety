@@ -110,7 +110,7 @@
                     <i class="fa fa-bars"></i>
                 </a> 
                 
-                <a href="{% url 'home' %}"><img src="{% static 'img/logo.png' %}" width="50" height="50"></i></a>
+                <a href="{% url 'home' %}"><img src="{% static 'img/logo.png' %}" width="50" height="50"></a>
                 <form class="d-none d-md-flex ms-4">
                     <input class="form-control border-0" type="search" placeholder="Search">
                 </form>
@@ -170,7 +170,8 @@
                                             <label for="profile-pw" class="form-label">비밀번호</label>
                                         </div>
                                         <div class="col-md-8">
-                                            <input type="password" id="profile-pw" name="password1" class="form-control">
+                                            <input type="password" id="profile-pw" name="password1" class="form-control" oninput="validateField(this)">
+                                            <div class="text-danger" id="profile-pw_error"></div>
                                         </div>
                                     </div>
                                     
@@ -180,7 +181,8 @@
                                             <label for="profile-pw-confirm" class="form-label">비밀번호 확인</label>
                                         </div>
                                         <div class="col-md-8">
-                                            <input type="password" id="profile-pw-confirm" name="password2" class="form-control">
+                                            <input type="password" id="profile-pw-confirm" name="password2" class="form-control" oninput="validateField(this)">
+                                            <div class="text-danger" id="profile-pw-confirm_error"></div>
                                         </div>
                                     </div>
                                     
@@ -190,7 +192,8 @@
                                             <label for="profile-email" class="form-label">이메일</label>
                                         </div>
                                         <div class="col-md-8">
-                                            <input type="email" id="profile-email" name="user_email" class="form-control" value="{{ user.user_email }}">
+                                            <input type="email" id="profile-email" name="user_email" class="form-control" value="{{ user.user_email }}" oninput="validateField(this)">
+                                            <div class="text-danger" id="profile-email_error"></div>
                                         </div>
                                     </div>
                                     
@@ -210,7 +213,8 @@
                                             <label for="profile-phone" class="form-label">휴대폰번호</label>
                                         </div>
                                         <div class="col-md-8">
-                                            <input type="text" id="profile-phone" name="user_phone" class="form-control" value="{{ user.user_phone }}">
+                                            <input type="text" id="profile-phone" name="user_phone" class="form-control" value="{{ user.user_phone }}" oninput="validateField(this)">
+                                            <div class="text-danger" id="profile-phone_error"></div>
                                         </div>
                                     </div>
                                     
@@ -220,7 +224,8 @@
                                             <label for="profile-address" class="form-label">주소</label>
                                         </div>
                                         <div class="col-md-8">
-                                            <input type="text" id="profile-address" name="user_address" class="form-control" value="{{ user.user_address }}" onclick="execDaumPostcode()">
+                                            <input type="text" id="profile-address" name="user_address" class="form-control" value="{{ user.user_address }}" onclick="execDaumPostcode()" oninput="validateField(this)">
+                                            <div class="text-danger" id="profile-address_error"></div>
                                         </div>
                                     </div>
 
@@ -230,7 +235,8 @@
                                             <label for="profile_detail_address" class="form-label">상세 주소</label>
                                         </div>
                                         <div class="col-md-8">
-                                            <input type="text" id="profile_address_Detail" name="user_detail_address" class="form-control" value="{{ user.user_detail_address }}">
+                                            <input type="text" id="profile_detail_address" name="user_detail_address" class="form-control" value="{{ user.user_detail_address }}" oninput="validateField(this)">
+                                            <div class="text-danger" id="profile_detail_address_error"></div>
                                         </div>
                                     </div> 
                                     
@@ -317,24 +323,83 @@
             };
             reader.readAsDataURL(event.target.files[0]);
         }
-    </script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var profileLink = document.getElementById('myProfileLink');
-            var profileMenu = document.getElementById('myProfileMenu');
-        
-            profileLink.addEventListener('click', function(event) {
-                event.preventDefault();
-                profileMenu.classList.toggle('show');
-            });
-        
-            document.addEventListener('click', function(event) {
-                if (!profileLink.contains(event.target) && !profileMenu.contains(event.target)) {
-                    profileMenu.classList.remove('show');
+        // Validate Fields
+        function validateField(field) {
+            let errorDiv = document.getElementById(field.id + "_error");
+
+            if (field.name === "password1") {
+                let errors = [];
+                if (field.value.length < 6) {
+                    errors.push("암호의 길이는 6자 이상이어야 합니다.");
+                }
+                if (!/[A-Za-z]/.test(field.value)) {
+                    errors.push("암호에는 최소 하나의 대소문자가 포함되어야 합니다.");
+                }
+                if (!/[0-9]/.test(field.value)) {
+                    errors.push("암호에는 최소 하나의 숫자가 포함되어야 합니다.");
+                }
+                if (!/[!@#$%^&*(),.?":{}|<>]/.test(field.value)) {
+                    errors.push("암호에는 최소 하나의 특수 문자가 포함되어야 합니다.");
+                }
+                errorDiv.textContent = errors.join(' ');
+            }
+
+            if (field.name === "password2") {
+                let password1 = document.getElementById('profile-pw').value;
+                if (field.value !== password1) {
+                    errorDiv.textContent = "비밀번호가 일치하지 않습니다.";
+                } else {
+                    errorDiv.textContent = "";
+                }
+            }
+            if (field.name === "user_email") {
+                let emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+                if (!emailPattern.test(field.value)) {
+                    errorDiv.textContent = "올바른 전자 메일 주소를 입력하십시오.";
+                } else {
+                    errorDiv.textContent = "";
+                }
+            }
+            if (field.name === "user_phone") {
+                let phonePattern = /^010-\d{4}-\d{4}$/;
+                if (!phonePattern.test(field.value)) {
+                    errorDiv.textContent = "전화번호는 010-1234-5678 형식이어야 합니다.";
+                } else {
+                    errorDiv.textContent = "";
+                }
+            }
+            if (field.name === "user_address") {
+                if (field.value.length < 1) {
+                    errorDiv.textContent = "주소를 입력하십시오.";
+                } else {
+                    errorDiv.textContent = "";
+                }
+            }
+            if (field.name === "user_detail_address") {
+                if (field.value.length < 1) {
+                    errorDiv.textContent = "상세 주소를 입력하십시오.";
+                } else {
+                    errorDiv.textContent = "";
+                }
+            }
+        }
+
+        // Form submit event handler
+        document.getElementById('profile-form').addEventListener('submit', function(event) {
+            let isValid = true;
+            const fields = this.querySelectorAll('input[oninput="validateField(this)"]');
+            fields.forEach(field => {
+                validateField(field);
+                if (field.nextElementSibling.textContent !== "") {
+                    isValid = false;
                 }
             });
+            if (!isValid) {
+                event.preventDefault();
+                showAlert('입력값을 확인해주세요.', 'danger');
+            }
         });
-        </script>
+    </script>
 </body>
 </html>

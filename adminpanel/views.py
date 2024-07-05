@@ -9,7 +9,7 @@ from django.core.paginator import Paginator
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from main.models import User
+from main.models import *
 from main.models import Event_board, Notice_board
 from django.contrib import messages
 import json
@@ -19,6 +19,8 @@ def admin_home(request):
     return render(request, 'adminpanel/admin_home.html')
 
 def senario(request):
+    scenario = Scenario.objects.all()
+    ## 이후 작업 필요
     return render(request, 'adminpanel/senario.html')
 
 def board_manage(request):
