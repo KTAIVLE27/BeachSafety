@@ -405,16 +405,22 @@
 
 .warn-alarm {
     position: fixed;
-    top: 70%;
+    bottom: 10px; /* 하단에 고정 */
     right: 10px;
-    width: 455px;
-    height: 500px;
+    width: calc(100% - 20px); /* 좌우 여백을 고려한 너비 */
+    min-width: 300px; /* 최소 너비 설정 */
+    max-width: 430px; /* 최대 너비 설정 */
+    height: auto;
+    max-height: 30vh; /* 기본 최대 높이 설정 */
     margin: auto;
     border: 1px solid #000000;
     padding: 10px;
     background-color: rgba(249, 202, 74, 0.8); /* 투명한 배경 */
     gap: 10px; /* 박스들 사이의 간격 */
+    overflow-y: auto; /* 스크롤 허용 */
 }
+
+
 
 .warn-alarm .textbox {
     padding: 10px;

@@ -93,3 +93,7 @@ if __name__ == "__main__":
 def get_weather_item(beach_name):
     return weather_data.get(beach_name, {}).items()
 
+# 유사도 판단
+import difflib
+def similarity_function(str1, str2):
+    return difflib.SequenceMatcher(None, str1, str2).ratio()

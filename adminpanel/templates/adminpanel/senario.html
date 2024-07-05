@@ -55,8 +55,8 @@
                         <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
                     </div>
                     <div class="ms-3">
-                        <h6 class="mb-0">27조</h6>
-                        <span>Admin</span>
+                        <h6 class="mb-0">27조 {{user.user_name}}</h6>
+                        <span>{{user.user_id}}</span>
                     </div>
                 </div>
                 <div class="navbar-nav w-100">
@@ -75,12 +75,9 @@
         <div class="content">
             <!-- Navbar Start -->
             <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
-                <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
-                    <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
-                </a>
                 <a href="#" class="sidebar-toggler flex-shrink-0">
                     <i class="fa fa-bars"></i>
-                </a> 
+                </a>
                 
                 <a href="{% url 'adminpanel:admin_home' %}"><img src="{% static 'img/logo.png' %}" width="50" height="50"></i></a>
                 <form class="d-none d-md-flex ms-4">
@@ -88,16 +85,21 @@
                 </form>
                 <div class="navbar-nav align-items-center ms-auto">
                     <div class="nav-item dropdown">
-                        <a href="#"><img src="{% static 'img/logout_24dp.png' %}" width="50" height="50"></i></a>
+                        <form method="post" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" style="border:none; background:none;">
+                                <img src="{% static 'img/logout_24dp.png' %}" width="50" height="50" alt="Logout">
+                            </button>
+                        </form>
                     </div>
-    
                     <div class="nav-item dropdown">
-                        <a href="#"><img class="rounded-circle me-lg-2" src="{% static 'img/face_24dp.png'%}" alt="" style="width: 40px; height: 40px;">
-                        </a>
-                        
+                        <a href="{% url 'home' %}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/home_24dp.png' %}" style="width: 50px; height: 50px;"></a>
+                    </div>
+                    <div class="nav-item dropdown">
+                        <a href="{% url 'control:control' %}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/videocam.png' %}" style="width: 50px; height: 50px;"></a>
                     </div>
                 </div>
-            </nav> 
+            </nav>
             <!-- Navbar End -->
 
             
@@ -108,7 +110,7 @@
                             <div class="d-flex align-items-center justify-content-between mb-4">
                                 <h4 class="mb-0">훈련시나리오 목록</h4> <!-- Increased font size for Notices -->
                                 <div class="d-flex">
-                                    <a href="{% url 'adminpanel:create_notice' %}" class="btn btn-secondary me-2">csv 업로드</a> 
+                                    <a href="{% url 'adminpanel:csv_upload' %}" class="btn btn-secondary me-2">csv 업로드</a>
                                     <div class="dropdown me-2">
                                         <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                                             유형
@@ -148,20 +150,15 @@
                                         </tr>
                                     </thead>
                                     <tbody id="noticeTableBody">
-                                        {% for post in page_obj %}
-                                        <tr data-id="{{ post.notice_id }}">
+                                        {% for scenario in page_obj  %}
+                                        <tr data-id="{{ scenario.scenario_id }}">
                                             <td><input type="checkbox" class="selectRow"></td>
                                             <td>{{ forloop.counter0|add:page_obj.start_index}}</td>
-                                            <td>
-                                                {% if post.beach_no %}
-                                                    {{ post.beach_no.beach_name }}
-                                                {% else %}
-                                                    공통
-                                                {% endif %}
-                                            </td>
-                                            <td><a href="{% url 'adminpanel:notice_detail' post.pk %}">{{ post.notice_title }}</a></td>
-                                            <td>{{ post.user_no.user_name }}</td>
-                                            <td>{{ post.notice_wdate |date:"Y-m-d H:i" }}</td>                         
+                                            <td>{{ scenario.scenario_code }}</td>
+                                            <td>{{ scenario.scenario_time | date:"Y-m-d H:i" }}</td>
+                                            <td>{{ scenario.scenario_situation }}</td>
+                                            <td>{{ scenario.scenario_process }}</td>
+                                            <td>{{ scenario.scenario_goals }}</td>                         
                                         </tr>
                                         {% empty %}
                                         <tr>
@@ -171,8 +168,32 @@
                                     </tbody>
                                 </table>
                             </div>
-                            
 
+                            <!-- Pagination Controls -->
+                            <div class="d-flex justify-content-center">
+                                <nav>
+                                    <ul class="pagination">
+                                        <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+                                            <a class="page-link" href="?page=1{% if request.GET.beach_no %}&beach_no={{ request.GET.beach_no }}{% endif %}" aria-label="First">
+                                                <span aria-hidden="true">&laquo;&laquo;</span>
+                                            </a>
+                                        </li>
+                                        {% for num in page_obj.paginator.page_range %}
+                                        {% if page_obj.number == num %}
+                                        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                                        {% elif num > page_obj.number|add:'-5' and num < page_obj.number|add:'5' %}
+                                        <li class="page-item"><a class="page-link" href="?page={{ num }}{% if request.GET.beach_no %}&beach_no={{ request.GET.beach_no }}{% endif %}">{{ num }}</a></li>
+                                        {% endif %}
+                                        {% endfor %}
+                                        <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+                                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.beach_no %}&beach_no={{ request.GET.beach_no }}{% endif %}" aria-label="Last">
+                                                <span aria-hidden="true">&raquo;&raquo;</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                            <!-- End of Pagination Controls -->
                         </div>
                     </div>
                 </div>
@@ -202,6 +223,46 @@
 
     <!-- Template Javascript -->
     <script src="{% static 'js/main.js'%}"></script>
+
+    <script>
+        document.getElementById('selectAll').addEventListener('change', function() {
+            var checkboxes = document.querySelectorAll('.selectRow');
+            for (var checkbox of checkboxes) {
+                checkbox.checked = this.checked;
+            }
+        });
+
+        // post 삭제
+        document.getElementById('deleteButton').addEventListener('click', function() {
+            if(confirm('정말로 삭제하시겠습니까?')) {
+                var checkboxes = document.querySelectorAll('.selectRow:checked');
+                var idsToDelete = [];
+                checkboxes.forEach(function(checkbox) {
+                    idsToDelete.push(checkbox.closest('tr').getAttribute('data-id'));
+                });
+                if (idsToDelete.length > 0) {
+                    fetch('{% url 'adminpanel:delete_senario' %}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: JSON.stringify({ ids: idsToDelete })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        if (data.status === "success") {
+                            location.reload(); // 성공시 페이지 리로드
+                        } else {
+                            alert("Error: " + data.message); // 실패시 메시지 출력
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+                }
+            }
+        });        
+    </script>
 </body>
 
 </html>
