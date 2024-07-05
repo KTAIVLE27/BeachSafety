@@ -46,7 +46,7 @@
         <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-light navbar-light">
                 <a class="navbar-brand mx-4 mb-3">
-                    <h3 class="text-primary">Chat</h3>
+                    <h3 class="text-primary">모의 훈련</h3>
                 </a>
                 <div class="d-flex align-items-center ms-4 mb-4">
                     <div class="position-relative">
@@ -54,8 +54,8 @@
                         <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
                     </div>
                     <div class="ms-3">
-                        <h6 class="mb-0">27조</h6>
-                        <span>Admin</span>
+                        <h6 class="mb-0">27조 {{user.user_name}}</h6>
+                        <span>{{user.user_id}}</span>
                     </div>
                 </div>
                 <div class="navbar-nav w-100">
@@ -98,24 +98,48 @@
         <div class="content">
             <!-- Navbar Start -->
             <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
-                <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
-                    <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
-                </a>
-                <a href="#" class="sidebar-toggler flex-shrink-0">
-                    <i class="fa fa-bars"></i>
-                </a> 
+                <a href="#" class="sidebar-toggler flex-shrink-0"><i class="fa fa-bars"></i></a>
+                <a href="{% url 'home' %}"><img src="{% static 'img/logo.png' %}" width="50" height="50"></a>
                 
-                <a href="{% url 'home' %}"><img src="{% static 'img/logo.png' %}" width="50" height="50"></i></a>
-
-                <div class="navbar-nav align-items-center ms-auto">    
-                    <div class="nav-item dropdown">
-                        <a href="#"><img src="{% static 'img/logout_24dp.png' %}" width="50" height="50"></i></a>
-                    </div>
-            
-                    <div class="nav-item dropdown">
-                        <a href="myprofile"><img class="rounded-circle me-lg-2" src="{% static 'img/face_24dp.png'%}" alt="" style="width: 40px; height: 40px;">
-                        </a>
+                <form class="d-none d-md-flex ms-4">
+                    <input class="form-control border-0" type="search" placeholder="Search">
+                </form>
+                
+                <div class="navbar-nav align-items-center ms-auto">
+                    <!-- Add buttons based on user role -->
+                    {% if user.user_role == 'admin' %}
+                        <div class="nav-item dropdown">
+                            <a href="{% url 'adminpanel:admin_home' %}">
+                                <img class="rounded-circle me-lg-2" src="{% static 'img//wysiwyg_24dp.png' %}" alt="" style="width: 50px; height: 50px;">
+                            </a>
+                        </div>
                         
+                        <div class="nav-item dropdown">
+                            <a href="{% url 'control:control' %}">
+                                <img class="rounded-circle me-lg-2" src="{% static 'img/videocam.png' %}" alt="" style="width: 50px; height: 50px;">
+                            </a>
+                        </div>
+                    {% elif user.user_role == 'supervisor' %}
+                        <div class="nav-item dropdown">
+                            <a href="{% url 'control:control' %}">
+                                <img class="rounded-circle me-lg-2" src="{% static 'img/videocam.png' %}" alt="" style="width: 50px; height: 50px;">
+                            </a>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="nav-item dropdown">
+                        <form method="post" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" style="border:none; background:none;">
+                                <img src="{% static 'img/logout_24dp.png' %}" width="50" height="50" alt="Logout">
+                            </button>
+                        </form>
+                    </div>
+                
+                    <div class="nav-item dropdown">
+                        <a href="{% url 'myprofile' %}">
+                            <img class="rounded-circle me-lg-2" src="{% static 'img/face_24dp.png' %}" alt="" style="width: 50px; height: 50px;">
+                        </a>
                     </div>
                 </div>
             </nav>
