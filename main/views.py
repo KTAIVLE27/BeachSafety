@@ -15,6 +15,8 @@ from django.core.paginator import Paginator
 from django.views.decorators.http import require_POST
 import json
 from control.utils import *
+from django.db.models import Q
+
 
 def is_admin(user):
     return user.is_authenticated and user.user_id == 'admin' and user.user_name == 'admin' and user.check_password('aivle2024!')
@@ -136,7 +138,25 @@ def board(request):
         posts = Notice_board.objects.filter(beach_no=beach_no).order_by('-notice_wdate')
     else:
         posts = Notice_board.objects.all().order_by('-notice_wdate')
-    
+    # 검색 기능
+    search_keyword = request.GET.get('q', '')
+    search_type  = request.GET.get('type', '')    
+    if search_keyword:
+        if len(search_keyword) > 1:
+            if search_type == 'all': # 전체
+                posts = posts.filter(Q (notice_title__icontains=search_keyword) 
+                                              | Q (notice_contents__icontains=search_keyword) 
+                                              | Q (user_no__user_name__icontains=search_keyword) )
+            elif search_type =='title':
+                posts = posts.filter(notice_title__icontains=search_keyword)
+                
+            elif search_type == 'content' :
+                posts = posts.filter(notice_contents__icontains=search_keyword)
+                
+            elif search_type == 'writer' :
+                posts = posts.filter(user_no__user_name__icontains=search_keyword)
+        else:
+            messages.error(request, '검색어는 2글자 이상 입력해주세요!')    
     
     # 페이징 처리
     paginator = Paginator(posts, 10)  # 페이지당 10개의 게시물
@@ -171,6 +191,26 @@ def free_board(request):
         posts = Event_board.objects.filter(beach_no=beach_no).order_by('-event_wdate')
     else:
         posts = Event_board.objects.all().order_by('-event_wdate')
+        
+    # 검색 기능
+    search_keyword = request.GET.get('q', '')
+    search_type  = request.GET.get('type', '')    
+    if search_keyword:
+        if len(search_keyword) > 1:
+            if search_type == 'all': # 전체
+                posts = posts.filter(Q (event_title__icontains=search_keyword) 
+                                              | Q (event_contents__icontains=search_keyword) 
+                                              | Q (user_no__user_name__icontains=search_keyword) )
+            elif search_type =='title':
+                posts = posts.filter(event_title__icontains=search_keyword)
+                
+            elif search_type == 'content' :
+                posts = posts.filter(event_contents__icontains=search_keyword)
+                
+            elif search_type == 'writer' :
+                posts = posts.filter(user_no__user_name__icontains=search_keyword)
+        else:
+            messages.error(request, '검색어는 2글자 이상 입력해주세요!')   
     
     # 페이징 처리
     paginator = Paginator(posts, 10)  # 페이지당 10개의 게시물

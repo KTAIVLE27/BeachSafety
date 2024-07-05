@@ -14,6 +14,7 @@ from main.models import Event_board, Notice_board
 from django.contrib import messages
 import json
 from main.forms import *
+from django.db.models import Q
 import csv
 import io
 from datetime import datetime
@@ -75,15 +76,39 @@ def delete_senario(request):
     except Exception as e:
         return JsonResponse({"status": "error", "message": str(e)}, status=400)
 
+# 관리자
 def board_manage(request):
     posts = Event_board.objects.all().order_by('-event_wdate')
+    
+    # 검색 기능
+    search_keyword = request.GET.get('q', '')
+    search_type  = request.GET.get('type', '')
+    
+    if search_keyword:
+        if len(search_keyword) > 1:
+            if search_type == 'all': # 전체
+                posts = posts.filter(Q (event_title__icontains=search_keyword) 
+                                              | Q (event_contents__icontains=search_keyword) 
+                                              | Q (user_no__user_name__icontains=search_keyword) )
+            elif search_type =='title':
+                posts = posts.filter(event_title__icontains=search_keyword)
+                
+            elif search_type == 'content' :
+                posts = posts.filter(event_contents__icontains=search_keyword)
+                
+            elif search_type == 'writer' :
+                posts = posts.filter(user_no__user_name__icontains=search_keyword)
+        else:
+            messages.error(request, '검색어는 2글자 이상 입력해주세요!')
     
     # 페이징 처리
     paginator = Paginator(posts, 10)  # 페이지당 10개의 게시물
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    return render(request, 'adminpanel/board_manage.html', {'posts': posts, 'page_obj': page_obj})
+    beaches = Beach.objects.all()
+    
+    return render(request, 'adminpanel/board_manage.html', {'posts': posts, 'page_obj': page_obj, 'beaches' : beaches})
 
 @require_POST
 def delete_boards(request):
@@ -119,10 +144,10 @@ def delete_users(request):
             return JsonResponse({'status': 'no ids provided'}, status=400)
     return JsonResponse({'status': 'invalid request'}, status=400)
 
-
+# 공지사항
 def notice_manage(request):
-    #posts = Notice_board.objects.prefetch_related('beach_no').all()
     beach_no = request.GET.get('beach_no')
+
     
     if beach_no == 'common':
         posts = Notice_board.objects.filter(beach_no__isnull=True).order_by('-notice_wdate')
@@ -131,6 +156,26 @@ def notice_manage(request):
     else:
         posts = Notice_board.objects.all().order_by('-notice_wdate')
     
+    # 검색 기능
+    search_keyword = request.GET.get('q', '')
+    search_type  = request.GET.get('type', '')
+    
+    if search_keyword:
+        if len(search_keyword) > 1:
+            if search_type == 'all': # 전체
+                posts = posts.filter(Q (notice_title__icontains=search_keyword) 
+                                              | Q (notice_contents__icontains=search_keyword) 
+                                              | Q (user_no__user_name__icontains=search_keyword) )
+            elif search_type =='title':
+                posts = posts.filter(notice_title__icontains=search_keyword)
+                
+            elif search_type == 'content' :
+                posts = posts.filter(notice_contents__icontains=search_keyword)
+                
+            elif search_type == 'writer' :
+                posts = posts.filter(user_no__user_name__icontains=search_keyword)
+        else:
+            messages.error(request, '검색어는 2글자 이상 입력해주세요!')
     
     # 페이징 처리
     paginator = Paginator(posts, 10)  # 페이지당 10개의 게시물
@@ -138,8 +183,6 @@ def notice_manage(request):
     page_obj = paginator.get_page(page_number)
 
     beaches = Beach.objects.all()
-    beaches = Beach.objects.all()
-    
     
     return render(request, 'adminpanel/notice_manage.html', {'posts': posts, 'beaches': beaches, 'selected_beach_no': beach_no, 'page_obj': page_obj})
 
@@ -220,9 +263,9 @@ def board_detail(request, pk):
     
     return render(request, 'adminpanel/board_detail.html', {'post': post})
 
-
 def control_load(request):
     return render(request, 'control.html')
 
 def main_load(request):
     return render(request, 'home.html')
+
