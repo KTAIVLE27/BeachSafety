@@ -24,20 +24,39 @@ def senario(request):
     ## 이후 작업 필요
     return render(request, 'adminpanel/senario.html')
 
-# 관리자 자유게시판
+# 관리자
 def board_manage(request):
     posts = Event_board.objects.all().order_by('-event_wdate')
     
-    #검색
-    search_fields = ['event_title', 'event_contents', 'user_no__user_name']
-    posts = search_query(request, posts, search_fields)
+    # 검색 기능
+    search_keyword = request.GET.get('q', '')
+    search_type  = request.GET.get('type', '')
+    
+    if search_keyword:
+        if len(search_keyword) > 1:
+            if search_type == 'all': # 전체
+                posts = posts.filter(Q (event_title__icontains=search_keyword) 
+                                              | Q (event_contents__icontains=search_keyword) 
+                                              | Q (user_no__user_name__icontains=search_keyword) )
+            elif search_type =='title':
+                posts = posts.filter(event_title__icontains=search_keyword)
+                
+            elif search_type == 'content' :
+                posts = posts.filter(event_contents__icontains=search_keyword)
+                
+            elif search_type == 'writer' :
+                posts = posts.filter(user_no__user_name__icontains=search_keyword)
+        else:
+            messages.error(request, '검색어는 2글자 이상 입력해주세요!')
     
     # 페이징 처리
     paginator = Paginator(posts, 10)  # 페이지당 10개의 게시물
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    return render(request, 'adminpanel/board_manage.html', {'posts': posts, 'page_obj': page_obj})
+    beaches = Beach.objects.all()
+    
+    return render(request, 'adminpanel/board_manage.html', {'posts': posts, 'page_obj': page_obj, 'beaches' : beaches})
 
 @require_POST
 def delete_boards(request):
@@ -85,9 +104,26 @@ def notice_manage(request):
     else:
         posts = Notice_board.objects.all().order_by('-notice_wdate')
     
-    #검색
-    search_fields = ['notice_title', 'notice_contents', 'user_no__user_name']
-    posts = search_query(request, posts, search_fields)
+    # 검색 기능
+    search_keyword = request.GET.get('q', '')
+    search_type  = request.GET.get('type', '')
+    
+    if search_keyword:
+        if len(search_keyword) > 1:
+            if search_type == 'all': # 전체
+                posts = posts.filter(Q (notice_title__icontains=search_keyword) 
+                                              | Q (notice_contents__icontains=search_keyword) 
+                                              | Q (user_no__user_name__icontains=search_keyword) )
+            elif search_type =='title':
+                posts = posts.filter(notice_title__icontains=search_keyword)
+                
+            elif search_type == 'content' :
+                posts = posts.filter(notice_contents__icontains=search_keyword)
+                
+            elif search_type == 'writer' :
+                posts = posts.filter(user_no__user_name__icontains=search_keyword)
+        else:
+            messages.error(request, '검색어는 2글자 이상 입력해주세요!')
     
     # 페이징 처리
     paginator = Paginator(posts, 10)  # 페이지당 10개의 게시물

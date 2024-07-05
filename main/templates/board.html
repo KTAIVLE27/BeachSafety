@@ -129,17 +129,31 @@
                                     <div class="bg-light text-center rounded p-4">
                                         <div class="d-flex align-items-center justify-content-between mb-4">
                                             <h4 class="mb-0">공지사항</h4> <!-- Increased font size for Notices -->
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-between mb-4">
                                             <div class="d-flex">
                                                 <div class="dropdown me-2">
                                                     <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                                        구분
+                                                        {% if request.GET.beach_no %}
+                                                            {% for beach in beaches %}
+                                                                {% if beach.beach_no == request.GET.beach_no %}
+                                                                    {{ beach.beach_name }}
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                            {% if request.GET.beach_no == 'common' %}
+                                                                공통
+                                                            {% endif %}
+                                                        {% else %}
+                                                            전체
+                                                        {% endif %}
                                                     </button>
                                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                                         <a class="dropdown-item" href="?">전체</a>
-                                                        <a class="dropdown-item" href="?beach_no=common">공통</a>
+                                                        <a class="dropdown-item" href="#" data-beach-no="common">공통</a>
                                                         {% for beach in beaches %}
-                                                            <a class="dropdown-item" href="?beach_no={{ beach.beach_no }}">{{ beach.beach_name }}</a>
+                                                            <a class="dropdown-item" href="#" data-beach-no="{{ beach.beach_no }}">{{ beach.beach_name }}</a>
                                                         {% endfor %}
+                                                        
                                                     </div>
                                                 </div>
                                             </div>
@@ -191,19 +205,21 @@
                                             <nav>
                                                 <ul class="pagination">
                                                     <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
-                                                        <a class="page-link" href="?page=1{% if request.GET.beach_no %}&beach_no={{ request.GET.beach_no }}{% endif %}" aria-label="First">
+                                                        <a class="page-link" href="?page=1&beach_no={{ request.GET.beach_no }}&type={{ request.GET.type }}&q={{ request.GET.q|urlencode }}" aria-label="First">
                                                             <span aria-hidden="true">&laquo;&laquo;</span>
                                                         </a>
                                                     </li>
                                                     {% for num in page_obj.paginator.page_range %}
-                                                    {% if page_obj.number == num %}
-                                                    <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                                                        {% if page_obj.number == num %}
+                                                            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
                                                     {% elif num > page_obj.number|add:'-5' and num < page_obj.number|add:'5' %}
-                                                    <li class="page-item"><a class="page-link" href="?page={{ num }}{% if request.GET.beach_no %}&beach_no={{ request.GET.beach_no }}{% endif %}">{{ num }}</a></li>
-                                                    {% endif %}
+                                                        <li class="page-item">
+                                                            <a class="page-link" href="?page={{ num }}&beach_no={{ request.GET.beach_no }}&type={{ request.GET.type }}&q={{ request.GET.q|urlencode }}">{{ num }}</a>
+                                                        </li>
+                                                        {% endif %}
                                                     {% endfor %}
                                                     <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
-                                                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.beach_no %}&beach_no={{ request.GET.beach_no }}{% endif %}" aria-label="Last">
+                                                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&beach_no={{ request.GET.beach_no }}&type={{ request.GET.type }}&q={{ request.GET.q|urlencode }}" aria-label="Last">
                                                             <span aria-hidden="true">&raquo;&raquo;</span>
                                                         </a>
                                                     </li>
@@ -215,7 +231,7 @@
                                         <div class="container pt-4">
                                             <div class="row justify-content-center"> <!-- 중앙 정렬 -->
                                                 <div class="col-lg-6">
-                                                    <form action="{% url 'adminpanel:notice_manage' %}" method="get" onsubmit="return validateSearchForm()">
+                                                    <form action="{% url 'board' %}" method="get" onsubmit="return validateSearchForm()">
                                                         <div class="form-group">
                                                             <div class="input-group mb-3">
                                                                 <select class="form-select" name="type">
@@ -225,11 +241,12 @@
                                                                     <option value="writer" {% if request.GET.type == 'writer' %}selected{% endif %}>작성자</option>
                                                                 </select>
                                                                 <input class="form-control" type="search" placeholder="검색" name="q" value="{{ request.GET.q }}" aria-label="Search">
+                                                                <input type="hidden" name="beach_no" value="{{ request.GET.beach_no }}">
                                                                 <button class="btn btn-outline-primary" type="submit">검색</button>
                                                             </div>
                                                             <p id="errorMessage" style="color:red; display:none;">검색어는 2글자 이상 입력해주세요!</p>
                                                         </div>
-                                                    </form>                                        
+                                                    </form>                                                                               
                                                 </div>
                                             </div>
                                         </div>
@@ -284,7 +301,31 @@
         });
     </script>
 
-    
+    <script> // 구분 버튼 키 이름 변경
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropdownItems = document.querySelectorAll('.dropdown-item');
+            const dropdownButton = document.getElementById('dropdownMenuButton');
+            const currentUrl = new URL(window.location);
+            const currentParams = currentUrl.searchParams;
+            
+            dropdownItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    currentParams.set('beach_no', this.getAttribute('data-beach-no'));
+                    currentParams.set('page', '1'); // 선택 시 페이지를 리셋
+                    currentUrl.search = currentParams.toString();
+                    window.location.href = currentUrl.toString();
+                });
+            });
+        
+            const selectedBeachNo = currentParams.get('beach_no');
+            dropdownItems.forEach(item => {
+                if (item.getAttribute('data-beach-no') === selectedBeachNo) {
+                    dropdownButton.textContent = item.textContent;
+                }
+            });
+        });        
+    </script>
+
     <script>// 검색 기능 에러 알람
         function validateSearchForm() {
             var searchInput = document.querySelector('input[name="q"]');
@@ -296,7 +337,7 @@
             errorMessage.style.display = 'none'; // 오류 메시지를 숨김
             return true; // 폼 제출을 계속
         }
-        </script>
+    </script>
 </body>
 
 </html>
