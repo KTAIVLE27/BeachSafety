@@ -136,7 +136,27 @@ def board(request):
         posts = Notice_board.objects.filter(beach_no=beach_no).order_by('-notice_wdate')
     else:
         posts = Notice_board.objects.all().order_by('-notice_wdate')
-    
+        
+    # 검색 기능
+    search_keyword = request.GET.get('q', '')
+    search_type  = request.GET.get('type', '')
+        
+    if search_keyword:
+        if len(search_keyword) > 1:
+            if search_type == 'all': # 전체
+                posts = posts.filter(Q (notice_title__icontains=search_keyword) 
+                                              | Q (notice_contents__icontains=search_keyword) 
+                                              | Q (user_no__user_name__icontains=search_keyword) )
+            elif search_type =='title':
+                posts = posts.filter(notice_title__icontains=search_keyword)
+                
+            elif search_type == 'content' :
+                posts = posts.filter(notice_contents__icontains=search_keyword)
+                
+            elif search_type == 'writer' :
+                posts = posts.filter(user_no__user_name__icontains=search_keyword)
+        else:
+            messages.error(request, '검색어는 2글자 이상 입력해주세요!')    
     
     # 페이징 처리
     paginator = Paginator(posts, 10)  # 페이지당 10개의 게시물

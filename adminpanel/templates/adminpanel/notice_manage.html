@@ -208,8 +208,7 @@
                                         </form>                                        
                                     </div>
                                 </div>
-                            </div>
-                            
+                            </div>                            
                             <!-- End of Search Bar -->
 
                         </div>
@@ -279,7 +278,7 @@
     <!-- Template Javascript -->
     <script src="{% static 'js/main.js'%}"></script>
 
-    <script>
+    <script>// 검색 기능 에러 알람
         function validateSearchForm() {
             var searchInput = document.querySelector('input[name="q"]');
             var errorMessage = document.getElementById('errorMessage');
@@ -291,6 +290,8 @@
             return true; // 폼 제출을 계속
         }
         </script>
+
+
         
         
 </body>
