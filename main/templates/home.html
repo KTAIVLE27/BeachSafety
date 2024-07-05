@@ -215,6 +215,7 @@
                         markerLayer.addMarker(marker);
                     }
                     
+                    // 색상을 결정 함수
                     function getColorScoreMsg(score_msg) { 
                         switch (score_msg) {
                             case "관심":
@@ -225,22 +226,24 @@
                                 return '/static/img/oring1.png';
                             case "위험":
                                 return '/static/img/red1.png';
+                            case "NaN": //API에 정보가 없을떄
+                                return '/static/img/white1.png';
                             default:
-                                return "/static/img/marker.png";
+                                return "/static/img/white1.png"; // 예외 처리 
                         }
                     }
 
                     var markerData = [
-                        { id: 'marker1', x: GYEONGPO_lon, y: GYEONGPO_lat, epsg: 'EPSG:4326', title: GYEONGPO_score_msg, contents: GYEONGPO_score_msg, iconUrl: getColorScoreMsg(GYEONGPO_score_msg) },
-                        { id: 'marker2', x: GORAEBUL_lon, y: GORAEBUL_lat, epsg: 'EPSG:4326', title: GORAEBUL_score_msg, contents: GORAEBUL_score_msg, iconUrl: getColorScoreMsg(GORAEBUL_score_msg) },
-                        { id: 'marker3', x: NAKSAN_lon, y: NAKSAN_lat, epsg: 'EPSG:4326', title: NAKSAN_score_msg, contents: NAKSAN_score_msg, iconUrl: getColorScoreMsg(NAKSAN_score_msg) },
-                        { id: 'marker4', x: DAECHON_lon, y: DAECHON_lat, epsg: 'EPSG:4326', title: DAECHON_score_msg, contents: DAECHON_score_msg, iconUrl: getColorScoreMsg(DAECHON_score_msg) },
-                        { id: 'marker5', x: MANGSANG_lon, y: MANGSANG_lat, epsg: 'EPSG:4326', title: MANGSANG_score_msg, contents: MANGSANG_score_msg, iconUrl: getColorScoreMsg(MANGSANG_score_msg) },
-                        { id: 'marker6', x: SOKCHO_lon, y: SOKCHO_lat, epsg: 'EPSG:4326', title: SOKCHO_score_msg, contents: SOKCHO_score_msg, iconUrl: getColorScoreMsg(SOKCHO_score_msg) },
-                        { id: 'marker7', x: SONGJUNG_lon, y: SONGJUNG_lat, epsg: 'EPSG:4326', title: SONGJUNG_score_msg, contents: SONGJUNG_score_msg, iconUrl: getColorScoreMsg(SONGJUNG_score_msg) },
-                        { id: 'marker8', x: IMRANG_lon, y: IMRANG_lat, epsg: 'EPSG:4326', title: IMRANG_score_msg, contents: IMRANG_score_msg, iconUrl: getColorScoreMsg(IMRANG_score_msg) },
-                        { id: 'marker9', x: JUNGMUN_lon, y: JUNGMUN_lat, epsg: 'EPSG:4326', title: JUNGMUN_score_msg, contents: JUNGMUN_score_msg, iconUrl: getColorScoreMsg(JUNGMUN_score_msg) },
-                        { id: 'marker10', x: HAE_lon, y: HAE_lat, epsg: 'EPSG:4326', title: HAE_score_msg, contents: HAE_score_msg, iconUrl: getColorScoreMsg(HAE_score_msg) },
+                        { id: 'marker1', x: GYEONGPO_lon, y: GYEONGPO_lat, epsg: 'EPSG:4326', title: '경포 해수욕장', contents: GYEONGPO_score_msg, iconUrl: getColorScoreMsg(GYEONGPO_score_msg) },
+                        { id: 'marker2', x: GORAEBUL_lon, y: GORAEBUL_lat, epsg: 'EPSG:4326', title: '고래불 해수욕장', contents: GORAEBUL_score_msg, iconUrl: getColorScoreMsg(GORAEBUL_score_msg) },
+                        { id: 'marker3', x: NAKSAN_lon, y: NAKSAN_lat, epsg: 'EPSG:4326', title: '낙산 해수욕장', contents: NAKSAN_score_msg, iconUrl: getColorScoreMsg(NAKSAN_score_msg) },
+                        { id: 'marker4', x: DAECHON_lon, y: DAECHON_lat, epsg: 'EPSG:4326', title: '대천 해수욕장', contents: DAECHON_score_msg, iconUrl: getColorScoreMsg(DAECHON_score_msg) },
+                        { id: 'marker5', x: MANGSANG_lon, y: MANGSANG_lat, epsg: 'EPSG:4326', title: '망상 해수욕장', contents: MANGSANG_score_msg, iconUrl: getColorScoreMsg(MANGSANG_score_msg) },
+                        { id: 'marker6', x: SOKCHO_lon, y: SOKCHO_lat, epsg: 'EPSG:4326', title: '속초 해수욕장', contents: SOKCHO_score_msg, iconUrl: getColorScoreMsg(SOKCHO_score_msg) },
+                        { id: 'marker7', x: SONGJUNG_lon, y: SONGJUNG_lat, epsg: 'EPSG:4326', title: '송정 해수욕장', contents: SONGJUNG_score_msg, iconUrl: getColorScoreMsg(SONGJUNG_score_msg) },
+                        { id: 'marker8', x: IMRANG_lon, y: IMRANG_lat, epsg: 'EPSG:4326', title: '임랑 해수욕장', contents: IMRANG_score_msg, iconUrl: getColorScoreMsg(IMRANG_score_msg) },
+                        { id: 'marker9', x: JUNGMUN_lon, y: JUNGMUN_lat, epsg: 'EPSG:4326', title: '중문 해수욕장', contents: JUNGMUN_score_msg, iconUrl: getColorScoreMsg(JUNGMUN_score_msg) },
+                        { id: 'marker10', x: HAE_lon, y: HAE_lat, epsg: 'EPSG:4326', title: '해운대 해수욕장', contents: HAE_score_msg, iconUrl: getColorScoreMsg(HAE_score_msg) },
                     ];
 
                     var markers = {};

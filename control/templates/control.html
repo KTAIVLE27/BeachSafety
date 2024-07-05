@@ -103,6 +103,45 @@ var IMRANG_lat = context.IMRANG_lat;
 var JUNGMUN_lat = context.JUNGMUN_lat;
 var HAE_lat = context.HAE_lat;
 
+// 자바스크립트 변수들
+var beaches = [
+    { name: '경포대 해수욕장', score_msg: context.GYEONGPO_score_msg, status: context.GYEONGPO_score_msg },
+    { name: '고래불 해수욕장', score_msg: context.GORAEBUL_score_msg, status: context.GORAEBUL_score_msg },
+    { name: '낙산 해수욕장', score_msg: context.NAKSAN_score_msg, status: context.NAKSAN_score_msg },
+    { name: '대천 해수욕장', score_msg: context.DAECHON_score_msg, status: context.DAECHON_score_msg },
+    { name: '망상 해수욕장', score_msg: context.MANGSANG_score_msg, status: context.MANGSANG_score_msg },
+    { name: '속초 해수욕장', score_msg: context.SOKCHO_score_msg, status: context.SOKCHO_score_msg },
+    { name: '송정 해수욕장', score_msg: context.SONGJUNG_score_msg, status: context.SONGJUNG_score_msg },
+    { name: '임랑 해수욕장', score_msg: context.IMRANG_score_msg, status: context.IMRANG_score_msg },
+    { name: '중문 해수욕장', score_msg: context.JUNGMUN_score_msg, status: context.JUNGMUN_score_msg },
+    { name: '해운대 해수욕장', score_msg: context.HAE_score_msg, status: context.HAE_score_msg }
+];
+
+// HTML에 자바스크립트 변수들을 삽입하는 함수
+function insertData() {
+    var alarmContainer = document.getElementById('alarm-container');
+    
+    beaches.forEach(function(beach, index) {
+        if (beach.status === '경계' || beach.status === '위험') {
+            var div = document.createElement('div');
+            div.className = 'textbox';
+            div.innerHTML = '<h5>' + beach.name + '</h5>' + beach.score_msg;
+            alarmContainer.appendChild(div);
+        }
+    });
+    
+    // 만약 경계, 위험인 해수욕장이 없는 경우 처리
+    if (alarmContainer.children.length === 0) {
+        var div = document.createElement('div');
+        div.className = 'textbox';
+        div.innerHTML = '<p>현재 경계나 위험인 해수욕장이 없습니다.</p>';
+        alarmContainer.appendChild(div);
+    }
+}
+
+// 페이지 로드 시 데이터 삽입 함수 호출
+window.onload = insertData;
+
 
 //마커찍기
 var markerLayer = new vw.ol3.layer.Marker(vmap); 
@@ -155,23 +194,25 @@ function getColorScoreMsg(score_msg) {
             return '/static/img/oring1.png';
         case "위험":
             return '/static/img/red1.png';
+        case "NaN": //API에 정보가 없을떄
+            return '/static/img/white1.png';
         default:
-            return "/static/img/marker.png"; // 예외 처리 
+            return "/static/img/white1.png"; // 예외 처리 
     }
 }
 
 // 여러 마커 추가
 var markerData = [
-    { id: 'marker1', x: GYEONGPO_lon, y: GYEONGPO_lat, epsg: 'EPSG:4326', title: GYEONGPO_score_msg, contents: GYEONGPO_score_msg, iconUrl: getColorScoreMsg(GYEONGPO_score_msg) },
-    { id: 'marker2', x: GORAEBUL_lon, y: GORAEBUL_lat, epsg: 'EPSG:4326', title: GORAEBUL_score_msg, contents: GORAEBUL_score_msg, iconUrl: getColorScoreMsg(GORAEBUL_score_msg) },
-    { id: 'marker3', x: NAKSAN_lon, y: NAKSAN_lat, epsg: 'EPSG:4326', title: NAKSAN_score_msg, contents: NAKSAN_score_msg, iconUrl: getColorScoreMsg(NAKSAN_score_msg) },
-    { id: 'marker4', x: DAECHON_lon, y: DAECHON_lat, epsg: 'EPSG:4326', title: DAECHON_score_msg, contents: DAECHON_score_msg, iconUrl: getColorScoreMsg(DAECHON_score_msg) },
-    { id: 'marker5', x: MANGSANG_lon, y: MANGSANG_lat, epsg: 'EPSG:4326', title: MANGSANG_score_msg, contents: MANGSANG_score_msg, iconUrl: getColorScoreMsg(MANGSANG_score_msg) },
-    { id: 'marker6', x: SOKCHO_lon, y: SOKCHO_lat, epsg: 'EPSG:4326', title: SOKCHO_score_msg, contents: SOKCHO_score_msg, iconUrl: getColorScoreMsg(SOKCHO_score_msg) },
-    { id: 'marker7', x: SONGJUNG_lon, y: SONGJUNG_lat, epsg: 'EPSG:4326', title: SONGJUNG_score_msg, contents: SONGJUNG_score_msg, iconUrl: getColorScoreMsg(SONGJUNG_score_msg) },
-    { id: 'marker8', x: IMRANG_lon, y: IMRANG_lat, epsg: 'EPSG:4326', title: IMRANG_score_msg, contents: IMRANG_score_msg, iconUrl: getColorScoreMsg(IMRANG_score_msg) },
-    { id: 'marker9', x: JUNGMUN_lon, y: JUNGMUN_lat, epsg: 'EPSG:4326', title: JUNGMUN_score_msg, contents: JUNGMUN_score_msg, iconUrl: getColorScoreMsg(JUNGMUN_score_msg) },
-    { id: 'marker10', x: HAE_lon, y: HAE_lat, epsg: 'EPSG:4326', title: HAE_score_msg, contents: HAE_score_msg, iconUrl: getColorScoreMsg(HAE_score_msg) },
+    { id: 'marker1', x: GYEONGPO_lon, y: GYEONGPO_lat, epsg: 'EPSG:4326', title: '경포 해수욕장', contents: GYEONGPO_score_msg, iconUrl: getColorScoreMsg(GYEONGPO_score_msg) },
+    { id: 'marker2', x: GORAEBUL_lon, y: GORAEBUL_lat, epsg: 'EPSG:4326', title: '고래불 해수욕장', contents: GORAEBUL_score_msg, iconUrl: getColorScoreMsg(GORAEBUL_score_msg) },
+    { id: 'marker3', x: NAKSAN_lon, y: NAKSAN_lat, epsg: 'EPSG:4326', title: '낙산 해수욕장', contents: NAKSAN_score_msg, iconUrl: getColorScoreMsg(NAKSAN_score_msg) },
+    { id: 'marker4', x: DAECHON_lon, y: DAECHON_lat, epsg: 'EPSG:4326', title: '대천 해수욕장', contents: DAECHON_score_msg, iconUrl: getColorScoreMsg(DAECHON_score_msg) },
+    { id: 'marker5', x: MANGSANG_lon, y: MANGSANG_lat, epsg: 'EPSG:4326', title: '망상 해수욕장', contents: MANGSANG_score_msg, iconUrl: getColorScoreMsg(MANGSANG_score_msg) },
+    { id: 'marker6', x: SOKCHO_lon, y: SOKCHO_lat, epsg: 'EPSG:4326', title: '속초 해수욕장', contents: SOKCHO_score_msg, iconUrl: getColorScoreMsg(SOKCHO_score_msg) },
+    { id: 'marker7', x: SONGJUNG_lon, y: SONGJUNG_lat, epsg: 'EPSG:4326', title: '송정 해수욕장', contents: SONGJUNG_score_msg, iconUrl: getColorScoreMsg(SONGJUNG_score_msg) },
+    { id: 'marker8', x: IMRANG_lon, y: IMRANG_lat, epsg: 'EPSG:4326', title: '임랑 해수욕장', contents: IMRANG_score_msg, iconUrl: getColorScoreMsg(IMRANG_score_msg) },
+    { id: 'marker9', x: JUNGMUN_lon, y: JUNGMUN_lat, epsg: 'EPSG:4326', title: '중문 해수욕장', contents: JUNGMUN_score_msg, iconUrl: getColorScoreMsg(JUNGMUN_score_msg) },
+    { id: 'marker10', x: HAE_lon, y: HAE_lat, epsg: 'EPSG:4326', title: '해운대 해수욕장', contents: HAE_score_msg, iconUrl: getColorScoreMsg(HAE_score_msg) },
 ];
 
 
@@ -352,15 +393,17 @@ setInterval(function() {
             alert('기상예보를 확인합니다.');
             $('#myModal3').modal('hide');
         });
+
+        
     </script>
 
-
-<div class="warn-alarm">
-    <h5>경고알람</h5>
-    <div id="textbox1" class="textbox">데이터를 가져오는 중...</div>
-    <div id="textbox2" class="textbox">데이터를 가져오는 중...</div>
-    <div id="textbox3" class="textbox">데이터를 가져오는 중...</div>
-</div>
+ <!-- 경고알림 창 이안류 3,4(경계, 위험) 단계에 해당할 경우에만 뜸 -->
+ <body>
+    <div class="warn-alarm" style="overflow-y: scroll;">
+        <h5>경고알람</h5>
+        <div id="alarm-container"></div>
+    </div>
+</body>
 
 </div>
         <!-- Back to Top -->
