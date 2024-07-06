@@ -25,7 +25,6 @@ urlpatterns = [
     path('free_board/<int:pk>/', views.freeboard_detail, name='freeboard_detail'),
     path('freeboard/edit/<int:pk>/', views.edit_freeboard, name='edit_freeboard'),
     path('delete/<int:post_id>/', views.delete_freeboard, name='delete_freeboard'),
-    path('admin/', admin.site.urls),
-    path('', include('control.urls')),
+    path('control/', include('control.urls')),
 ]
 

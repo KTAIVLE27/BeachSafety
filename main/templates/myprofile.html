@@ -418,6 +418,23 @@
                 showAlert('입력값을 확인해주세요.', 'danger');
             }
         });
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var profileLink = document.getElementById('myProfileLink');
+            var profileMenu = document.getElementById('myProfileMenu');
+        
+            profileLink.addEventListener('click', function(event) {
+                event.preventDefault();
+                profileMenu.classList.toggle('show');
+            });
+        
+            document.addEventListener('click', function(event) {
+                if (!profileLink.contains(event.target) && !profileMenu.contains(event.target)) {
+                    profileMenu.classList.remove('show');
+                }
+            });
+        });
     </script>
 </body>
 </html>
