@@ -354,8 +354,8 @@
 }
 
 .logo{
-    position: fixed;
-    top: 5%;
+    position: absolute;
+    top: 7%;
     left: 20px;
     transform: translateY(-50%);
     display: flex;
@@ -442,6 +442,7 @@
     margin: auto;
     top: 50%;
     transform: translateY(-50%);
+    height: 100%;
 }
 
 
@@ -453,4 +454,18 @@ footer {
     color: white; /* 텍스트 색상 */
     text-align: center; /* 텍스트 중앙 정렬 */
     padding: 10px 0; /* 내부 여백 */
+}
+.toggle-container {
+    display: none;
+    margin-top: 10px;
+    overflow: hidden;
+}
+
+.toggle-container button {
+    display: block;
+    margin: 5px 0;
+}
+
+#toggle-button {
+    cursor: pointer;
 }
