@@ -284,12 +284,7 @@
     height:250px;
 }
 
-#login{
-    background-color: rgba(127, 251, 255, 0.781);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+
 
 #map-box{
     width: 100vw;
@@ -468,4 +463,16 @@ footer {
 
 #toggle-button {
     cursor: pointer;
+}
+#signup-logo{
+    display: flex;
+    justify-content: center; /* 수평 중앙 정렬 */
+    gap: 10px; /* 요소 간 간격 */
+    padding: 20px; /* 내부 여백 */
+}
+#signin-logo{
+    display: flex;
+    justify-content: center; /* 수평 중앙 정렬 */
+    gap: 10px; /* 요소 간 간격 */
+    padding: 20px; /* 내부 여백 */
 }
