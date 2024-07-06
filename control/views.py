@@ -3,11 +3,6 @@ from django.contrib.auth import authenticate, login
 from django.contrib import messages
 
 # Create your views here.
-
-
-
-
-
 # ['GYEONGPO', 'GORAEBUL','NAKSAN','DAECHON','MANGSANG','SOKCHO','SONGJUNG','IMRANG','JUNGMUN','HAE']
 
 from .utils import *
@@ -54,4 +49,35 @@ def control_view(request):
     context_json = json.dumps(context)  # JSON 형식의 문자열로 변환
     return render(request, 'control.html', {'contextjson': context_json})
 
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import os
+import sys
+sys.path.append('c:/users/user/anaconda3/envs/beom/lib/site-packages')
+
+from sdk.api.message import Message
+from sdk.exceptions import CoolsmsException
+
+@csrf_exempt
+def send_sms(request):
+    if request.method == 'POST':
+        # set api key, api secret
+        MESSAGE_API_KEY = os.getenv('MESSAGE_API_KEY')
+        MESSAGE_API_SECRET = os.getenv('MESSAGE_API_SECRET')
+
+        # 4 params(to, from, type, text) are mandatory. must be filled
+        params = dict()
+        params['type'] = 'sms' # Message type ( sms, lms, mms, ata )
+        params['to'] = '01033634184' # Recipients Number
+        params['from'] = '01033634184' # Sender number
+        params['text'] = '신고가 접수되었습니다.' # Message
+
+        cool = Message(MESSAGE_API_KEY, MESSAGE_API_SECRET)
+        try:
+            response = cool.send(params)
+            return JsonResponse({'status': 'success', 'response': response})
+        except CoolsmsException as e:
+            return JsonResponse({'status': 'error', 'code': e.code, 'message': e.msg})
+    return JsonResponse({'status': 'invalid request'}, status=400)
 

@@ -230,10 +230,6 @@ setInterval(function() {
 }, 5000); // 5초마다 업데이트
 </script>
 
-
-
-
-
 <div class="logo">
 <a href="{% url 'home' %}"><img src="{% static 'img/logo_version2.png' %}" style="width:100px; height:100px;" ></i></a>      
 </div> 
@@ -260,33 +256,51 @@ setInterval(function() {
     <a href="#" class="btn btn-secondary" title="기상예보" data-toggle="modal" data-target="#myModal3"><i class="fa fa-cloud-sun"></i></a>
 </div>
 
-    <!-- 119/해군 모달버튼 시작 -->
-    <div class="modal"id="myModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-    <!-- Modal Header -->
-                <div class="modal-header">
-                    <h4 class="modal-title">전화를 거시겠습니까?</h4>
-                    <button type="button"class="close"data-dismiss="modal">&times;</button>
-                </div>
-   <!-- Modal body -->
-                <div class="modal-body">
-                </div>
-    <!-- Modal footer -->
-                <div class="modal-footer">
-                    <button type="button"class="btn btn-success"id="callBtn">걸기</button>
-                    <button type="button"class="btn btn-danger"data-dismiss="modal">취소</button>
-                </div>
+<!-- 119/해군 모달버튼 시작 -->
+<div class="modal" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">신고 접수 하시겠습니까?</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="callBtn">접수하기</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">취소</button>
             </div>
         </div>
     </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     document.getElementById('callBtn').addEventListener('click', function() {
-        alert('전화를 겁니다.');
+        alert('메시지 전송합니다.');
+        $.ajax({
+            url: '/send-sms/',
+            type: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'  // CSRF 토큰 추가
+            },
+            success: function(response) {
+                if (response.status === 'success') {
+                    alert('메시지 전송에 성공했습니다.');
+                } else {
+                    alert('메시지 전송에 실패했습니다: ' + response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                alert('메시지 전송 중 오류가 발생했습니다: ' + error);
+            }
+        });
         $('#myModal').modal('hide');
-});
+    });
 </script>
-    <!-- 119/해군 모달버튼 끝 -->
+<!-- 119/해군 모달버튼 끝 -->
 
     <!-- 모의훈련 모달 -->
     <div class="modal" id="myModal2">
