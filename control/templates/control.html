@@ -231,7 +231,7 @@ setInterval(function() {
 </script>
 
 <div class="logo">
-<a href="{% url 'home' %}"><img src="{% static 'img/logo_version2.png' %}" style="width:100px; height:100px;" ></i></a>      
+<a href="{% url 'home' %}"><img src="{% static 'img/logo_new1.png' %}" style="width:90px; height:100px; top: 10%" ></i></a>      
 </div> 
 
 <div class="nav-buttons">
@@ -361,8 +361,25 @@ setInterval(function() {
             <div class="modal-content">
                 <!-- Modal Header -->
                 <div class="container-fluid pt-4 px-4">
+                    <div class="dropdown me-2">
+                        <button class="btn btn-info dropdown-toggle" type="button" id="toggle-button" data-bs-toggle="dropdown" aria-expanded="false">
+                            구분
+                        </button>
+                           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <button>고래불해수욕장</button>
+                                <button>낙산해수욕장</button>
+                                <button>대천해수욕장</button>
+                                <button>망상해수욕장</button>
+                                <button>속초해수욕장</button>
+                                <button>송정해수욕장</button>
+                                <button>임랑해수욕장</button>
+                                <button>중문해수욕장</button>
+                                <button>해운대해수욕장</button>
+                            </div>
                     <div class="row g-4">
+                        
                         <div class="bg-light text-center rounded p-4">
+                            
                             <div class="d-flex align-items-center justify-content-between mb-4">
                                 <h6 class="mb-0">날씨 이미지 정보 박스</h6>
                             </div>
@@ -410,6 +427,19 @@ setInterval(function() {
         
     </script>
 
+{% comment %} 날씨창 토글키 js {% endcomment %}
+    <script>
+        const toggleButton = document.getElementById('toggle-button');
+        const toggleContainer = document.querySelector('.toggle-container');
+
+        toggleButton.addEventListener('click', () => {
+            if (toggleContainer.style.display === 'none' || toggleContainer.style.display === '') {
+                toggleContainer.style.display = 'block';
+            } else {
+                toggleContainer.style.display = 'none';
+            }
+        });
+    </script>
  <!-- 경고알림 창 이안류 3,4(경계, 위험) 단계에 해당할 경우에만 뜸 -->
  <body>
     <div class="warn-alarm" style="overflow-y: scroll;">
