@@ -54,8 +54,6 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import os
 import sys
-sys.path.append('c:/users/user/anaconda3/envs/beom/lib/site-packages')
-
 from sdk.api.message import Message
 from sdk.exceptions import CoolsmsException
 
