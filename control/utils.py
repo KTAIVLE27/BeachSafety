@@ -3,6 +3,7 @@ import os
 from main.models import Beach
 # 환경 변수에서 API 키를 가져옵니다.
 RIP_API_KEY = os.getenv('RIP_API_KEY')
+
 url = f'http://www.khoa.go.kr/api/oceangrid/ripCurrentRecent/search.do?ServiceKey={RIP_API_KEY}&ResultType=json'
 
 response = requests.get(url)
@@ -72,3 +73,40 @@ def get_beach_obs_time(beach_API_CODE):
         return beach_data_dict[beach_API_CODE]['obs_time']
     except KeyError:
         return "NaN"  # 값이 없을 때 반환할 기본 메시지
+    
+# import os
+# import sys
+# sys.path.append('c:/users/user/anaconda3/envs/beom/lib/site-packages')
+
+# from sdk.api.message import Message
+# from sdk.exceptions import CoolsmsException
+    
+# ##  @brief This sample code demonstrate how to send sms through CoolSMS Rest API PHP
+# if __name__ == "__main__":
+
+#     # set api key, api secret
+#     MESSAGE_API_KEY = os.getenv('MESSAGE_API_KEY')
+#     MESSAGE_API_SECRET = os.getenv('MESSAGE_API_SECRET')
+
+#     # 4 params(to, from, type, text) are mandatory. must be filled
+#     params = dict()
+#     params['type'] = 'sms' # Message type ( sms, lms, mms, ata )
+#     params['to'] = '01033634184' # Recipients Number '01000000000,01000000001'
+#     params['from'] = '01033634184' # Sender number
+#     params['text'] = '신고가 접수되었습니다.' # Message
+
+#     cool = Message(api_key, api_secret)
+#     try:
+#         response = cool.send(params)
+#         print("Success Count : %s" % response['success_count'])
+#         print("Error Count : %s" % response['error_count'])
+#         print("Group ID : %s" % response['group_id'])
+
+#         if "error_list" in response:
+#             print("Error List : %s" % response['error_list'])
+
+#     except CoolsmsException as e:
+#         print("Error Code : %s" % e.code)
+#         print("Error Message : %s" % e.msg)
+
+#     sys.exit()
