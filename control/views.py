@@ -53,7 +53,6 @@ def control_view(request):
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import os
-import sys
 from sdk.api.message import Message
 from sdk.exceptions import CoolsmsException
 
@@ -64,12 +63,20 @@ def send_sms(request):
         MESSAGE_API_KEY = os.getenv('MESSAGE_API_KEY')
         MESSAGE_API_SECRET = os.getenv('MESSAGE_API_SECRET')
 
+        if not MESSAGE_API_KEY or not MESSAGE_API_SECRET:
+            return JsonResponse({'status': 'error', 'message': 'API key or secret not set'}, status=400)
+
+        # Get beach name from request
+        beach_name = request.POST.get('beach_name')
+        if not beach_name:
+            return JsonResponse({'status': 'error', 'message': 'Beach name not provided'}, status=400)
+
         # 4 params(to, from, type, text) are mandatory. must be filled
         params = dict()
         params['type'] = 'sms' # Message type ( sms, lms, mms, ata )
         params['to'] = '01033634184' # Recipients Number
         params['from'] = '01033634184' # Sender number
-        params['text'] = '신고가 접수되었습니다.' # Message
+        params['text'] = f'{beach_name} 신고가 접수되었습니다.' # Message
 
         cool = Message(MESSAGE_API_KEY, MESSAGE_API_SECRET)
         try:
@@ -78,4 +85,5 @@ def send_sms(request):
         except CoolsmsException as e:
             return JsonResponse({'status': 'error', 'code': e.code, 'message': e.msg})
     return JsonResponse({'status': 'invalid request'}, status=400)
+
 

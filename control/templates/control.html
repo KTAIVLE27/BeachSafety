@@ -269,22 +269,37 @@ setInterval(function() {
             <div class="modal-body">
             </div>
             <!-- Modal footer -->
-            <div class="modal-footer">
-                <button type="button" class="btn btn-success" id="callBtn">접수하기</button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal">취소</button>
-            </div>
+            <button class="btn btn-info dropdown-toggle" type="button" id="toggle-button" data-bs-toggle="dropdown" aria-expanded="false">
+                구분
+            </button>
+               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <button type="button" class="btn btn-success beach-btn" data-beach-name="고래불해수욕장">고래불해수욕장</button>
+                    <button type="button" class="btn btn-success beach-btn" data-beach-name="낙산해수욕장">낙산해수욕장</button>
+                    <button type="button" class="btn btn-success beach-btn" data-beach-name="대천해수욕장">대천해수욕장</button>
+                    <button type="button" class="btn btn-success beach-btn" data-beach-name="망상해수욕장">망상해수욕장</button>
+                    <button type="button" class="btn btn-success beach-btn" data-beach-name="속초해수욕장">속초해수욕장</button>
+                    <button type="button" class="btn btn-success beach-btn" data-beach-name="송정해수욕장">송정해수욕장</button>
+                    <button type="button" class="btn btn-success beach-btn" data-beach-name="임랑해수욕장">임랑해수욕장</button>
+                    <button type="button" class="btn btn-success beach-btn" data-beach-name="중문해수욕장">중문해수욕장</button>
+                    <button type="button" class="btn btn-success beach-btn" data-beach-name="해운대해수욕장">해운대해수욕장</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">취소</button>
+                </div>
         </div>
     </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    document.getElementById('callBtn').addEventListener('click', function() {
-        alert('메시지 전송합니다.');
+    $('.beach-btn').on('click', function() {
+        var beachName = $(this).data('beach-name');
+        alert('메시지 전송합니다: ' + beachName);
         $.ajax({
             url: '/send-sms/',
             type: 'POST',
+            data: {
+                'beach_name': beachName
+            },
             headers: {
-                'X-CSRFToken': '{{ csrf_token }}'  // CSRF 토큰 추가
+                'X-CSRFToken': '{{ csrf_token }}'
             },
             success: function(response) {
                 if (response.status === 'success') {
