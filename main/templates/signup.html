@@ -118,6 +118,33 @@
             }).open();
         }
 
+        $(document).ready(function() {
+            $('#id_PhoneNumber').keydown(function(event) {
+                var key = event.charCode || event.keyCode || 0;
+                $text = $(this);
+        
+                // 숫자 및 제어 키 허용
+                if (key === 8 || key === 9 || key === 46 || (key >= 48 && key <= 57) || (key >= 96 && key <= 105)) {
+                    // 하이픈 포함 최대 13자리로 입력 제한
+                    if ($text.val().length >= 13 && key !== 8 && key !== 46 && (key < 96 || key > 105)) {
+                        event.preventDefault();
+                        return false;
+                    }
+        
+                    if (key !== 8 && key !== 46) {
+                        // 하이픈 추가
+                        if ($text.val().length === 3 || $text.val().length === 8) {
+                            $text.val($text.val() + '-');
+                        }
+                    }
+                    return true;
+                } else {
+                    event.preventDefault();
+                    return false;
+                }
+            });
+        });
+
         function validateField(field) {
             let errorDiv = document.getElementById(field.id + "_error");
             if (field.name === "user_id") {
