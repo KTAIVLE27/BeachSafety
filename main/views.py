@@ -435,34 +435,38 @@ def control_view(request):
     beach_no = request.GET.get('beach_no')
     
     beaches = {
-        "경포 해수욕장": {"nx": 92, "ny": 132},
-        "고래불 해수욕장": {"nx": 103, "ny": 107},
-        "낙산 해수욕장": {"nx": 87, "ny": 140},
-        "대천 해수욕장": {"nx": 53, "ny": 100},
-        "망상 해수욕장": {"nx": 96, "ny": 127},
-        "속초 해수욕장": {"nx": 87, "ny": 140},
-        "송정 해수욕장": {"nx": 61, "ny": 126},
-        "임랑 해수욕장": {"nx": 101, "ny": 79},
-        "중문 해수욕장": {"nx": 51, "ny": 32},
-        "해운대 해수욕장": {"nx": 99, "ny": 75},
+        "경포 해수욕장": {"nx": 92, "ny": 132, "widget_id": "wl7437"},
+        "고래불 해수욕장": {"nx": 103, "ny": 107, "widget_id": "wl7463"},
+        "낙산 해수욕장": {"nx": 87, "ny": 140, "widget_id": "wl7478"},
+        "대천 해수욕장": {"nx": 53, "ny": 100, "widget_id": "wl7459"},
+        "망상 해수욕장": {"nx": 96, "ny": 127, "widget_id": "wl7462"},
+        "속초 해수욕장": {"nx": 87, "ny": 140, "widget_id": "wl7463"},
+        "송정 해수욕장": {"nx": 61, "ny": 126, "widget_id": "wl1419"},
+        "임랑 해수욕장": {"nx": 101, "ny": 79, "widget_id": "wl1419"},
+        "중문 해수욕장": {"nx": 51, "ny": 32, "widget_id": "wl7440"},
+        "해운대 해수욕장": {"nx": 99, "ny": 75, "widget_id": "wl1419"},
     }
 
     selected_beach = None
     weather_data = None
+    widget_id = None
 
     if beach_no:
         try:
-            nx, ny = eval(beach_no)['nx'], eval(beach_no)['ny']
-            selected_beach = next((name for name, coords in beaches.items() if coords == {"nx": nx, "ny": ny}), None)
+            coordinates = eval(beach_no)
+            nx, ny = coordinates['nx'], coordinates['ny']
+            selected_beach = next((name for name, coords in beaches.items() if coords['nx'] == nx and coords['ny'] == ny), None)
             if selected_beach:
                 weather_data = fetch_weather_data({'nx': nx, 'ny': ny})
+                widget_id = beaches[selected_beach]['widget_id']
         except (SyntaxError, KeyError):
             pass
 
     context = {
         'weather_data': weather_data,
         'beaches': beaches,
-        'selected_beach': selected_beach
+        'selected_beach': selected_beach,
+        'widget_id': widget_id
     }
     
     return render(request, 'weather.html', context)
