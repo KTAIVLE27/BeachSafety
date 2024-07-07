@@ -291,3 +291,11 @@
     align-items: center;
 }
 
+.footer {
+    height: 50px; /* 푸터 높이 설정 */
+    background-color: #f1f1f1; /* 푸터 배경색 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+    line-height: 50px; /* 세로 중앙 정렬을 위한 라인 높이 */
+    background-color: #000; /* 푸터 배경색을 검정으로 설정 */
+    color: #fff; /* 텍스트 색상을 흰색으로 설정 */
+}
