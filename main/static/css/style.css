@@ -441,15 +441,15 @@
 }
 
 
-footer {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    background-color: #333; /* 원하는 배경색 */
-    color: white; /* 텍스트 색상 */
+.footer {
+    height: 50px; /* 푸터 높이 설정 */
+    background-color: #f1f1f1; /* 푸터 배경색 */
     text-align: center; /* 텍스트 중앙 정렬 */
-    padding: 10px 0; /* 내부 여백 */
+    line-height: 50px; /* 세로 중앙 정렬을 위한 라인 높이 */
+    background-color: #000; /* 푸터 배경색을 검정으로 설정 */
+    color: #fff; /* 텍스트 색상을 흰색으로 설정 */
 }
+
 .toggle-container {
     display: none;
     margin-top: 10px;
@@ -476,3 +476,142 @@ footer {
     gap: 10px; /* 요소 간 간격 */
     padding: 20px; /* 내부 여백 */
 }
+
+
+
+.custom-box-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* 박스 사이의 간격 */
+}
+
+.custom-box {
+    flex: 1 1 calc(20% - 10px); /* 박스가 가로 방향으로 20% 차지하도록 설정 */
+    height: 400px; /* 세로 길이를 고정값으로 설정 */
+    display: flex;
+    flex-direction: column; /* 세로로 정렬 */
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    background-color: #fff;
+}
+
+.custom-box h6 {
+    margin-bottom: 10px;
+}
+
+.custom-box hr {
+    width: 100%;
+    margin: 10px 0;
+}
+
+.custom-box img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+.custom-box textarea {
+    width: 100%;
+    height: 100px;
+    resize: none;
+    padding: 5px;
+}
+
+@media (max-width: 1200px) {
+    .custom-box {
+        flex: 1 1 calc(33.33% - 10px); /* 화면 작을 때는 3개씩 나열되도록 설정 */
+    }
+}
+
+@media (max-width: 768px) {
+    .custom-box {
+        flex: 1 1 calc(50% - 10px); /* 화면 더 작을 때는 2개씩 나열되도록 설정 */
+    }
+}
+
+@media (max-width: 480px) {
+    .custom-box {
+        flex: 1 1 calc(100% - 10px); /* 화면 더 더 작을 때는 1개씩 나열되도록 설정 */
+    }
+}
+
+
+
+
+/* cctv css */
+.toggle-key {
+    cursor: pointer;
+    position: relative;
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+.toggle-key::after {
+    content: "\f078"; /* Font Awesome down arrow */
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.toggle-key.active::after {
+    content: "\f077"; /* Font Awesome up arrow */
+}
+.beach-list {
+    display: none;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background: #f1f1f1;
+    border: 1px solid #ddd;
+    max-height: 200px;
+    overflow-y: auto;
+}
+.beach-list li {
+    padding: 10px;
+    cursor: pointer;
+}
+.beach-list li:hover {
+    background: #ddd;
+}
+/* ////////////////// */
+
+
+/* weather css */
+.weather-box {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: left;
+    margin-top: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.weather-box h6 {
+    font-weight: 600;
+    font-size: 18px;
+    color: #343a40;
+    margin-bottom: 15px;
+}
+
+.weather-box p {
+    font-size: 16px;
+    color: #6c757d;
+    margin-bottom: 10px;
+}
+
+.weather-icon {
+    font-size: 36px;
+    margin-right: 15px;
+}
+/* ///////////////// */
