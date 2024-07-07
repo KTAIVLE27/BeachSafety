@@ -1,4 +1,4 @@
-/* Custom CSS for profile edit page */
+/* Custom CSS for profile edit page
 
         .profile-img-label {
             position: relative;
@@ -55,4 +55,72 @@
             .profile-img-label {
                 font-size: 12px;
             }
+        }
+ */
+
+
+         /* Custom CSS for profile edit page */
+
+         .profile-img-label {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            font-size: 14px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .overlay .text {
+            transition: transform 0.3s ease;
+        }
+
+        .profile-img-label:hover .overlay {
+            opacity: 1;
+        }
+
+        .profile-img-label:hover .overlay .text {
+            transform: translateY(-50%);
+        }
+
+        .overlay .text {
+            transform: translateY(0);
+        }
+
+        .profile-box label {
+            position: relative;
+            margin-bottom: 0.5rem;
+        }
+
+        #password-error {
+            font-size: 14px;
+        }
+
+        .profile-box button {
+            font-size: 14px;
+            padding: 10px 20px;
+        }
+
+        @media (max-width: 576px) {
+            .profile-img-label {
+                font-size: 12px;
+            }
+        }
+        .alert-message {
+            position: fixed;
+            top: 70px; /* Adjusted to ensure it is below the header */
+            right: 20px;
+            z-index: 1050; /* High z-index to ensure it is above other elements */
+            display: none;
         }

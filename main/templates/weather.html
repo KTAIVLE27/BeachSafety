@@ -1,312 +1,102 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="ko">
 
-<head>
-    <meta charset="utf-8">
-    <title>날씨</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="keywords" content="">
-    <meta name="description" content="">
+{% extends "base/base.html" %}
+{% block title %}날씨{% endblock %}
 
-    <!-- Favicon -->
-    <link href="{% static 'img/favicon.ico' %}" rel="icon">
+{% block sidebar_brand %}
+<a class="navbar-brand mx-4 mb-3">
+    <h3 class="text-primary">날씨</h3>
+</a>
+{% endblock %}
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+{% block content %}
+        <!-- Weather Information -->
+        <div class="container-fluid pt-4 px-4">
+            <div class="row g-4">
+                <div class="dropdown me-2">
+                    <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        구분
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        {% for beach_name, coordinates in beaches.items %}
+                            <a class="dropdown-item" href="?beach_no={{ coordinates }}">{{ beach_name }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
 
-    <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+                <!-- Display weather data for the selected beach -->
+                {% if selected_beach %}
+                <div class="col-md-6">
+                    <div class="weather-box bg-light text-center rounded p-4">
+                        <div class="d-flex align-items-center justify-content-between mb-4">
+                            <h6 class="mb-0">{{ selected_beach }} 날씨 정보</h6>
+                        </div>
+                        <p class="text-primary"><i class="bi bi-cloud-sun weather-icon"></i>{{ weather_data.TMP }}</p>
+                        <p>🌡️ 현재 기온: {{ weather_data.TMP }}°C</p>
+                        <p>💧 1시간 강수량: {{ weather_data.PCP }}mm</p>
+                        <p>🌬️ 동서바람 성분: {{ weather_data.UUU }}m/s</p>
+                        <p>🌬️ 남북바람 성분: {{ weather_data.VVV }}m/s</p>
+                        <p>💦 습도: {{ weather_data.REH }}%</p>
+                        <p>🌧️ 강수 형태: {{ weather_data.PTY }}</p>
+                        <p>🧭 풍향: {{ weather_data.VEC }}°</p>
+                        <p>💨 풍속: {{ weather_data.WSD }}m/s</p>
+                    </div>
+                </div>
 
-    <!-- Bootstrap CSS -->
-    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
-
-    <!-- Owl Carousel -->
-    <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
-    <!-- Tempus Dominus -->
-    <link href="{% static 'lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css' %}" rel="stylesheet">
-
-    <!-- Custom CSS -->
-    <link href="{% static 'css/style.css' %}" rel="stylesheet">
-
-    <!-- Custom Styles for Weather Information -->
-    <style>
-        .weather-box {
-            background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 10px;
-            padding: 20px;
-            text-align: left;
-            margin-top: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .weather-box h6 {
-            font-weight: 600;
-            font-size: 18px;
-            color: #343a40;
-            margin-bottom: 15px;
-        }
-
-        .weather-box p {
-            font-size: 16px;
-            color: #6c757d;
-            margin-bottom: 10px;
-        }
-
-        .weather-icon {
-            font-size: 36px;
-            margin-right: 15px;
-        }
-    </style>
-</head>
-
-<body>
-    <div class="container-fluid position-relative bg-white d-flex p-0">
-        <!-- Spinner -->
-        <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-                <span class="sr-only">Loading...</span>
+                <div class="col-md-6">
+                    <div class="weather-box bg-light text-center rounded p-4">
+                        <div class="d-flex align-items-center justify-content-between mb-4">
+                            <h6 class="mb-0">주간 날씨 정보</h6>
+                        </div>
+                        <style>
+                            /* ww_800c1a7721eaa 요소에 대한 사용자 정의 스타일 */
+                            #ww_800c1a7721eaa {
+                                border-radius: 8px; /* 테두리 둥글기 설정 */
+                                box-shadow: 0 0 10px rgba(0,0,0,0.1); /* 그림자 효과 설정 */
+                                max-width: 1000px;
+                                width: 100%;
+                                height: 100%;
+                                place-content: center;
+                            }
+                        </style>
+                        <div id="ww_800c1a7721eaa-wrapper" class="d-flex justify-content-center align-items-center" style="height: 370px;">
+                            <div id="ww_800c1a7721eaa" v='1.3' loc='id' a='{"t":"horizontal",
+                                                                            "lang":"ko",
+                                                                            "sl_lpl":1,
+                                                                            "ids":["wl1419"],
+                                                                            "font":"Arial",
+                                                                            "sl_ics":"one_a",
+                                                                            "sl_sot":"celsius",
+                                                                            "cl_bkg":"image",
+                                                                            "cl_font":"#FFFFFF",
+                                                                            "cl_cloud":"#FFFFFF",
+                                                                            "cl_persp":"#81D4FA",
+                                                                            "cl_sun":"#FFC107",
+                                                                            "cl_moon":"#FFC107",
+                                                                            "cl_thund":"#FF5722"}'>
+                                More forecasts: 
+                                <a href="https://oneweather.org/seoul/30_days/" id="ww_800c1a7721eaa_u" target="_blank">
+                                    30 day weather forecast Seoul</a>
+                            </div>
+                        </div>
+                        <script async src="https://app2.weatherwidget.org/js/?id=ww_800c1a7721eaa"></script>
+                    </div>
+                </div>
+                {% else %}
+                <div class="col-md-6">
+                    <div class="weather-box bg-light text-center rounded p-4">
+                        <h6 class="mb-0">날씨 정보를 확인하려면 해수욕장을 선택하세요.</h6>
+                    </div>
+                </div>
+                {% endif %}
             </div>
         </div>
-        <!-- Spinner End -->
 
-        <!-- Sidebar -->
-        <div class="sidebar pe-4 pb-3">
-            <nav class="navbar bg-light navbar-light">
-                <a href="{% url 'home' %}" class="navbar-brand mx-4 mb-3">
-                    <h3 class="text-primary">날씨</h3>
-                </a>
-                <div class="d-flex align-items-center ms-4 mb-4">
-                    <div class="position-relative">
-                        <img class="rounded-circle" src="{% static 'img/face_24dp.png' %}" alt="Profile" style="width: 40px; height: 40px;">
-                        <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
-                    </div>
-                    <div class="ms-3">
-                        <h6 class="mb-0">27조 {{user.user_name}}</h6>
-                        <span>{{user.user_id}}</span>
-                    </div>
-                </div>
-                <div class="navbar-nav w-100">
-                    <a href="{% url 'home' %}" class="nav-item nav-link">
-                        <img class="fa fa-th me-2" src="{% static 'img/home_24dp.png' %}" style="width: 40px; height: 40px;">홈
-                    </a>
-                    <div class="nav-item">
-                        <a href="#" class="nav-link" id="myProfileLink">
-                            <img class="fa fa-th me-2" src="{% static 'img/face_24dp.png' %}" style="width: 40px; height: 40px;">마이 페이지
-                        </a>
-                        <div class="dropdown-menu" id="myProfileMenu">
-                            <a class="dropdown-item" href="{% url 'myprofile' %}">내 정보 수정</a>
-                            <a class="dropdown-item" href="{% url 'myposts' %}">내가 쓴 글 관리</a>
-                        </div>
-                    </div>
-                    <a href="{% url 'cctv' %}" class="nav-item nav-link">
-                        <img class="fa fa-th me-2" src="{% static 'img/videocam.png' %}" style="width: 40px; height: 40px;">CCTV
-                    </a>
-                    <a href="{% url 'weather' %}" class="nav-item nav-link">
-                        <img class="fa fa-th me-2" src="{% static 'img/partly.png' %}" style="width: 40px; height: 40px;">날씨
-                    </a>
-                    <a href="{% url 'risk' %}" class="nav-item nav-link">
-                        <img class="fa fa-th me-2" src="{% static 'img/fmd.png' %}" style="width: 40px; height: 40px;">위험도
-                    </a>
-                    <a href="{% url 'board' %}" class="nav-item nav-link">
-                        <img class="fa fa-th me-2" src="{% static 'img/wysiwyg_24dp.png' %}" style="width: 40px; height: 40px;">공지사항
-                    </a>
-                    <a href="{% url 'free_board' %}" class="nav-item nav-link">
-                        <img class="fa fa-th me-2" src="{% static 'img/wysiwyg_24dp.png' %}" style="width: 40px; height: 40px;">자유 게시판
-                    </a>
-                    <a href="{% url 'chat' %}" class="nav-item nav-link">
-                        <img class="fa fa-th me-2" src="{% static 'img/chat_24dp.png' %}" style="width: 40px; height: 40px;">모의 훈련
-                    </a>
-                </div>
-            </nav>
-        </div>
-        <!-- Sidebar End -->
-
-        <!-- Content Start -->
-        <div class="content">
-            <!-- Navbar Start -->
-            <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
-                <a href="#" class="sidebar-toggler flex-shrink-0"><i class="fa fa-bars"></i></a>
-                <a href="{% url 'home' %}"><img src="{% static 'img/logo.png' %}" width="50" height="50"></a>
-                
-                <form class="d-none d-md-flex ms-4">
-                    <input class="form-control border-0" type="search" placeholder="Search">
-                </form>
-                
-                <div class="navbar-nav align-items-center ms-auto">
-                    <!-- Add buttons based on user role -->
-                    {% if user.user_role == 'admin' %}
-                        <div class="nav-item dropdown">
-                            <a href="{% url 'adminpanel:admin_home' %}">
-                                <img class="rounded-circle me-lg-2" src="{% static 'img//wysiwyg_24dp.png' %}" alt="" style="width: 50px; height: 50px;">
-                            </a>
-                        </div>
-                        
-                        <div class="nav-item dropdown">
-                            <a href="{% url 'control:control' %}">
-                                <img class="rounded-circle me-lg-2" src="{% static 'img/videocam.png' %}" alt="" style="width: 50px; height: 50px;">
-                            </a>
-                        </div>
-                    {% elif user.user_role == 'supervisor' %}
-                        <div class="nav-item dropdown">
-                            <a href="{% url 'control:control' %}">
-                                <img class="rounded-circle me-lg-2" src="{% static 'img/videocam.png' %}" alt="" style="width: 50px; height: 50px;">
-                            </a>
-                        </div>
-                    {% endif %}
-                    
-                    <div class="nav-item dropdown">
-                        <form method="post" action="{% url 'logout' %}">
-                            {% csrf_token %}
-                            <button type="submit" style="border:none; background:none;">
-                                <img src="{% static 'img/logout_24dp.png' %}" width="50" height="50" alt="Logout">
-                            </button>
-                        </form>
-                    </div>
-                
-                    <div class="nav-item dropdown">
-                        <a href="{% url 'myprofile' %}">
-                            <img class="rounded-circle me-lg-2" src="{% static 'img/face_24dp.png' %}" alt="" style="width: 50px; height: 50px;">
-                        </a>
-                    </div>
-                </div>
-            </nav>
-            <!-- Navbar End -->
-
-            <!-- Weather Information -->
-            <div class="container-fluid pt-4 px-4">
-                <div class="row g-4">
-                    <div class="dropdown me-2">
-                        <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                            구분
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            {% for beach_name, coordinates in beaches.items %}
-                                <a class="dropdown-item" href="?beach_no={{ coordinates }}">{{ beach_name }}</a>
-                            {% endfor %}
-                        </div>
-                    </div>
-
-                    <!-- Display weather data for the selected beach -->
-                    {% if selected_beach %}
-                    <div class="col-md-6">
-                        <div class="weather-box bg-light text-center rounded p-4">
-                            <div class="d-flex align-items-center justify-content-between mb-4">
-                                <h6 class="mb-0">{{ selected_beach }} 날씨 정보</h6>
-                            </div>
-                            <p class="text-primary"><i class="bi bi-cloud-sun weather-icon"></i>{{ weather_data.TMP }}</p>
-                            <p>🌡️ 현재 기온: {{ weather_data.TMP }}°C</p>
-                            <p>💧 1시간 강수량: {{ weather_data.PCP }}mm</p>
-                            <p>🌬️ 동서바람 성분: {{ weather_data.UUU }}m/s</p>
-                            <p>🌬️ 남북바람 성분: {{ weather_data.VVV }}m/s</p>
-                            <p>💦 습도: {{ weather_data.REH }}%</p>
-                            <p>🌧️ 강수 형태: {{ weather_data.PTY }}</p>
-                            <p>🧭 풍향: {{ weather_data.VEC }}°</p>
-                            <p>💨 풍속: {{ weather_data.WSD }}m/s</p>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <div class="weather-box bg-light text-center rounded p-4">
-                            <div class="d-flex align-items-center justify-content-between mb-4">
-                                <h6 class="mb-0">주간 날씨 정보</h6>
-                            </div>
-                            <style>
-                                /* ww_800c1a7721eaa 요소에 대한 사용자 정의 스타일 */
-                                #ww_800c1a7721eaa {
-                                    border-radius: 8px; /* 테두리 둥글기 설정 */
-                                    box-shadow: 0 0 10px rgba(0,0,0,0.1); /* 그림자 효과 설정 */
-                                    max-width: 1000px;
-                                    width: 100%;
-                                    height: 100%;
-                                    place-content: center;
-                                }
-                            </style>
-                            <div id="ww_800c1a7721eaa-wrapper" class="d-flex justify-content-center align-items-center" style="height: 370px;">
-                                <div id="ww_800c1a7721eaa" v='1.3' loc='id' a='{"t":"horizontal",
-                                                                                "lang":"ko",
-                                                                                "sl_lpl":1,
-                                                                                "ids":["wl1419"],
-                                                                                "font":"Arial",
-                                                                                "sl_ics":"one_a",
-                                                                                "sl_sot":"celsius",
-                                                                                "cl_bkg":"image",
-                                                                                "cl_font":"#FFFFFF",
-                                                                                "cl_cloud":"#FFFFFF",
-                                                                                "cl_persp":"#81D4FA",
-                                                                                "cl_sun":"#FFC107",
-                                                                                "cl_moon":"#FFC107",
-                                                                                "cl_thund":"#FF5722"}'>
-                                    More forecasts: 
-                                    <a href="https://oneweather.org/seoul/30_days/" id="ww_800c1a7721eaa_u" target="_blank">
-                                        30 day weather forecast Seoul</a>
-                                </div>
-                            </div>
-                            <script async src="https://app2.weatherwidget.org/js/?id=ww_800c1a7721eaa"></script>
-                        </div>
-                    </div>
-                    {% else %}
-                    <div class="col-md-6">
-                        <div class="weather-box bg-light text-center rounded p-4">
-                            <h6 class="mb-0">날씨 정보를 확인하려면 해수욕장을 선택하세요.</h6>
-                        </div>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-
-            <!-- Weather Information End -->
-            <!-- Footer -->
-            <footer class="footer mt-auto py-3 bg-light">
-                <div class="container text-center">
-                    <span class="text-muted">&copy; 2024 Your Company. All rights reserved.</span>
-                </div>
-            </footer>
-            <!-- Footer End -->
-        </div>
-        <!-- Content End -->
-
-        <!-- Back to Top Button -->
-        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
-
+        <!-- Weather Information End -->
     </div>
+    <!-- Content End -->
 
-    <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{% static 'lib/chart/chart.min.js' %}"></script>
-    <script src="{% static 'lib/easing/easing.min.js' %}"></script>
-    <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
-    <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
-    <script src="{% static 'lib/tempusdominus/js/moment.min.js' %}"></script>
-    <script src="{% static 'lib/tempusdominus/js/moment-timezone.min.js' %}"></script>
-    <script src="{% static 'lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+    <!-- Back to Top Button -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 
-    <!-- Custom Script -->
-    <script src="{% static 'js/main.js' %}"></script>
-
-    <!-- Toggle Profile Menu Script -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var profileLink = document.getElementById('myProfileLink');
-            var profileMenu = document.getElementById('myProfileMenu');
-
-            profileLink.addEventListener('click', function(event) {
-                event.preventDefault();
-                profileMenu.classList.toggle('show');
-            });
-
-            document.addEventListener('click', function(event) {
-                if (!profileLink.contains(event.target) && !profileMenu.contains(event.target)) {
-                    profileMenu.classList.remove('show');
-                }
-            });
-        });
-    </script>
-</body>
-</html>
+</div>
+{% endblock %}
