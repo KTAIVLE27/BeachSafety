@@ -77,8 +77,15 @@ def delete_senario(request):
         return JsonResponse({"status": "error", "message": str(e)}, status=400)
 
 # 관리자
-def board_manage(request):
-    posts = Event_board.objects.all().order_by('-event_wdate')
+def board_manage(request):    
+    beach_no = request.GET.get('beach_no')
+    
+    if beach_no == 'common':
+        posts = Event_board.objects.filter(beach_no__isnull=True).order_by('-event_wdate')
+    elif beach_no:
+        posts = Event_board.objects.filter(beach_no=beach_no).order_by('-event_wdate')
+    else:
+        posts = Event_board.objects.all().order_by('-event_wdate')
     
     # 검색 기능
     search_keyword = request.GET.get('q', '')
