@@ -58,6 +58,10 @@ class Beach(models.Model):
     beach_region = models.CharField(max_length=100, blank=False)  # 지역
     beach_lat = models.FloatField(null = False,blank=False) # 위도
     beach_lon = models.FloatField(null= False, blank=False) # 경도
+    # 아래 3 컬럼은 날씨를 위한 값, null=True (이안류 제공하는 10개 해수욕에 해당하지 않는 값이 있기 때문에)
+    beach_widget_id = models.CharField(null = True, max_length=50 ) # widget_id 
+    nx = models.IntegerField(null = True)
+    ny =  models.IntegerField(null = True)
 
     class Meta:
         db_table = 'beach'
@@ -65,7 +69,7 @@ class Beach(models.Model):
 class Notice_board(models.Model):
     notice_id = models.AutoField(primary_key=True)  # 게시물 고유 번호
     user_no = models.ForeignKey(User, on_delete=models.SET_NULL, null = True, db_column='user_no')  # 회원번호 - user 가 삭제되어도 데이터 남아있도록
-    beach_no = models.ForeignKey(Beach, on_delete=models.RESTRICT, db_column='beach_no', null=True, blank=True)
+    beach_no = models.ForeignKey(Beach, on_delete=models.SET_NULL, db_column='beach_no', null=True, blank=True)
     notice_title = models.CharField(max_length=200, blank=False)  # 제목
     notice_img = models.CharField(max_length=255, blank=True, null=True)  # 이미지
     notice_views = models.IntegerField(default=0)  # 조회수
@@ -78,7 +82,7 @@ class Notice_board(models.Model):
 class Event_board(models.Model):
     event_id = models.AutoField(primary_key=True)  # 게시물 고유 번호
     user_no = models.ForeignKey(User, on_delete=models.SET_NULL, db_column='user_no', null=True)  # 회원번호
-    beach_no = models.ForeignKey(Beach, on_delete=models.RESTRICT, db_column='beach_no',null=True, blank=True)
+    beach_no = models.ForeignKey(Beach, on_delete=models.SET_NULL, db_column='beach_no',null=True, blank=True)
     event_title = models.CharField(max_length=200, blank=False)  # 제목
     event_img = models.CharField(max_length=255, blank=True, null=True)  # 이미지
     event_views = models.IntegerField(default=0)  # 조회수
