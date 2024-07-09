@@ -161,7 +161,7 @@
                     idsToDelete.push(checkbox.closest('tr').getAttribute('data-id'));
                 });
                 if (idsToDelete.length > 0) {
-                    fetch('{% url 'adminpanel:delete_boards' %}', {
+                    fetch('{% url 'adminpanel:delete_notice_boards' %}', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
