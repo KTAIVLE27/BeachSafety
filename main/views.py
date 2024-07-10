@@ -16,8 +16,6 @@ from django.views.decorators.http import require_POST
 import json
 from control.utils import *
 from django.db.models import Q
-import boto3
-from django.conf import settings
 
 
 def is_admin(user):
