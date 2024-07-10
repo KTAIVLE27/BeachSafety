@@ -440,20 +440,31 @@
     height: 100%;
 }
 
-
 .footer {
-    height: 50px; /* 푸터 높이 설정 */
-    background-color: #f1f1f1; /* 푸터 배경색 */
-    text-align: center; /* 텍스트 중앙 정렬 */
-    line-height: 50px; /* 세로 중앙 정렬을 위한 라인 높이 */
-    background-color: #000; /* 푸터 배경색을 검정으로 설정 */
-    color: #fff; /* 텍스트 색상을 흰색으로 설정 */
+    margin: 0;
+    font-family: Arial, sans-serif;
+    font-weight: 3;
+    background-color: #2d313f; /* 이미지 배경과 일치하도록 색상 설정 */
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
 }
+.footer .footer-logos img {
+    width: 40px;
+    height: 50px;
+    margin: 0 10px; /* 여백을 좁게 설정 */
+    vertical-align: middle;
+    max-width: 50px; /* 최대 너비 설정 */
+    height: auto; /* 높이 자동 조정 */
+    }
 
-.toggle-container {
-    display: none;
-    margin-top: 10px;
-    overflow: hidden;
+.footer .footer-info {
+    margin-top: 10px; /* 위 마진 줄이기 */
+    line-height: 1.8; /* 행간  */
+}
+.footer .footer-info p {
+    margin: 2px 0; /* 상하 마진 줄이기 */
+    padding: 0; /* 패딩 제거 */
 }
 
 .toggle-container button {
