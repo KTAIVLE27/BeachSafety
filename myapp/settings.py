@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'main',
     'control',
     'adminpanel',
+    'django_apscheduler',
 ]
 
 MIDDLEWARE = [
@@ -132,3 +133,7 @@ AUTH_USER_MODEL = 'main.User'
 
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_URL = '/'
+
+# APScheduler 설정
+APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"  # 디폴트: "N j, Y, f:s a"
+APSCHEDULER_RUN_NOW_TIMEOUT = 30  # 디폴트: 25초
