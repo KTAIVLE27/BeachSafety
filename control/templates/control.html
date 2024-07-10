@@ -293,7 +293,7 @@ setInterval(function() {
         var beachName = $(this).data('beach-name');
         alert('메시지 전송합니다: ' + beachName);
         $.ajax({
-            url: '/send-sms/',
+            url: "{% url 'control:send_sms' %}",
             type: 'POST',
             data: {
                 'beach_name': beachName
