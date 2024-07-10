@@ -222,18 +222,83 @@ markerData.forEach(function(marker) {
 });
 
 // 주기적으로 마커 아이콘 업데이트
-function updateGreeting() {
-    $.ajax({
-        url: '/update_greeting/',
-        type: 'GET',
-        success: function(data) {
-            $('#greeting').text(data.new_greeting);
-        }
-    });
-}
+$(document).ready(function() {
+    function fetchApiTime() {
+        $.ajax({
+            url: '/control/', 
+            method: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                var GYEONGPO_score_msg = data.GYEONGPO_score_msg;
+                var GORAEBUL_score_msg = data.GORAEBUL_score_msg;
+                var NAKSAN_score_msg = data.NAKSAN_score_msg;
+                var DAECHON_score_msg = data.DAECHON_score_msg;
+                var MANGSANG_score_msg = data.MANGSANG_score_msg;
+                var SOKCHO_score_msg = data.SOKCHO_score_msg;
+                var SONGJUNG_score_msg = data.SONGJUNG_score_msg;
+                var IMRANG_score_msg = data.IMRANG_score_msg;
+                var JUNGMUN_score_msg = data.JUNGMUN_score_msg;
+                var HAE_score_msg = data.HAE_score_msg;
 
-// 페이지 로드 후 10초마다 updateGreeting 함수 호출
-setInterval(updateGreeting, 4 * 60 * 1000);
+                $('#GYEONGPO_score_msg').text(GYEONGPO_score_msg);
+                $('#GORAEBUL_score_msg').text(GORAEBUL_score_msg);
+                $('#NAKSAN_score_msg').text(NAKSAN_score_msg);
+                $('#DAECHON_score_msg').text(DAECHON_score_msg);
+                $('#MANGSANG_score_msg').text(MANGSANG_score_msg);
+                $('#SOKCHO_score_msg').text(SOKCHO_score_msg);
+                $('#SONGJUNG_score_msg').text(SONGJUNG_score_msg);
+                $('#IMRANG_score_msg').text(IMRANG_score_msg);
+                $('#JUNGMUN_score_msg').text(JUNGMUN_score_msg);
+                $('#HAE_score_msg').text(HAE_score_msg);
+
+
+                $('#api-time-html').text(data.RIP_api_time); 
+                
+                // alarmContainer 업데이트
+                var alarmContainer = $('#alarm-container');
+                alarmContainer.empty(); // 기존 내용을 비웁니다.
+
+                // 경고 메시지 업데이트
+                var beaches = [
+                    {name: 'GYEONGPO', score_msg: GYEONGPO_score_msg, status: GYEONGPO_score_msg},
+                    {name: 'GORAEBUL', score_msg: GORAEBUL_score_msg, status: GORAEBUL_score_msg},
+                    {name: 'NAKSAN', score_msg: NAKSAN_score_msg, status: NAKSAN_score_msg},
+                    {name: 'DAECHON', score_msg: DAECHON_score_msg, status: DAECHON_score_msg},
+                    {name: 'MANGSANG', score_msg: MANGSANG_score_msg, status: MANGSANG_score_msg},
+                    {name: 'SOKCHO', score_msg: SOKCHO_score_msg, status: SOKCHO_score_msg},
+                    {name: 'SONGJUNG', score_msg: SONGJUNG_score_msg, status: SONGJUNG_score_msg},
+                    {name: 'IMRANG', score_msg: IMRANG_score_msg, status: IMRANG_score_msg},
+                    {name: 'JUNGMUN', score_msg: JUNGMUN_score_msg, status: JUNGMUN_score_msg},
+                    {name: 'HAE', score_msg: HAE_score_msg, status: HAE_score_msg},
+                ];
+
+
+                beaches.forEach(function(beach) {
+                    if (beach.status === '경계' || beach.status === '위험') {
+                        var div = $('<div>').addClass('textbox');
+                        div.html('<h5>' + beach.name + '</h5>' + beach.score_msg);
+                        alarmContainer.append(div);
+                    }
+                });
+
+                if (alarmContainer.children().length === 0) {
+                    var div = $('<div>').addClass('textbox');
+                    div.html('<p>현재 경계나 위험인 해수욕장이 없습니다.</p>');
+                    alarmContainer.append(div);
+                }
+            },
+            error: function(error) {
+                console.log('Error:', error);
+            }
+        });
+    }
+
+    // 페이지 로드 시 API 가져오기
+    fetchApiTime();
+
+    // 10초마다 API  업데이트
+    setInterval(fetchApiTime, 10000);
+});
 </script>
 
 <div class="logo">
