@@ -27,12 +27,9 @@
                                     <p>{{ post.event_contents }}</p>
                                     {% if post.event_img %}
                                     <div>
-                                        <img src="{{ post.event_img }}" alt="첨부 이미지" style="max-width: 100%; height: auto;">
-                                        <div>
-                                            <a href="{{ post.event_img }}" target="_blank">첨부파일 다운로드</a>
-                                        </div>
+                                        <a href="{{ post.event_img.url }}" target="_blank">첨부파일 다운로드</a>
                                     </div>
-                                {% endif %}
+                                    {% endif %}
                                 </div>
                                 {% if post.user_no == user %}
                                 <form id="editForm" method="POST" enctype="multipart/form-data" style="display:none;">

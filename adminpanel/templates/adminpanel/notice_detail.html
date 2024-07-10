@@ -25,12 +25,9 @@
                                 <div id="viewContent">
                                     <p>{{ post.notice_contents }}</p>
                                     {% if post.notice_img %}
-                                        <div>
-                                            <img src="{{ post.notice_img }}" alt="첨부 이미지" style="max-width: 100%; height: auto;">
-                                            <div>
-                                                <a href="{{ post.notice_img }}" target="_blank">첨부파일 다운로드</a>
-                                            </div>
-                                        </div>
+                                    <div>
+                                        <a href="{{ post.notice_img.url }}" target="_blank">첨부파일 다운로드</a>
+                                    </div>
                                     {% endif %}
                                 </div>
                                 {% if post.user_no == user and user.user_role == 'admin' %}
