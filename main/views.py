@@ -434,18 +434,11 @@ from .utils import fetch_weather_data
 def control_view(request):
     beach_no = request.GET.get('beach_no')
     
-    beaches = {
-        "경포 해수욕장": {"nx": 92, "ny": 132, "widget_id": "wl7437"},
-        "고래불 해수욕장": {"nx": 103, "ny": 107, "widget_id": "wl7463"},
-        "낙산 해수욕장": {"nx": 87, "ny": 140, "widget_id": "wl7478"},
-        "대천 해수욕장": {"nx": 53, "ny": 100, "widget_id": "wl7459"},
-        "망상 해수욕장": {"nx": 96, "ny": 127, "widget_id": "wl7462"},
-        "속초 해수욕장": {"nx": 87, "ny": 140, "widget_id": "wl7463"},
-        "송정 해수욕장": {"nx": 61, "ny": 126, "widget_id": "wl1419"},
-        "임랑 해수욕장": {"nx": 101, "ny": 79, "widget_id": "wl1419"},
-        "중문 해수욕장": {"nx": 51, "ny": 32, "widget_id": "wl7440"},
-        "해운대 해수욕장": {"nx": 99, "ny": 75, "widget_id": "wl1419"},
-    }
+    beaches = Beach.objects.exclude(
+        Q(beach_name="고래불 해수욕장") | 
+        Q(beach_name="대천 해수욕장") | 
+        Q(beach_name="함덕 해수욕장")
+)
 
     selected_beach = None
     weather_data = None
@@ -453,12 +446,11 @@ def control_view(request):
 
     if beach_no:
         try:
-            coordinates = eval(beach_no)
-            nx, ny = coordinates['nx'], coordinates['ny']
-            selected_beach = next((name for name, coords in beaches.items() if coords['nx'] == nx and coords['ny'] == ny), None)
-            if selected_beach:
-                weather_data = fetch_weather_data({'nx': nx, 'ny': ny})
-                widget_id = beaches[selected_beach]['widget_id']
+            beach = get_object_or_404(Beach, pk=beach_no)
+            nx, ny = beach.nx, beach.ny
+            selected_beach = beach.beach_name
+            weather_data = fetch_weather_data({'nx': nx, 'ny': ny})
+            widget_id = beach.beach_widget_id
         except (SyntaxError, KeyError):
             pass
 
