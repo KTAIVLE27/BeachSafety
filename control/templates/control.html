@@ -222,12 +222,18 @@ markerData.forEach(function(marker) {
 });
 
 // 주기적으로 마커 아이콘 업데이트
-setInterval(function() {
-    Object.keys(markers).forEach(function(id) {
-        var newIconUrl = Math.random() > 0.5 ? "{% static 'img/red1.png' %}" : "{% static 'img/green1.png' %}";
-        updateMarkerIcon(markers[id], newIconUrl);
+function updateGreeting() {
+    $.ajax({
+        url: '/update_greeting/',
+        type: 'GET',
+        success: function(data) {
+            $('#greeting').text(data.new_greeting);
+        }
     });
-}, 5000); // 5초마다 업데이트
+}
+
+// 페이지 로드 후 10초마다 updateGreeting 함수 호출
+setInterval(updateGreeting, 4 * 60 * 1000);
 </script>
 
 <div class="logo">
