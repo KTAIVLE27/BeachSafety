@@ -27,9 +27,12 @@
                                     <p>{{ post.event_contents }}</p>
                                     {% if post.event_img %}
                                     <div>
-                                        <a href="{{ post.event_img.url }}" target="_blank">첨부파일 다운로드</a>
+                                        <img src="{{ post.event_img }}" alt="첨부 이미지" style="max-width: 100%; height: auto;">
+                                        <div>
+                                            <a href="{{ post.event_img }}" target="_blank">첨부파일 다운로드</a>
+                                        </div>
                                     </div>
-                                    {% endif %}
+                                {% endif %}
                                 </div>
                                 {% if post.user_no == user %}
                                 <form id="editForm" method="POST" enctype="multipart/form-data" style="display:none;">
@@ -54,11 +57,7 @@
                                     <div class="mb-3">
                                         <label for="event_img" class="form-label">첨부파일</label>
                                         <input type="file" class="form-control" id="event_img" name="event_img">
-                                        {% if post.event_img %}
-                                        <div>
-                                            <a href="{{ post.event_img.url }}" target="_blank">첨부파일 다운로드</a>
-                                        </div>
-                                        {% endif %}
+                                        <input type="hidden" name="existing_event_img" value="{{ post.event_img }}">
                                     </div>
                                     <button type="submit" class="btn btn-primary">저장</button>
                                     <button type="button" id="cancelEditButton" class="btn btn-secondary">취소</button>
