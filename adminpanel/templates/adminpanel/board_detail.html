@@ -27,12 +27,14 @@
                         </div>
                         <hr>
                         <div class="text-start">
-                            <p>{{ post.event_contents }}</p>
                             {% if post.event_img %}
                             <div>
-                                <a href="{{ post.event_img.url }}" target="_blank">첨부파일 다운로드</a>
+                                <img src="{{ post.event_img }}" alt="첨부 이미지" style="max-width: 100%; height: auto;">
+                                <div>
+                                    <a href="{{ post.event_img }}" target="_blank">첨부파일 다운로드</a>
+                                </div>
                             </div>
-                            {% endif %}
+                        {% endif %}
                         </div>
                         <hr>
                         <div class="text-end">
