@@ -17,8 +17,8 @@
                         구분
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        {% for beach_name, coordinates in beaches.items %}
-                            <a class="dropdown-item" href="?beach_no={{ coordinates }}">{{ beach_name }}</a>
+                        {% for beach in beaches %}
+                            <a class="dropdown-item" href="?beach_no={{ beach.pk }}">{{ beach.beach_name }}</a>
                         {% endfor %}
                     </div>
                 </div>
