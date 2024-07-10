@@ -246,7 +246,7 @@ def create_freeboard(request):
             if not event.beach_no:
                 event.beach_no = None
             
-            # 파일이 업로드 (client 방식)
+            # 파일 업로드 (client 방식)
             if 'event_img' in request.FILES:
                 file = request.FILES['event_img']
                 

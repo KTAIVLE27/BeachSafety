@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -132,3 +133,9 @@ AUTH_USER_MODEL = 'main.User'
 
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_URL = '/'
+
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+AWS_S3_REGION_NAME = 'ap-northeast-2'
+AWS_STORAGE_BUCKET_NAME ='aivle27'
+AWS_S3_CUSTOM_DOMAIN ='aivle27.s3.ap-northeast-2.amazonaws.com'

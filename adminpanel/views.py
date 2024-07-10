@@ -219,7 +219,7 @@ def create_notice(request):
             if not notice.beach_no:
                 notice.beach_no = None
             
-            # 파일이 업로드 (client 방식)
+            # 파일 업로드 (client 방식)
             if 'notice_img' in request.FILES:
                 file = request.FILES['notice_img']
                 
