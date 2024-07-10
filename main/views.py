@@ -16,6 +16,8 @@ from django.views.decorators.http import require_POST
 import json
 from control.utils import *
 from django.db.models import Q
+import boto3
+from django.conf import settings
 
 
 def is_admin(user):
@@ -282,8 +284,27 @@ def edit_freeboard(request, pk):
         if form.is_valid():
             event = form.save(commit=False)
             if event.beach_no == '':
-                event.beach_no = None          
-            form.save()
+                event.beach_no = None
+                
+            if 'event_img' in request.FILES:
+                file = request.FILES['event_img']
+                
+                s3 = boto3.client(
+                    's3',
+                    aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                    aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                    region_name=settings.AWS_S3_REGION_NAME
+                )
+                
+                s3_bucket = settings.AWS_STORAGE_BUCKET_NAME
+                s3_key = f'event/{file.name}'
+                s3.upload_fileobj(file, s3_bucket, s3_key, ExtraArgs={'ContentType': file.content_type})
+                
+                file_url = f'https://{settings.AWS_S3_CUSTOM_DOMAIN}/{s3_key}'
+                event.event_img = file_url
+            else :
+                event.event_img = request.POST.get('existing_event_img')  # 기존 이미지 유지                                
+            event.save()
             return JsonResponse({'success': True})
         else:
             return JsonResponse({'success': False})
