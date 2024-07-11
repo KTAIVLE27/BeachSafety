@@ -100,11 +100,15 @@ import cv2
 import numpy as np
 import yt_dlp as youtube_dl
 from ultralytics import YOLO
+from threading import Event
 
 # YOLOv8 모델 설정
 model = YOLO('control/sea_seg.pt')  # 세그멘테이션 모델 파일 경로
 
 def stream_video(video_url):
+    global stop_stream_event
+    stop_stream_event.clear()
+    
     # yt-dlp 옵션 설정
     ydl_opts = {
         'format': 'best',
@@ -120,6 +124,9 @@ def stream_video(video_url):
     cap = cv2.VideoCapture(video_url)
 
     while cap.isOpened():
+        if stop_stream_event.is_set():
+            break
+        
         ret, frame = cap.read()
         if not ret:
             break
@@ -141,10 +148,15 @@ def stream_video(video_url):
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
     cap.release()
-    cv2.destroyAllWindows()
 
 def video_feed(request, cctv_code):
     cctv = CCTV.objects.get(cctv_code=cctv_code)
     video_url = cctv.cctv_url
     return StreamingHttpResponse(stream_video(video_url),
                                  content_type='multipart/x-mixed-replace; boundary=frame')
+
+stop_stream_event = Event()
+def stop_stream(request):
+    global stop_stream_event
+    stop_stream_event.set()
+    return JsonResponse({'status': 'stopped'})
