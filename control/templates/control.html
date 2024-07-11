@@ -355,7 +355,7 @@ $(document).ready(function() {
                             {% for beach in beaches %}
                                 {% for cctv in cctvs %}
                                     {% if cctv.beach_no_id == beach.beach_no %}
-                                        <li><a class="dropdown-item" href="#" data-beach-id="{{ beach.beach_no }}">{{ beach.beach_name }}</a></li>
+                                        <li><a class="dropdown-item" href="#" data-cctv-id="{{ cctv.cctv_code }}">{{ beach.beach_name }}</a></li>
                                     {% endif %}
                                 {% endfor %}
                             {% endfor %}
@@ -378,8 +378,8 @@ $(document).ready(function() {
         // 드롭다운 메뉴 클릭 시
         $('#beach-list a.dropdown-item').click(function(e) {
             e.preventDefault();
-            var beachId = $(this).data('beach-id');
-            var videoUrl = '/control/video_feed/' + beachId + '/';
+            var cctv_code = $(this).data('cctv-id');
+            var videoUrl = '/control/video_feed/' + cctv_code + '/';
 
             // 영상 스트리밍 URL 설정
             $('#cctv-frame').attr('src', videoUrl);
