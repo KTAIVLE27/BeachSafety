@@ -7,5 +7,6 @@ urlpatterns = [
     path("", views.control_view,name='control'),
     path('send-sms/', send_sms, name='send_sms'),
     path('video_feed/<int:cctv_code>/', views.video_feed, name='video_feed'),
+    path('stop_stream/', views.stop_stream, name='stop_stream'),
 ]
 
