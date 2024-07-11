@@ -1,0 +1,243 @@
+{% extends "base/base.html" %}
+{% block title %}팀 소개{% endblock %}
+
+{% block sidebar_brand %}
+<a class="navbar-brand mx-4 mb-3">
+    <h3 class="text-primary">팀 소개</h3>
+</a>
+{% endblock %}
+
+{% block content %}
+{% load static %} 
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-lg-12 text-center">
+            <div class="btn-group" role="group" aria-label="Team Info">
+                <button type="button" class="btn btn-team-outline-primary team-section-button" data-section="goal">팀 목표</button>
+                <button type="button" class="btn btn-team-outline-primary team-section-button" data-section="team">팀원 소개</button>
+                <button type="button" class="btn btn-team-outline-primary team-section-button" data-section="gallery">갤러리</button>
+            </div>
+        </div>
+    </div>
+    <div id="goal" class="content-section" style="display:none;">
+        <div class="bg-light text-center rounded p-4 mt-4">
+            <br/><h1>27조 CI소개</h1><p class="lead">27조의 아이덴티디를 담은 CI입니다</p>
+            
+            <!-- 로고 추가 -->
+            <div class="row justify-content-center mb-4">
+                <div class="col-md-6 mx-auto">
+                    <img src="{% static 'img/logo_new1.png' %}" alt="Logo New1" style="width: 300px;">
+                </div>
+                <br><br><div class="col-md-12"><br/><br/>
+                    <h4>해안 그리고 관제탑</h4>
+                    <p class="lead">
+                        가운데의 중심을 잡고있는 탑은 해수욕장의 안전을 한 눈에 볼 수 있는 관제탑을 상징합니다.
+                        로고의 상징적 의미는 안전한 해수욕장을 상징하며, 관제탑이 해안 지역에서 안전을 지원한다는 메시지를 전달합니다. 
+                        갈매기는 안전한 세상에서 자유롭게 즐기는 이용자를 상징합니다.🏖️
+                    </p>
+                    
+                    <h4>안전과 조화를 담은 컬러</h4>   
+                    <p class="lead">블루(Blue)는 신뢰, 안전, 평온함을 상징합니다. 파란색은 바다와 관련이 깊어, 베이지(Beige)의 모래를 상징하며 해안의 자연적 요소입니다.
+                        블랙(Black)권위와 힘을 상징합니다. 이는 해변 안전 규정의 강제적인 측면과 연관될 수 있습니다. 화이트(White)은 순수함과 안전을 나타냅니다. 
+                        해변에서 안전한 환경을 유지하는 목표와 일치합니다.
+                    </p>
+                </div>
+            </div>
+            
+            <div style="margin-top: 100px;"></div> <!-- 공간을 세 줄 띄웁니다. -->
+            
+            <div class="row justify-content-center">
+                <br/><h1>27조 VISION</h1><p class="lead">27조 9명의 모든 마음을 담은 지향점</p>
+                <div class="col-md-6">
+                    <div style="margin-top: 60px;"></div> <!-- 공간을 세 줄 띄웁니다. -->
+                    <div class="d-flex align-items-center justify-content-center mb-4">
+                        <!-- 아이콘: 트로피 -->
+                        <span class="display-3 text-primary"><i class="bi bi-bullseye"></i></span>
+                    </div>
+                    <p class="lead">27조. 달의 공전, 자전주기는 각각 약 27일이다. 달의 공전과 자전주기가 같은 이유는 '조석 고정'이라는 현상 때문이다. 이러한 현상같이 공전과 자전을 함께할 수 있는 27조로 성장한다.</p>
+                </div>
+                <div class="col-md-6">
+                    <div style="margin-top: 60px;"></div> <!-- 공간을 세 줄 띄웁니다. -->
+                    <div class="d-flex align-items-center justify-content-center mb-4">
+                        <!-- 아이콘: 뱃지 체크 -->
+                        <span class="display-3 text-primary"><i class="bi bi-trophy"></i></span>
+                    </div>
+                    <p class="lead">할 땐 하고, 놀 때도 문득 생각나는 문제를 함게 해결하며, 목표 달성을 위한 AI 문제 해결자가 된다.</p>
+                    <p>문제 해결자란?<br/>
+                        1) 문제를 발굴해 내고<br/>
+                        2) 해결하는데 필요한 방법을 익히고<br/>
+                        3) 이러한 과정을 end-to-end로 끌고 갈 수 있는 사람</p>
+
+                    <div style="margin-top: 100px;"></div> <!-- 공간을 세 줄 띄웁니다. -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    <div id="team" class="content-section">
+        <div class="bg-light text-center rounded p-4 mt-4">
+            <h1>팀원 소개</h1>
+            <div style="margin-top: 60px;"></div> <!-- 공간을 세 줄 띄웁니다. -->
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="{% static 'img/team_gallery/member1.jpg' %}" class="card-img-top" alt="Member 5">
+                        <div class="card-body">
+                            <h5 class="card-title">범종원</h5>
+                            <p class="card-text">팀장</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="{% static 'img/team_gallery/member2.jpg' %}" class="card-img-top" alt="Member 2">
+                        <div class="card-body">
+                            <h5 class="card-title">고도영</h5>
+                            <p class="card-text">귀여운 욜로 마스터</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="{% static 'img/team_gallery/member3.jpg' %}" class="card-img-top" alt="Member 3">
+                        <div class="card-body">
+                            <h5 class="card-title">김상호</h5>
+                            <p class="card-text">동작동 은근 에이스</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Repeat for other team members -->
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="{% static 'img/team_gallery/member4.jpg' %}" class="card-img-top" alt="Member 4">
+                        <div class="card-body">
+                            <h5 class="card-title">김서현</h5>
+                            <p class="card-text">깃마스터 서버운영자는 아님</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="{% static 'img/team_gallery/member5.png' %}" class="card-img-top" alt="Member 5">
+                        <div class="card-body">
+                            <h5 class="card-title">김은옥</h5>
+                            <p class="card-text">구글링, gpt랑 베프 </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="{% static 'img/team_gallery/member6.jpg' %}" class="card-img-top" alt="Member 6">
+                        <div class="card-body">
+                            <h5 class="card-title">김하진</h5>
+                            <p class="card-text">봉선동 물주먹 신봉선</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="{% static 'img/team_gallery/member7.jpg' %}" class="card-img-top" alt="Member 7">
+                        <div class="card-body">
+                            <h5 class="card-title">박세리</h5>
+                            <p class="card-text">강요는 안하는 꼰꼰 막내대장</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="{% static 'img/team_gallery/member8.jpg' %}" class="card-img-top" alt="Member 8">
+                        <div class="card-body">
+                            <h5 class="card-title">이대환</h5>
+                            <p class="card-text">잔잔힌 고등어 플러팅남</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="{% static 'img/team_gallery/member9.jpg' %}" class="card-img-top" alt="Member 9">
+                        <div class="card-body">
+                            <h5 class="card-title">임태경</h5>
+                            <p class="card-text">임태경</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="gallery" class="content-section" style="display:none;">
+        <div class="bg-light text-center rounded p-4 mt-4">
+            <h1>갤러리</h1>
+            <div style="margin-top: 60px;"></div> <!-- 공간을 세 줄 띄웁니다. -->
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <img src="{% static 'img/team_gallery/photo1.jpg' %}" class="img-fluid rounded" alt="Photo 1">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <img src="{% static 'img/team_gallery/photo2.jpg' %}" class="img-fluid rounded" alt="Photo 2">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <img src="{% static 'img/team_gallery/photo3.jpg' %}" class="img-fluid rounded" alt="Photo 3">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <img src="{% static 'img/team_gallery/photo4.jpg' %}" class="img-fluid rounded" alt="Photo 4">
+                </div>
+                <!-- Repeat for other gallery photos -->
+                <div class="col-md-3 mb-3">
+                    <img src="{% static 'img/team_gallery/photo5.png' %}" class="img-fluid rounded" alt="Photo 5">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <img src="{% static 'img/team_gallery/photo6.jpg' %}" class="img-fluid rounded" alt="Photo 6">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <img src="{% static 'img/team_gallery/photo7.jpg' %}" class="img-fluid rounded" alt="Photo 7">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <img src="{% static 'img/team_gallery/photo8.jpg' %}" class="img-fluid rounded" alt="Photo 8">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <img src="{% static 'img/team_gallery/photo9.jpg' %}" class="img-fluid rounded" alt="Photo 9">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <img src="{% static 'img/team_gallery/photo10.jpg' %}" class="img-fluid rounded" alt="Photo 10">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <img src="{% static 'img/team_gallery/photo11.jpg' %}" class="img-fluid rounded" alt="Photo 11">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <img src="{% static 'img/team_gallery/photo12.jpg' %}" class="img-fluid rounded" alt="Photo 12">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <img src="{% static 'img/team_gallery/photo13.jpg' %}" class="img-fluid rounded" alt="Photo 13">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <img src="{% static 'img/team_gallery/photo14.jpg' %}" class="img-fluid rounded" alt="Photo 14">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const buttons = document.querySelectorAll('.team-section-button');
+    const sections = document.querySelectorAll('.content-section');
+
+    buttons.forEach(button => {
+        button.addEventListener('click', function() {
+            const sectionId = this.getAttribute('data-section');
+            sections.forEach(section => {
+                if (section.id === sectionId) {
+                    section.style.display = 'block';
+                } else {
+                    section.style.display = 'none';
+                }
+            });
+        });
+    });
+
+    // 초기 로드 시 팀원 소개 섹션만 보이도록 설정
+    document.getElementById('team').style.display = 'block';
+});
+</script>
+{% endblock %}
