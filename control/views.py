@@ -141,19 +141,10 @@ def stream_video(video_url):
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
     cap.release()
+    cv2.destroyAllWindows()
 
-def video_feed(request, beach_id):
-    # beach_id에 따른 CCTV 비디오 URL을 가져오는 로직
-    video_urls = {
-        9: 'https://www.youtube.com/watch?v=ksUDhGDMWbg',  # 예시 URL
-        11: 'https://www.youtube.com/watch?v=EXAMPLE2',  # 다른 예시 URL
-        
-        # 다른 beach_id에 맞는 URL을 추가하세요.
-    }
-
-    video_url = video_urls.get(beach_id)
-    if not video_url:
-        return JsonResponse({'error': 'Invalid beach_id'}, status=400)
-
-    return StreamingHttpResponse(stream_video(video_url), content_type='multipart/x-mixed-replace; boundary=frame')
-
+def video_feed(request, cctv_code):
+    cctv = CCTV.objects.get(cctv_code=cctv_code)
+    video_url = cctv.cctv_url
+    return StreamingHttpResponse(stream_video(video_url),
+                                 content_type='multipart/x-mixed-replace; boundary=frame')
