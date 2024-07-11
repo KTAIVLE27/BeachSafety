@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>해양안전</title>
+    <title>해양 관제 시스템</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -222,12 +222,84 @@ markerData.forEach(function(marker) {
 });
 
 // 주기적으로 마커 아이콘 업데이트
-setInterval(function() {
-    Object.keys(markers).forEach(function(id) {
-        var newIconUrl = Math.random() > 0.5 ? "{% static 'img/red1.png' %}" : "{% static 'img/green1.png' %}";
-        updateMarkerIcon(markers[id], newIconUrl);
-    });
-}, 5000); // 5초마다 업데이트
+$(document).ready(function() {
+    function fetchApiTime() {
+        $.ajax({
+            url: '/control/', 
+            method: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                var GYEONGPO_score_msg = data.GYEONGPO_score_msg;
+                var GORAEBUL_score_msg = data.GORAEBUL_score_msg;
+                var NAKSAN_score_msg = data.NAKSAN_score_msg;
+                var DAECHON_score_msg = data.DAECHON_score_msg;
+                var MANGSANG_score_msg = data.MANGSANG_score_msg;
+                var SOKCHO_score_msg = data.SOKCHO_score_msg;
+                var SONGJUNG_score_msg = data.SONGJUNG_score_msg;
+                var IMRANG_score_msg = data.IMRANG_score_msg;
+                var JUNGMUN_score_msg = data.JUNGMUN_score_msg;
+                var HAE_score_msg = data.HAE_score_msg;
+
+                $('#GYEONGPO_score_msg').text(GYEONGPO_score_msg);
+                $('#GORAEBUL_score_msg').text(GORAEBUL_score_msg);
+                $('#NAKSAN_score_msg').text(NAKSAN_score_msg);
+                $('#DAECHON_score_msg').text(DAECHON_score_msg);
+                $('#MANGSANG_score_msg').text(MANGSANG_score_msg);
+                $('#SOKCHO_score_msg').text(SOKCHO_score_msg);
+                $('#SONGJUNG_score_msg').text(SONGJUNG_score_msg);
+                $('#IMRANG_score_msg').text(IMRANG_score_msg);
+                $('#JUNGMUN_score_msg').text(JUNGMUN_score_msg);
+                $('#HAE_score_msg').text(HAE_score_msg);
+
+
+                $('#api-time-html').text(data.RIP_api_time); 
+                
+                // alarmContainer 업데이트
+                var alarmContainer = $('#alarm-container');
+                alarmContainer.empty(); // 기존 내용을 비웁니다.
+
+                // 경고 메시지 업데이트
+                var beaches = [
+                    {name: '경포대 해수욕장', score_msg: GYEONGPO_score_msg, status: GYEONGPO_score_msg},
+                    {name: '고래불 해수욕장', score_msg: GORAEBUL_score_msg, status: GORAEBUL_score_msg},
+                    {name: '낙산 해수욕장', score_msg: NAKSAN_score_msg, status: NAKSAN_score_msg},
+                    {name: '대천 해수욕장', score_msg: DAECHON_score_msg, status: DAECHON_score_msg},
+                    {name: '망상 해수욕장', score_msg: MANGSANG_score_msg, status: MANGSANG_score_msg},
+                    {name: '속초 해수욕장', score_msg: SOKCHO_score_msg, status: SOKCHO_score_msg},
+                    {name: '송정 해수욕장', score_msg: SONGJUNG_score_msg, status: SONGJUNG_score_msg},
+                    {name: '임랑 해수욕장', score_msg: IMRANG_score_msg, status: IMRANG_score_msg},
+                    {name: '중문 해수욕장', score_msg: JUNGMUN_score_msg, status: JUNGMUN_score_msg},
+                    {name: '해운대 해수욕장', score_msg: HAE_score_msg, status: HAE_score_msg},
+                ];
+
+
+            
+                beaches.forEach(function(beach) {
+                    if (beach.status === '경계' || beach.status === '위험') {
+                        var div = $('<div>').addClass('textbox');
+                        div.html('<h5>' + beach.name + '</h5>' + beach.score_msg);
+                        alarmContainer.append(div);
+                    }
+                });
+
+                if (alarmContainer.children().length === 0) {
+                    var div = $('<div>').addClass('textbox');
+                    div.html('<p>현재 경계나 위험인 해수욕장이 없습니다.</p>');
+                    alarmContainer.append(div);
+                }
+            },
+            error: function(error) {
+                console.log('Error:', error);
+            }
+        });
+    }
+
+    // 페이지 로드 시 API 가져오기
+    fetchApiTime();
+
+    // 3분 마다 API  업데이트
+    setInterval(fetchApiTime, 60000 * 3);
+});
 </script>
 
 <div class="logo">
@@ -236,25 +308,82 @@ setInterval(function() {
 
 <div class="nav-buttons">
     
-    <form>
-        <div class="search-wrapper">
-            <input class="control-search" type="search" placeholder="Search">
-            <span class="search-button" type="submit">
-                <img src="{% static 'img/search_icon.png' %}" alt="Search" style="width: 30px; height: 30px;">
-            </span>
-        </div>
-    </form>
+    {% if user.user_role == 'admin' %}
+         <div class="nav-item dropdown">
+             <a href="{% url 'adminpanel:admin_home' %}">
+                 <img class="rounded-circle me-lg-2" src="{% static 'img/wysiwyg_24dp.png' %}" alt="" style="width: 50px; height: 50px;">
+             </a>
+         </div>
+    {% endif %}     
+         <div class="nav-item dropdown">
+             <a href="{% url 'home' %}">
+                 <img class="rounded-circle me-lg-2" src="{% static 'img/home_24dp.png' %}" alt="" style="width: 50px; height: 50px;">
+             </a>
+         </div>
 
-    <a href="{% url 'signin' %}"><img src="{% static 'img/logout_24dp.png' %}"style="width: 40px; height: 40px;"></a>
-    <a href="{% url 'myprofile' %}"><img src="{% static 'img/face_24dp.png' %}" style="width: 40px; height: 40px;"></a>  
+         <div class="nav-item dropdown">
+             <form method="post" action="{% url 'logout' %}">
+                 {% csrf_token %}
+                 <button type="submit" style="border:none; background:none;">
+                     <img src="{% static 'img/logout_24dp.png' %}" width="50" height="50" alt="Logout">
+                 </button>
+             </form>
+         </div>
 </div>
+
 
 <div class="side-buttons">
     <a href="#"class="btn btn-primary"title="119"data-toggle="modal"data-target="#myModal"><i class="fa fa-phone"></i></a>  
     <a href="#"class="btn btn-primary"title="해군"data-toggle="modal"data-target="#myModal"><i class="fa fa-anchor"></i></a>
     <a href="#" class="btn btn-primary" title="모의훈련" data-toggle="modal" data-target="#myModal2"><i class="fa fa-file-alt"></i></a>
     <a href="#" class="btn btn-secondary" title="기상예보" data-toggle="modal" data-target="#myModal3"><i class="fa fa-cloud-sun"></i></a>
+    <a href="#" class="btn btn-secondary" title="CCTV" data-toggle="modal" data-target="#CCTV_modal"><i class="fa fa-video"></i></a>
 </div>
+
+{% comment %} CCTV 모달창 {% endcomment %}
+<div class="modal" id="CCTV_modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="bg-light text-center rounded p-4">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h6 class="mb-0">해당 CCTV 팝업창</h6>
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                해수욕장 선택
+                            </button>
+                            <ul id="beach-list" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                {% for beach in beaches %}
+                                    {% for cctv in cctvs %}
+                                        {% if cctv.beach_no_id == beach.beach_no %}
+                                            <li><a class="dropdown-item" onclick="loadCCTV('{{ cctv.cctv_url }}')">{{ beach.beach_name }}</li>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                            </ul>
+                        <iframe id="cctv-frame" width="1000" height="650" frameborder="0" allowfullscreen></iframe>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">닫기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function toggleSearch() {
+        const toggleKey = document.querySelector('.toggle-key');
+        const beachList = document.getElementById('beach-list');
+        toggleKey.classList.toggle('active');
+        if (beachList.style.display === 'none' || beachList.style.display === '') {
+            beachList.style.display = 'block';
+        } else {
+            beachList.style.display = 'none';
+        }
+    }
+
+    function loadCCTV(url) {
+        document.getElementById('cctv-frame').src = url;
+    }
+</script>
 
 <!-- 119/해군 모달버튼 시작 -->
 <div class="modal" id="myModal">
@@ -267,23 +396,22 @@ setInterval(function() {
             </div>
             <!-- Modal body -->
             <div class="modal-body">
-            </div>
-            <!-- Modal footer -->
-            <button class="btn btn-info dropdown-toggle" type="button" id="toggle-button" data-bs-toggle="dropdown" aria-expanded="false">
-                구분
-            </button>
-               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <button type="button" class="btn btn-success beach-btn" data-beach-name="고래불해수욕장">고래불해수욕장</button>
-                    <button type="button" class="btn btn-success beach-btn" data-beach-name="낙산해수욕장">낙산해수욕장</button>
-                    <button type="button" class="btn btn-success beach-btn" data-beach-name="대천해수욕장">대천해수욕장</button>
-                    <button type="button" class="btn btn-success beach-btn" data-beach-name="망상해수욕장">망상해수욕장</button>
-                    <button type="button" class="btn btn-success beach-btn" data-beach-name="속초해수욕장">속초해수욕장</button>
-                    <button type="button" class="btn btn-success beach-btn" data-beach-name="송정해수욕장">송정해수욕장</button>
-                    <button type="button" class="btn btn-success beach-btn" data-beach-name="임랑해수욕장">임랑해수욕장</button>
-                    <button type="button" class="btn btn-success beach-btn" data-beach-name="중문해수욕장">중문해수욕장</button>
-                    <button type="button" class="btn btn-success beach-btn" data-beach-name="해운대해수욕장">해운대해수욕장</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">취소</button>
+                <button class="btn btn-info dropdown-toggle" type="button" id="toggle-button" data-bs-toggle="dropdown" aria-expanded="false">
+                    구분
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <button type="button" class="btn btn-outline-success beach-btn" data-beach-name="고래불해수욕장">고래불해수욕장</button>
+                    <button type="button" class="btn btn-outline-success beach-btn" data-beach-name="낙산해수욕장">낙산해수욕장</button>
+                    <button type="button" class="btn btn-outline-success beach-btn" data-beach-name="대천해수욕장">대천해수욕장</button>
+                    <button type="button" class="btn btn-outline-success beach-btn" data-beach-name="망상해수욕장">망상해수욕장</button>
+                    <button type="button" class="btn btn-outline-success beach-btn" data-beach-name="속초해수욕장">속초해수욕장</button>
+                    <button type="button" class="btn btn-outline-success beach-btn" data-beach-name="송정해수욕장">송정해수욕장</button>
+                    <button type="button" class="btn btn-outline-success beach-btn" data-beach-name="임랑해수욕장">임랑해수욕장</button>
+                    <button type="button" class="btn btn-outline-success beach-btn" data-beach-name="중문해수욕장">중문해수욕장</button>
+                    <button type="button" class="btn btn-outline-success beach-btn" data-beach-name="해운대해수욕장">해운대해수욕장</button>
                 </div>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">취소</button>
+            </div>
         </div>
     </div>
 </div>
@@ -432,6 +560,7 @@ setInterval(function() {
             </div>
         </div>
     </div>
+    
 
     <script>
         // 모의훈련 버튼 이벤트
@@ -445,9 +574,8 @@ setInterval(function() {
             alert('기상예보를 확인합니다.');
             $('#myModal3').modal('hide');
         });
-
-        
     </script>
+
 
 {% comment %} 날씨창 토글키 js {% endcomment %}
     <script>

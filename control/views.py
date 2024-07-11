@@ -46,9 +46,12 @@ def control_view(request):
 
         
     }
-    context_json = json.dumps(context)  # JSON 형식의 문자열로 변환
-    return render(request, 'control.html', {'contextjson': context_json})
-
+    
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return JsonResponse(context)  # JSON 응답 반환
+    else:
+        context_json = json.dumps(context)  # JSON 형식의 문자열로 변환
+        return render(request, 'control.html', {'contextjson': context_json})
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt

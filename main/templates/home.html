@@ -135,7 +135,48 @@
                     markerData.forEach(function(marker) {
                         markers[marker.id] = createMarker(marker.id, marker.x, marker.y, marker.epsg, marker.title, marker.contents, marker.iconUrl);
                     });
-                    
+                    // 주기적으로 마커 아이콘 업데이트
+                    $(document).ready(function() {
+                        function fetchApiTime() {
+                            $.ajax({
+                                url: '/home', 
+                                method: 'GET',
+                                dataType: 'json',
+                                success: function(data) {
+                                    var GYEONGPO_score_msg = data.GYEONGPO_score_msg;
+                                    var GORAEBUL_score_msg = data.GORAEBUL_score_msg;
+                                    var NAKSAN_score_msg = data.NAKSAN_score_msg;
+                                    var DAECHON_score_msg = data.DAECHON_score_msg;
+                                    var MANGSANG_score_msg = data.MANGSANG_score_msg;
+                                    var SOKCHO_score_msg = data.SOKCHO_score_msg;
+                                    var SONGJUNG_score_msg = data.SONGJUNG_score_msg;
+                                    var IMRANG_score_msg = data.IMRANG_score_msg;
+                                    var JUNGMUN_score_msg = data.JUNGMUN_score_msg;
+                                    var HAE_score_msg = data.HAE_score_msg;
+
+                                    $('#GYEONGPO_score_msg').text(GYEONGPO_score_msg);
+                                    $('#GORAEBUL_score_msg').text(GORAEBUL_score_msg);
+                                    $('#NAKSAN_score_msg').text(NAKSAN_score_msg);
+                                    $('#DAECHON_score_msg').text(DAECHON_score_msg);
+                                    $('#MANGSANG_score_msg').text(MANGSANG_score_msg);
+                                    $('#SOKCHO_score_msg').text(SOKCHO_score_msg);
+                                    $('#SONGJUNG_score_msg').text(SONGJUNG_score_msg);
+                                    $('#IMRANG_score_msg').text(IMRANG_score_msg);
+                                    $('#JUNGMUN_score_msg').text(JUNGMUN_score_msg);
+                                    $('#HAE_score_msg').text(HAE_score_msg);
+                                },
+                                error: function(error) {
+                                    console.log('Error:', error);
+                                }
+                            });
+                        }
+
+                        // 페이지 로드 시 API 가져오기
+                        fetchApiTime();
+
+                        // 3분 마다 API  업데이트
+                        setInterval(fetchApiTime, 60000 * 3);
+                    });
                 
 
                     let style = new ol.style.Style({
@@ -176,19 +217,19 @@
 <div class="col-sm-12 col-xl-4">
     <div class="bg-light text-center rounded p-3 d-flex flex-column justify-content-around">
         <div class="btn-container mb-3">
-            <a href="{% url 'cctv' %}" class="btn btn-block">
+            <a href="{% url 'cctv' %}" class="btn-h btn-block">
                 <img src="/static/img/cctv_move.gif" alt="CCTV" >
                 <span class="btn-label">해수욕장 CCTV</span>
             </a>
         </div>
         <div class="btn-container my-3">
-            <a href="{% url 'weather' %}" class="btn btn-block">
+            <a href="{% url 'weather' %}" class="btn-h btn-block">
                 <img src="/static/img/weather_move.gif" alt="Weather">
                 <span class="btn-label">실시간 날씨</span>
             </a>
         </div>
         <div class="btn-container mt-3">
-            <a href="{% url 'risk' %}" class="btn btn-block">
+            <a href="{% url 'risk' %}" class="btn-h btn-block">
                 <img src="/static/img/risk_move.gif" alt="Risk">
                 <span class="btn-label">이안류 위험도</span>
                 
