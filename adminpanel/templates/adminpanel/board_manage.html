@@ -47,11 +47,10 @@
                                             
                                         </div>
                                     </div>
+                                    <button id="deleteButton" class="btn btn-primary">삭제</button> <!-- Delete Button -->
                                 </div>
                             </div>
-                            <div>
-                                <button id="deleteButton" class="btn btn-primary">삭제</button> <!-- Delete Button -->
-                            </div>
+                            
                         </div>
                         <!-- Table for Notices -->
                         <div class="table-responsive">
@@ -62,9 +61,10 @@
                                             <input type="checkbox" id="selectAll">
                                         </th>
                                         <th scope="col" style="width: 5%;">글 번호</th> <!-- Adjusted width for Title -->
-                                        <th scope="col" style="width: 55%;">제목</th> <!-- Adjusted width for Title -->
-                                        <th scope="col" style="width: 15%;">작성자</th> <!-- Adjusted width for Author -->
-                                        <th scope="col" style="width: 25%;">등록일</th> <!-- Adjusted width for Date -->
+                                            <th scope="col" style="width: 15%;">구분</th> <!-- Adjusted width for Title -->
+                                            <th scope="col" style="width: 50%;">제목</th> <!-- Adjusted width for Date -->
+                                            <th scope="col" style="width: 10%;">작성자</th> <!-- Adjusted width for Author -->
+                                            <th scope="col" style="width: 20%;">등록일시</th>
                                         
                                     </tr>
                                 </thead>
@@ -73,6 +73,13 @@
                                     <tr data-id="{{ post.event_id }}">
                                         <td><input type="checkbox" class="selectRow"></td>
                                         <td>{{ forloop.counter0|add:page_obj.start_index}}</td>  <!-- 글 번호 자동 생성 -->
+                                         <td>
+                                                {% if post.beach_no %}
+                                                    {{ post.beach_no.beach_name }}
+                                                {% else %}
+                                                    공통
+                                                {% endif %}
+                                        </td>
                                         <td><a href="{% url 'adminpanel:board_detail' post.pk %}">{{ post.event_title }}</a></td>
                                         <td>{{ post.user_no.user_name }}</td>
                                         <td>{{ post.event_wdate | date:"Y-m-d H:i" }}</td>
