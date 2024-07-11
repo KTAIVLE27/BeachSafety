@@ -31,7 +31,7 @@ def fetch_rip_current_data():
                 'score_msg': beach['score_msg'],
                 #'score': beach['score'],
             }
-        print(beach_data_dict['HAE'])
+        #print(beach_data_dict['HAE'])
         return beach_data_dict
     else:
         print(f"Failed to retrieve data: {response.status_code}")
@@ -43,7 +43,6 @@ def fetch_rip_current_data():
 #이안류 위험 지수
 def get_beach_score_msg(beach_API_CODE):  
     try:
-        print('get_beach_score_msg')
         beach_data_dict = fetch_rip_current_data()
         return beach_data_dict[beach_API_CODE]['score_msg']
     except KeyError:

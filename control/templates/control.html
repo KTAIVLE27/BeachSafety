@@ -260,19 +260,20 @@ $(document).ready(function() {
 
                 // 경고 메시지 업데이트
                 var beaches = [
-                    {name: 'GYEONGPO', score_msg: GYEONGPO_score_msg, status: GYEONGPO_score_msg},
-                    {name: 'GORAEBUL', score_msg: GORAEBUL_score_msg, status: GORAEBUL_score_msg},
-                    {name: 'NAKSAN', score_msg: NAKSAN_score_msg, status: NAKSAN_score_msg},
-                    {name: 'DAECHON', score_msg: DAECHON_score_msg, status: DAECHON_score_msg},
-                    {name: 'MANGSANG', score_msg: MANGSANG_score_msg, status: MANGSANG_score_msg},
-                    {name: 'SOKCHO', score_msg: SOKCHO_score_msg, status: SOKCHO_score_msg},
-                    {name: 'SONGJUNG', score_msg: SONGJUNG_score_msg, status: SONGJUNG_score_msg},
-                    {name: 'IMRANG', score_msg: IMRANG_score_msg, status: IMRANG_score_msg},
-                    {name: 'JUNGMUN', score_msg: JUNGMUN_score_msg, status: JUNGMUN_score_msg},
-                    {name: 'HAE', score_msg: HAE_score_msg, status: HAE_score_msg},
+                    {name: '경포대 해수욕장', score_msg: GYEONGPO_score_msg, status: GYEONGPO_score_msg},
+                    {name: '고래불 해수욕장', score_msg: GORAEBUL_score_msg, status: GORAEBUL_score_msg},
+                    {name: '낙산 해수욕장', score_msg: NAKSAN_score_msg, status: NAKSAN_score_msg},
+                    {name: '대천 해수욕장', score_msg: DAECHON_score_msg, status: DAECHON_score_msg},
+                    {name: '망상 해수욕장', score_msg: MANGSANG_score_msg, status: MANGSANG_score_msg},
+                    {name: '속초 해수욕장', score_msg: SOKCHO_score_msg, status: SOKCHO_score_msg},
+                    {name: '송정 해수욕장', score_msg: SONGJUNG_score_msg, status: SONGJUNG_score_msg},
+                    {name: '임랑 해수욕장', score_msg: IMRANG_score_msg, status: IMRANG_score_msg},
+                    {name: '중문 해수욕장', score_msg: JUNGMUN_score_msg, status: JUNGMUN_score_msg},
+                    {name: '해운대 해수욕장', score_msg: HAE_score_msg, status: HAE_score_msg},
                 ];
 
 
+            
                 beaches.forEach(function(beach) {
                     if (beach.status === '경계' || beach.status === '위험') {
                         var div = $('<div>').addClass('textbox');
@@ -296,8 +297,8 @@ $(document).ready(function() {
     // 페이지 로드 시 API 가져오기
     fetchApiTime();
 
-    // 10초마다 API  업데이트
-    setInterval(fetchApiTime, 10000);
+    // 1분 마다 API  업데이트
+    setInterval(fetchApiTime, 60000);
 });
 </script>
 
