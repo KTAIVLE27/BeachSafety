@@ -663,3 +663,31 @@
     height: 80vh; /* iframe의 높이를 뷰포트 높이의 80%로 설정 */
     border: none; /* iframe의 테두리를 제거 */
 }
+
+
+
+.modal-body {
+    display: flex;
+    /* flex-wrap: wrap; */
+    justify-content: center;
+    gap: 10px; /* 버튼들 사이의 간격 */
+}
+
+.modal-body button {
+    flex: 1 1 auto;
+    width: 100px; /* 모든 버튼의 너비를 150px로 설정 */
+    height: 40px; /* 모든 버튼의 높이를 40px로 설정 */
+    margin: 5px; /* 버튼들 사이의 여유 공간 */
+}
+
+.dropdown-menu {
+    left: 0; /* 드롭다운 메뉴를 왼쪽 정렬 */
+    right: auto; /* 오른쪽 정렬 해제 */
+    width: 200px; /* 모든 버튼의 너비를 150px로 설정 */
+    
+}
+
+.dropdown-menu .beach-btn {
+    width: 95%; /* 드롭다운 메뉴 안의 버튼 너비를 계산하여 설정 */
+    margin: 5px; /* 버튼들 사이의 여유 공간 */
+}
