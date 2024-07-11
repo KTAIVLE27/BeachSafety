@@ -7,6 +7,7 @@ from django.contrib import messages
 
 from .utils import *
 import json
+from main.models import *
 def control_view(request):
     context = {
         'GYEONGPO_score_msg': get_beach_score_msg('GYEONGPO'),
@@ -46,12 +47,14 @@ def control_view(request):
 
         
     }
+    beaches = Beach.objects.all()
+    cctvs = CCTV.objects.select_related('beach_no')
     
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         return JsonResponse(context)  # JSON 응답 반환
     else:
         context_json = json.dumps(context)  # JSON 형식의 문자열로 변환
-        return render(request, 'control.html', {'contextjson': context_json})
+        return render(request, 'control.html', {'contextjson': context_json, 'beaches': beaches, 'cctvs': cctvs})
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -89,4 +92,68 @@ def send_sms(request):
             return JsonResponse({'status': 'error', 'code': e.code, 'message': e.msg})
     return JsonResponse({'status': 'invalid request'}, status=400)
 
+
+# yolo 모델 적용
+from django.http import StreamingHttpResponse, JsonResponse
+from django.shortcuts import render
+import cv2
+import numpy as np
+import yt_dlp as youtube_dl
+from ultralytics import YOLO
+
+# YOLOv8 모델 설정
+model = YOLO('control/sea_seg.pt')  # 세그멘테이션 모델 파일 경로
+
+def stream_video(video_url):
+    # yt-dlp 옵션 설정
+    ydl_opts = {
+        'format': 'best',
+        'quiet': True
+    }
+
+    # 유튜브 비디오 정보 추출
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        info_dict = ydl.extract_info(video_url, download=False)
+        video_url = info_dict['url']
+
+    # OpenCV를 사용하여 실시간 스트리밍 재생
+    cap = cv2.VideoCapture(video_url)
+
+    while cap.isOpened():
+        ret, frame = cap.read()
+        if not ret:
+            break
+
+        # 프레임 크기 조정 (예: 640x360)
+        frame = cv2.resize(frame, (640, 360))
+
+        # YOLOv8 객체 감지
+        results = model.predict(source=frame, save=False, show=False)  # 예측 실행
+
+        # 예측된 결과 프레임에 표시
+        annotated_frame = results[0].plot()  # 감지된 객체가 표시된 프레임
+
+        # 이미지를 JPEG로 인코딩
+        ret, buffer = cv2.imencode('.jpg', annotated_frame)
+        frame = buffer.tobytes()
+
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+
+    cap.release()
+
+def video_feed(request, beach_id):
+    # beach_id에 따른 CCTV 비디오 URL을 가져오는 로직
+    video_urls = {
+        9: 'https://www.youtube.com/watch?v=ksUDhGDMWbg',  # 예시 URL
+        11: 'https://www.youtube.com/watch?v=EXAMPLE2',  # 다른 예시 URL
+        
+        # 다른 beach_id에 맞는 URL을 추가하세요.
+    }
+
+    video_url = video_urls.get(beach_id)
+    if not video_url:
+        return JsonResponse({'error': 'Invalid beach_id'}, status=400)
+
+    return StreamingHttpResponse(stream_video(video_url), content_type='multipart/x-mixed-replace; boundary=frame')
 

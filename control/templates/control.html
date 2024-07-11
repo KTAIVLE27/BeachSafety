@@ -340,49 +340,51 @@ $(document).ready(function() {
     <a href="#" class="btn btn-secondary" title="CCTV" data-toggle="modal" data-target="#CCTV_modal"><i class="fa fa-video"></i></a>
 </div>
 
-{% comment %} CCTV 모달창 {% endcomment %}
-<div class="modal" id="CCTV_modal">
+<!-- CCTV Modal -->
+<div class="modal" id="CCTV_modal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="bg-light text-center rounded p-4">
                 <div class="d-flex align-items-center justify-content-between mb-4">
                     <h6 class="mb-0">해당 CCTV 팝업창</h6>
-                        <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                해수욕장 선택
-                            </button>
-                            <ul id="beach-list" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                {% for beach in beaches %}
-                                    {% for cctv in cctvs %}
-                                        {% if cctv.beach_no_id == beach.beach_no %}
-                                            <li><a class="dropdown-item" onclick="loadCCTV('{{ cctv.cctv_url }}')">{{ beach.beach_name }}</li>
-                                        {% endif %}
-                                    {% endfor %}
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            해수욕장 선택
+                        </button>
+                        <ul id="beach-list" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            {% for beach in beaches %}
+                                {% for cctv in cctvs %}
+                                    {% if cctv.beach_no_id == beach.beach_no %}
+                                        <li><a class="dropdown-item" href="#" data-beach-id="{{ beach.beach_no }}">{{ beach.beach_name }}</a></li>
+                                    {% endif %}
                                 {% endfor %}
-                            </ul>
-                        <iframe id="cctv-frame" width="1000" height="650" frameborder="0" allowfullscreen></iframe>
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">닫기</button>
+                            {% endfor %}
+                        </ul>
                     </div>
                 </div>
+                <div id="cctv-container">
+                    <!-- 여기에 동적으로 변경될 영상을 담을 공간 -->
+                    <img id="cctv-frame" width="1000" height="650" />
+                </div>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">닫기</button>
             </div>
         </div>
     </div>
 </div>
-<script>
-    function toggleSearch() {
-        const toggleKey = document.querySelector('.toggle-key');
-        const beachList = document.getElementById('beach-list');
-        toggleKey.classList.toggle('active');
-        if (beachList.style.display === 'none' || beachList.style.display === '') {
-            beachList.style.display = 'block';
-        } else {
-            beachList.style.display = 'none';
-        }
-    }
 
-    function loadCCTV(url) {
-        document.getElementById('cctv-frame').src = url;
-    }
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // 드롭다운 메뉴 클릭 시
+        $('#beach-list a.dropdown-item').click(function(e) {
+            e.preventDefault();
+            var beachId = $(this).data('beach-id');
+            var videoUrl = '/control/video_feed/' + beachId + '/';
+
+            // 영상 스트리밍 URL 설정
+            $('#cctv-frame').attr('src', videoUrl);
+        });
+    });
 </script>
 
 <!-- 119/해군 모달버튼 시작 -->
