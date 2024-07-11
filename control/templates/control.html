@@ -519,7 +519,6 @@ $(document).ready(function() {
             <div id="alarm-container"></div>
         </div>
     </body>
-
     <!-- 기상예보 모달 -->
     <div class="modal" id="myModal3">
         <div class="modal-dialog">
@@ -528,53 +527,105 @@ $(document).ready(function() {
                 <div class="container-fluid pt-4 px-4">
                     <div class="dropdown me-2">
                         <button class="btn btn-info dropdown-toggle" type="button" id="toggle-button" data-bs-toggle="dropdown" aria-expanded="false">
-                            구분
+                            해수욕장 선택
                         </button>
-                           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <button>고래불해수욕장</button>
-                                <button>낙산해수욕장</button>
-                                <button>대천해수욕장</button>
-                                <button>망상해수욕장</button>
-                                <button>속초해수욕장</button>
-                                <button>송정해수욕장</button>
-                                <button>임랑해수욕장</button>
-                                <button>중문해수욕장</button>
-                                <button>해운대해수욕장</button>
-                            </div>
-                    <div class="row g-4">
-                        
-                        <div class="bg-light text-center rounded p-4">
-                            
-                            <div class="d-flex align-items-center justify-content-between mb-4">
-                                <h6 class="mb-0">날씨 이미지 정보 박스</h6>
-                            </div>
-                            <img src="{% static 'img/weather_image.png' %}" alt="Weather Image" style="width: 100%; height: auto;">
-                        </div>
-    
-                        <div class="bg-light text-center rounded p-4">
-                            <div class="d-flex align-items-center justify-content-between mb-4">
-                                <h6 class="mb-0">날씨 텍스트 정보 박스</h6>
-                            </div>
-                            <p>🌏 현재 날씨: {{ weather_data.weather_of_today }}</p>
-                            <p>🌡️ 현재 기온: {{ weather_data.temperature }}°C</p>
-                            <p>💧 1시간 강수량: {{ weather_data.rainfall }}mm</p>
-                            <p>🌬️ 동서바람성분: {{ weather_data.wind_ew }}m/s</p>
-                            <p>🌬️ 남북바람성분: {{ weather_data.wind_ns }}m/s</p>
-                            <p>💦 습도: {{ weather_data.humidity }}%</p>
-                            <p>🌧️ 강수 형태: {{ weather_data.precipitation }}</p>
-                            <p>🧭 풍향: {{ weather_data.wind_direction }}°</p>
-                            <p>💨 풍속: {{ weather_data.wind_speed }}m/s</p>
-                            <p>🔎 관측 지점: 해운대 해수욕장</p>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <button class="dropdown-item beach-btn" data-beach-name="경포대 해수욕장" data-lat="37.768" data-lon="128.948">경포대 해수욕장</button>
+                            <button class="dropdown-item beach-btn" data-beach-name="고래불 해수욕장" data-lat="36.598" data-lon="129.41">고래불 해수욕장</button>
+                            <button class="dropdown-item beach-btn" data-beach-name="낙산 해수욕장" data-lat="38.115" data-lon="128.635">낙산 해수욕장</button>
+                            <button class="dropdown-item beach-btn" data-beach-name="대천 해수욕장" data-lat="36.31" data-lon="126.513">대천 해수욕장</button>
+                            <button class="dropdown-item beach-btn" data-beach-name="망상 해수욕장" data-lat="37.593" data-lon="129.09">망상 해수욕장</button>
+                            <button class="dropdown-item beach-btn" data-beach-name="속초 해수욕장" data-lat="38.19" data-lon="128.602">속초 해수욕장</button>
+                            <button class="dropdown-item beach-btn" data-beach-name="송정 해수욕장" data-lat="37.779" data-lon="128.937">송정 해수욕장</button>
+                            <button class="dropdown-item beach-btn" data-beach-name="임랑 해수욕장" data-lat="35.319" data-lon="129.264">임랑 해수욕장</button>
+                            <button class="dropdown-item beach-btn" data-beach-name="중문 해수욕장" data-lat="33.245" data-lon="126.411">중문 해수욕장</button>
+                            <button class="dropdown-item beach-btn" data-beach-name="해운대 해수욕장" data-lat="35.159" data-lon="129.163">해운대 해수욕장</button>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-success" id="weatherForecastBtn">확인</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">취소</button>
+                    <div class="row g-4">
+                        <div class="bg-light text-center rounded p-4">
+                            <div class="d-flex align-items-center justify-content-between mb-4">
+                                <h6 class="mb-0">날씨 정보</h6>
+                            </div>
+                            <div id="weather-info">
+                                <p>🔎 관측 지점: <span id="beach-name"></span></p>
+                                <img id="weather-icon" class="icon" alt="Weather Icon" src="" style="width: 50px; height: 50px;">
+                                <p id="weather-description">날씨 정보를 선택하세요.</p>
+                                <p>🌡️ 현재 온도: <span id="temperature"></span>°C</p>
+                                <p>💧 습도: <span id="humidity"></span>%</p>
+                                <p>🌬️ 풍속: <span id="wind-speed"></span> m/s</p>
+                                <p>🌡️ 체감 온도: <span id="feels-like"></span>°C</p>
+                                <p>🌡️ 최고 온도: <span id="temp-max"></span>°C</p>
+                                <p>🌡️ 최저 온도: <span id="temp-min"></span>°C</p>
+                                <p>🌬️ 풍향: <span id="wind-deg"></span>°</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" data-dismiss="modal">확인</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">취소</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+    
+    <script>
+        $(document).ready(function() {
+            const apiKey = '77b982b50ed185170fc7b5c80b58f770'; // 여기에 OpenWeatherMap API 키를 입력하세요
+    
+            $('.dropdown-item.beach-btn').on('click', function() {
+                const beachName = $(this).data('beach-name');
+                const lat = $(this).data('lat');
+                const lon = $(this).data('lon');
+                
+                // OpenWeatherMap API 호출
+                const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=kr`;
+    
+                $.getJSON(weatherUrl, function(data) {
+                    const weatherDescription = data.weather[0].description;
+                    const temperature = data.main.temp;
+                    const humidity = data.main.humidity;
+                    const windSpeed = data.wind.speed;
+                    const icon = data.weather[0].icon;
+                    const iconURL = `http://openweathermap.org/img/wn/${icon}@2x.png`;
+                    
+                    const feelsLike = data.main.feels_like;
+                    const tempMax = data.main.temp_max;
+                    const tempMin = data.main.temp_min;
+                    const windDeg = data.wind.deg;
+    
+                    $('#beach-name').text(beachName);
+                    $('#weather-description').text(weatherDescription);
+                    $('#temperature').text(temperature);
+                    $('#humidity').text(humidity);
+                    $('#wind-speed').text(windSpeed);
+                    $('#weather-icon').attr('src', iconURL);
+                    
+                    $('#feels-like').text(feelsLike);
+                    $('#temp-max').text(tempMax);
+                    $('#temp-min').text(tempMin);
+                    $('#wind-deg').text(windDeg);
+                }).fail(function() {
+                    alert('날씨 정보를 가져오는 데 실패했습니다.');
+                });
+            });
+    
+            // 모달 닫기 버튼 클릭 시 날씨 정보 초기화
+            $('#myModal3').on('hidden.bs.modal', function () {
+                $('#beach-name').text('');
+                $('#weather-description').text('날씨 정보를 선택하세요.');
+                $('#temperature').text('');
+                $('#humidity').text('');
+                $('#wind-speed').text('');
+                $('#feels-like').text('');
+                $('#temp-max').text('');
+                $('#temp-min').text('');
+                $('#wind-deg').text('');
+                $('#weather-icon').attr('src', ''); // 날씨 아이콘 초기화
+            });
+        });
+    </script>
     
 
     <script>
