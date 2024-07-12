@@ -49,12 +49,12 @@ def control_view(request):
     }
     beaches = Beach.objects.all()
     cctvs = CCTV.objects.select_related('beach_no')
-    
+    api_key = os.getenv('WEATHER_API_2')
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         return JsonResponse(context)  # JSON 응답 반환
     else:
         context_json = json.dumps(context)  # JSON 형식의 문자열로 변환
-        return render(request, 'control.html', {'contextjson': context_json, 'beaches': beaches, 'cctvs': cctvs})
+        return render(request, 'control.html', {'contextjson': context_json, 'beaches': beaches, 'cctvs': cctvs, 'api_key' :api_key})
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
