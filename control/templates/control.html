@@ -572,7 +572,7 @@ $(document).ready(function() {
     
     <script>
         $(document).ready(function() {
-            const apiKey = '77b982b50ed185170fc7b5c80b58f770'; // 여기에 OpenWeatherMap API 키를 입력하세요
+            const apiKey = "{{ api_key|escapejs }}" 
     
             $('.dropdown-item.beach-btn').on('click', function() {
                 const beachName = $(this).data('beach-name');
