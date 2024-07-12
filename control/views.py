@@ -103,7 +103,7 @@ from ultralytics import YOLO
 from threading import Event
 
 # YOLOv8 모델 설정
-model = YOLO('control/sea_seg.pt')  # 세그멘테이션 모델 파일 경로
+model = YOLO('control/best.pt')  # 세그멘테이션 모델 파일 경로
 
 def stream_video(video_url):
     global stop_stream_event
