@@ -480,7 +480,7 @@ def control_view(request):
         Q(beach_name="고래불 해수욕장") | 
         Q(beach_name="대천 해수욕장") | 
         Q(beach_name="함덕 해수욕장")
-)
+    )
 
     selected_beach = None
     weather_data = None
@@ -495,6 +495,14 @@ def control_view(request):
             widget_id = beach.beach_widget_id
         except (SyntaxError, KeyError):
             pass
+    else:
+        # Set default value to the first beach in the queryset
+        first_beach = beaches.first()
+        if first_beach:
+            nx, ny = first_beach.nx, first_beach.ny
+            selected_beach = first_beach.beach_name
+            weather_data = fetch_weather_data({'nx': nx, 'ny': ny})
+            widget_id = first_beach.beach_widget_id
 
     context = {
         'weather_data': weather_data,
