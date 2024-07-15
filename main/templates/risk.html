@@ -23,76 +23,13 @@
                 </div>
                 <!-- Start of 10 boxes in a 2x5 grid -->
                 <div class="custom-box-container">
-                    <!-- Box 1 -->
+                    {% for beach, prediction in predictions.items %}
                     <div class="custom-box">
-                        <h6 class="mb-3">해수욕장 이름 1</h6>
+                        <h6 class="mb-3">{{ beach }}</h6>
                         <hr>
-                        {% comment %} <img src="{% static 'img/beach1.jpg' %}" alt="Beach 1"> {% endcomment %}
-                        <textarea placeholder="해수욕장 설명 1"></textarea>
+                        <textarea placeholder="해수욕장 설명 {{ forloop.counter }}">{{ prediction }}</textarea>
                     </div>
-                    <!-- Box 2 -->
-                    <div class="custom-box">
-                        <h6 class="mb-3">해수욕장 이름 2</h6>
-                        <hr>
-                        {% comment %} <img src="{% static 'img/beach2.jpg' %}" alt="Beach 2"> {% endcomment %}
-                        <textarea placeholder="해수욕장 설명 2"></textarea>
-                    </div>
-                    <!-- Box 3 -->
-                    <div class="custom-box">
-                        <h6 class="mb-3">해수욕장 이름 3</h6>
-                        <hr>
-                        {% comment %} <img src="{% static 'img/beach3.jpg' %}" alt="Beach 3"> {% endcomment %}
-                        <textarea placeholder="해수욕장 설명 3"></textarea>
-                    </div>
-                    <!-- Box 4 -->
-                    <div class="custom-box">
-                        <h6 class="mb-3">해수욕장 이름 4</h6>
-                        <hr>
-                        {% comment %} <img src="{% static 'img/beach4.jpg' %}" alt="Beach 4"> {% endcomment %}
-                        <textarea placeholder="해수욕장 설명 4"></textarea>
-                    </div>
-                    <!-- Box 5 -->
-                    <div class="custom-box">
-                        <h6 class="mb-3">해수욕장 이름 5</h6>
-                        <hr>
-                        {% comment %} <img src="{% static 'img/beach5.jpg' %}" alt="Beach 5"> {% endcomment %}
-                        <textarea placeholder="해수욕장 설명 5"></textarea>
-                    </div>
-                    <!-- Box 6 -->
-                    <div class="custom-box">
-                        <h6 class="mb-3">해수욕장 이름 6</h6>
-                        <hr>
-                        {% comment %} <img src="{% static 'img/beach6.jpg' %}" alt="Beach 6"> {% endcomment %}
-                        <textarea placeholder="해수욕장 설명 6"></textarea>
-                    </div>
-                    <!-- Box 7 -->
-                    <div class="custom-box">
-                        <h6 class="mb-3">해수욕장 이름 7</h6>
-                        <hr>
-                        {% comment %} <img src="{% static 'img/beach7.jpg' %}" alt="Beach 7"> {% endcomment %}
-                        <textarea placeholder="해수욕장 설명 7"></textarea>
-                    </div>
-                    <!-- Box 8 -->
-                    <div class="custom-box">
-                        <h6 class="mb-3">해수욕장 이름 8</h6>
-                        <hr>
-                        {% comment %} <img src="{% static 'img/beach8.jpg' %}" alt="Beach 8"> {% endcomment %}
-                        <textarea placeholder="해수욕장 설명 8"></textarea>
-                    </div>
-                    <!-- Box 9 -->
-                    <div class="custom-box">
-                        <h6 class="mb-3">해수욕장 이름 9</h6>
-                        <hr>
-                        {% comment %} <img src="{% static 'img/beach9.jpg' %}" alt="Beach 9"> {% endcomment %}
-                        <textarea placeholder="해수욕장 설명 9"></textarea>
-                    </div>
-                    <!-- Box 10 -->
-                    <div class="custom-box">
-                        <h6 class="mb-3">해수욕장 이름 10</h6>
-                        <hr>
-                        {% comment %} <img src="{% static 'img/beach10.jpg' %}" alt="Beach 10"> {% endcomment %}
-                        <textarea placeholder="해수욕장 설명 10"></textarea>
-                    </div>
+                    {% endfor %}
                 </div>
                 <!-- End of the next row for boxes 6-10 -->
             </div>
