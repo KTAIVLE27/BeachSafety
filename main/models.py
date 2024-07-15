@@ -57,6 +57,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Beach(models.Model):
     beach_no = models.AutoField(primary_key=True)  # 해수욕장 번호
     beach_name = models.CharField(max_length=100, blank=False)  # 해수욕장 이름
+    beach_api_code = models.CharField(max_length=100, null=True, blank=False) # 해수욕장 api_code
     beach_region = models.CharField(max_length=100, blank=False)  # 지역
     beach_lat = models.FloatField(null = False,blank=False) # 위도
     beach_lon = models.FloatField(null= False, blank=False) # 경도

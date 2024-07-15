@@ -347,29 +347,23 @@ import pandas as pd
 from pathlib import Path
 @login_required
 def risk(request):
+    beaches = Beach.objects.all()
+    return render(request, 'risk.html', {'beaches': beaches})
+
+def load_prediction(request):
+    beach_name = request.GET.get('beach_name')
+    beach = Beach.objects.get(beach_name = beach_name)
+    beach_api_code = beach.beach_api_code
+    
     base_path = Path(__file__).resolve().parent.parent / 'main' / 'models'
-    models = {
-        'SONGJUNG': joblib.load(base_path / 'SONGJUNG.pkl'),
-        'GYEONGPO' : joblib.load(base_path / 'GYEONGPO.pkl'),
-        'NAKSAN': joblib.load(base_path / 'NAKSAN.pkl'),
-        'DAECHON': joblib.load(base_path / 'DAECHON.pkl'),
-        'GORAEBUL': joblib.load(base_path / 'GORAEBUL.pkl'),
-        'HAE': joblib.load(base_path / 'HAE.pkl'),
-        'MANGSANG': joblib.load(base_path / 'MANGSANG.pkl'),
-        'JUNGMUN': joblib.load(base_path / 'JUNGMUN.pkl'),
-        'IMRANG': joblib.load(base_path / 'IMRANG.pkl'),
-        'SOKCHO': joblib.load(base_path / 'SOKCHO.pkl'),
-    }
-    
-    
-    beaches = ['JUNGMUN', 'MANGSANG', 'DAECHON', 'GORAEBUL', 'HAE', 'NAKSAN', 'GYEONGPO', 'SONGJUNG', 'IMRANG', 'SOKCHO']
-    predictions = {}
-    
-    for beach in beaches:
-        model, feature_names, label_encoders = models[beach]
-        result = get_predict_data(beach, label_encoders) # api 해변, 라벨 인코더 전달
+    model_path = base_path/f'{beach_api_code}.pkl'
+
+
+    if model_path.exists():
+        model, feature_names, label_encoders = joblib.load(model_path)
+        result = get_predict_data(beach_api_code, label_encoders)
         if result == 'NaN':
-            predictions[beach] = 'Invalid data'
+            return JsonResponse({'prediction': 'Invalid data'})
         else:
             wave_period, air_temp, water_temp, wind_speed, score_msg, wave_height, wind_direct = result
 
@@ -378,20 +372,19 @@ def risk(request):
                 'air_temp': [air_temp],
                 'water_temp': [water_temp],
                 'wind_speed': [wind_speed],
-                'score_msg' : [score_msg],
+                'score_msg': [score_msg],
                 'wave_height': [wave_height],
                 'wind_direct': [wind_direct]
             }
             df = pd.DataFrame(input_data)
-            # 예측에 사용된 피처만 선택
             df = df[feature_names]
             
             prediction = model.predict(df)
-            risk_level = get_risk_level(prediction[0])
-            predictions[beach] = risk_level
-            
-    return render(request, 'risk.html', {'predictions': predictions})
-
+            score = prediction[0]
+            risk_level = get_risk_level(score)
+            return JsonResponse({'prediction': score, 'risk_level': risk_level})
+    else:
+        return JsonResponse({'prediction': 'Model not found', 'score': 'NaN', 'risk_level': '알 수 없음'})
         
 
 def signin(request):

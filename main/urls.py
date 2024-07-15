@@ -26,5 +26,6 @@ urlpatterns = [
     path('freeboard/edit/<int:pk>/', views.edit_freeboard, name='edit_freeboard'),
     path('delete/<int:post_id>/', views.delete_freeboard, name='delete_freeboard'),
     path('team_info', views.team_info, name='team_info'),
+    path('load_prediction/', views.load_prediction, name='load_prediction'),
 ]
 
