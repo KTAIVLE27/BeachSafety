@@ -25,14 +25,25 @@ from django.conf import settings
 def admin_home(request):
     return render(request, 'adminpanel/admin_home.html')
 
-def senario(request):
-    scenario_list = Scenario.objects.all()
-    paginator = Paginator(scenario_list, 10)  # Show 10 scenarios per page
 
+def senario(request):
+    # scenario_code 파라미터를 GET 요청에서 가져옴
+    scenario_code = request.GET.get('scenario_code', '')
+
+    # scenario_code가 존재하면 필터링된 시나리오 목록을 가져오고, 그렇지 않으면 모든 시나리오를 가져옴
+    if scenario_code:
+        scenario_list = Scenario.objects.filter(scenario_code=scenario_code)
+    else:
+        scenario_list = Scenario.objects.all()
+
+    paginator = Paginator(scenario_list, 10)  # 한 페이지에 10개의 시나리오를 보여줌
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    return render(request, 'adminpanel/senario.html', {'page_obj': page_obj})
+    
+    return render(request, 'adminpanel/senario.html', {'page_obj': page_obj, 'scenario_code': scenario_code})
+
+
 
 def csv_upload(request):
     if request.method == 'POST':
