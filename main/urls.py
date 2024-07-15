@@ -27,5 +27,7 @@ urlpatterns = [
     path('delete/<int:post_id>/', views.delete_freeboard, name='delete_freeboard'),
     path('team_info', views.team_info, name='team_info'),
     path('load_prediction/', views.load_prediction, name='load_prediction'),
+    path('privacy_policy', views.privacy_policy, name='privacy_policy'),
+    path('copyright', views.copyright, name='copyright'),
 ]
 

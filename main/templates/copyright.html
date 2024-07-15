@@ -1,0 +1,579 @@
+<!-- policies.html -->
+{% extends "base/base.html" %}
+{% block title %}약관/정책{% endblock %}
+
+{% block content %}
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4 justify-content-center">
+        <div class="col-lg-12">
+            <div class="bg-light text-start rounded p-4">
+                <div class="d-flex align-items-center justify-content-center mb-4">
+                    <h4 class="mb-0">약관/정책</h4>
+                </div>
+                <div class="btn-group d-flex" role="group" aria-label="Policy Links">
+                    <button type="button" class="btn btn-outline-primary policy-section-button" onclick="loadPolicy('privacy')">개인정보처리방침</button>
+                    <button type="button" class="btn btn-outline-primary policy-section-button" onclick="loadPolicy('copyright')">저작권보호정책</button>
+                    <button type="button" class="btn btn-outline-primary policy-section-button" onclick="loadPolicy('sources')">저작권 및 출처</button>
+                </div>
+                
+                <div id="policyContent" class="mt-4">
+                    <!-- Policy content will be dynamically loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function loadPolicy(section) {
+        let policyContent = '';
+
+        switch (section) {
+            case 'privacy':
+                policyContent = `
+                    <div class="bg-light rounded p-4">
+                        <h3 class="mb-3">개인정보처리방침</h3>
+                        <p>
+                            </div>
+                <div class="accordion" id="privacyPolicyAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                제 1 조 총칙
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#privacyPolicyAccordion">
+                            <div class="accordion-body">
+                                5기 27조는 정보주체의 자유와 권리 보호를 위해 「개인정보 보호법」
+                                및 관계 법령이 정한 바를 준수하여, 적법하게 개인정보를 처리하고 안전하게
+                                관리하고 있습니다. 이에 「개인정보 보호법」 제30조에 따라 정보주체에게
+                                개인정보의 처리와 보호에 관한 절차 및 기준을 안내하고, 이와 관련한 고충을
+                                신속하고 원활하게 처리할 수 있도록 하기 위하여 다음과 같이 개인정보 처리방침을
+                                수립・공개합니다.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                제 2 조 개인정보의 처리목적, 수집 항목, 보유 및 이용기간
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#privacyPolicyAccordion">
+                            <div class="accordion-body">
+                                27조는 다음의 목적을 위하여 개인정보를 처리합니다. 처리하고 있는 개인정보는 다음의 목적 이외의 용도로는 이용되지 않으며, 이용 목적이 변경되는 경우에는 「개인정보 보호법」 제18조에 따라 별도의 동의를 받는 등 필요한 조치를 이행할 예정입니다.<br/>
+                                1. 회원 가입 및 관리<br/>
+                                    회원 가입 의사 확인, 회원제 서비스 제공에 따른 본인 식별・인증, 회원자격 유지・관리, 서비스 부정이용 방지, 만 14세 미만 아동의 개인정보 처리 시 법정대리인의 동의 여부 확인, 각종 고지・통지, 고충처리 목적으로 개인정보를 처리합니다.<br/>
+                                2. 재화 또는 서비스 제공<br/>
+                                     물품배송, 서비스 제공, 계약서・청구서 발송, 콘텐츠 제공, 맞춤서비스 제공, 본인인증, 연령인증, 요금결제・정산의 목적으로 개인정보를 처리합니다.<br/>
+                                0. <해당 개인정보처리자의 개인정보 처리업무><br/>
+                                <개인정보 처리업무에 따른 처리목적>으로 개인정보를 처리합니다
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                제 3 조 개인정보의 파기 절차 및 방법
+                            </button>
+                        </h2>
+                        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#privacyPolicyAccordion">
+                            <div class="accordion-body">
+                                <!-- 제 3 조 내용 -->
+                                ① 5기 27조는 개인정보 보유기간의 경과, 처리목적 달성 등
+개인정보가 불필요하게 되었을 때에는 지체없이 해당 개인정보를 파기합니다.
+② 정보주체로부터 동의받은 개인정보 보유기간이 경과하거나 처리목적이
+달성되었음에도 불구하고 다른 법령에 따라 개인정보를 계속 보존하여야 하는
+경우에는, 해당 개인정보를 별도의 데이터베이스(DB)로 옮기거나 보관장소를
+달리하여 보존합니다.
+ ※ 다른 법령에 따라 보존하는 개인정보의 항목과 보존 근거는 “5. 개인정보의
+처리 및 보유기간‘ 항목에서 확인 가능
+③ 개인정보 파기의 절차 및 방법은 다음과 같습니다.<br/>
+ 1. 파기절차<br/>
+ 5기 27조는 파기 사유가 발생한 개인정보를 선정하고, 개인정보 보호책임자의 승인을 받아 개인정보를
+파기합니다.<br/>
+ 2. 파기방법<br/>
+ 5기 27조는 전자적 파일 형태로 기록・저장된 개인정보는 기록을
+재생할 수 없도록 파기하며, 종이 문서에 기록・저장된 개인정보는 분쇄기로
+분쇄하거나 소각하여 파기합니다.<br/>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 추가 섹션들 -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingfour">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsefour" aria-expanded="false" aria-controls="collapsefour">
+                                제 4 조 개인정보의 제3자 제공
+                            </button>
+                        </h2>
+                        <div id="collapsefour" class="accordion-collapse collapse" aria-labelledby="headingfour" data-bs-parent="#privacyPolicyAccordion">
+                            <div class="accordion-body">
+                                ① 5기 27조는 정보주체의 개인정보를 개인정보의 처리 목적에서 명시한 범위 내에서만 처리하며, 정보주체의 동의, 법률의 특별한 규정 등 「개인정보 보호법」 제17조 및 제18조에 해당하는 경우에만 개인정보를 제3자에게 제공하고 그 이외에는 정보주체의 개인정보를 제3자에게 제공하지 않습니다.<br/>
+                                ② 5기 27조는 원활한 서비스 제공을 위해 다음의 경우 개인정보보호법 제17조 제1항
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>제공받는 자</th>
+                                            <th>제공목적</th>
+                                            <th>제공항목</th>
+                                            <th>보유 및 이용기간</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>(주)케이티</td>
+                                            <td>에이블스쿨 완성도 평가를 위해 열람가능</td>
+                                            <td>아이디, 이름, 생년월일, 주소 및 전화번호(휴대전화번호 포함)</td>
+                                            <td>제공받은 날로부터 5년</td>
+                                        </tr>
+                                        <tr>
+                                            <td>(주)케이티 - 에이블스쿨 </td>
+                                            <td>프로젝트 산출물</td>
+                                            <td>빅프로젝트, 아이디, 이름, 생년월일, 주소 및 전화번호(휴대전화번호 포함)</td>
+                                            <td>8월 7일부터 잊지못할 5년</td>
+                                        </tr>
+                                        <tr>
+                                            <td>(주)케이티멤버스</td>
+                                            <td>이용자 주소 확인</td>
+                                            <td>성명, 주민등록번호, 주소 및 전화번호 (휴대전화번호 포함)</td>
+                                            <td>긴급상황 종료시까지</td>
+                                        </tr>
+                                        <tr>
+                                            <td>질병관리청 또는 전국 시・도</td>
+                                            <td>감염병의 예방 및 관리</td>
+                                            <td>성명, 주민등록번호, 주소 및 전화번호 (휴대전화번호 포함), 「의료법」에 따른 처방전 및 진료기록부, 질병관리청장이 정하는 기간의 출입국관리기록, 그 밖에 이동경로를 파악하기 위한 다음 정보: 가. 「여신전문금융업법」에 따른 신용카드・직불카드・선불카드 사용명세 나. 「대중교통의 육성 및 이용촉진에 관한 법률」에 따른 교통카드 사용명세 다. 「개인정보 보호법」에 따른 영상정보처리기기를 통하여 수집된 영상정보</td>
+                                            <td>긴급상황 종료시까지</td>
+                                        </tr>
+                                        <tr>
+                                            <td>중앙대책본부 또는 지역대책본부</td>
+                                            <td>재난 대응</td>
+                                            <td>성명, 주민등록번호, 주소 및 전화번호 (휴대전화번호 포함), 이동경로 파악 및 수색・구조를 위한 다음 정보: 가. CCTV를 통해 수집된 정보 나. 교통카드의 사용명세 다. 신용카드・직불카드・선불카드의 사용일시, 사용장소 라. 처방전의 의료기관 명칭, 전화번호 및 진료기록부상의 진료일시</td>
+                                            <td>긴급상황 종료시까지</td>
+                                        </tr>
+                                        <tr>
+                                            <td>경찰관서</td>
+                                            <td>실종아동・정신 장애인・치매 환자 등 발견</td>
+                                            <td>개인위치정보, 인터넷주소, 통신사실확인자료</td>
+                                            <td>긴급상황 종료시까지</td>
+                                        </tr>
+                                        <tr>
+                                            <td>경찰관서 해양경찰 소방관서</td>
+                                            <td>자살위험자 보호</td>
+                                            <td>긴급구조대상자의 성명, 주민등록번호(주민등록번호가 없는 경우 생년월일), 주소, 전화번호, 아이디, 전자우편주소 및 개인위치정보</td>
+                                            <td>긴급상황 종료시까지</td>
+                                        </tr>
+                                        <tr>
+                                            <td>소방관서</td>
+                                            <td>긴급 구조요청 등 대응</td>
+                                            <td>개인위치정보</td>
+                                            <td>긴급상황 종료시까지</td>
+                                        </tr>
+                                        <tr>
+                                            <td>국가 및 지방자치단체</td>
+                                            <td>생계곤란 등의 위기상황 대처</td>
+                                            <td>생황이 곤란한 경우 등에 대한 긴급한 생계지원 대상 발굴에 필요한 최소한의 정보</td>
+                                            <td>긴급상황 종료시까지</td>
+                                        </tr>
+                                        <tr>
+                                            <td>수사관서</td>
+                                            <td>납치, 감금 등 범죄와 관련된 자의 개인정보 처리</td>
+                                            <td>CCTV 등 영상정보, 이용자의 성명, 주민등록번호, 주소, 전화번호, 아이디, 가입일 또는 해지일</td>
+                                            <td>수사종료시까지</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingfive">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsefive" aria-expanded="false" aria-controls="collapsefive">
+                                제 5 조 개인정보의 처리 및 보유기간
+                            </button>
+                        </h2>
+                        <div id="collapsefive" class="accordion-collapse collapse" aria-labelledby="headingfive" data-bs-parent="#privacyPolicyAccordion">
+                            <div class="accordion-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>내용</th>
+                                <th>보유기간</th>
+                                <th>개인정보 항목</th>
+                            </tr>
+                            ① 5기 27조는 법령에 따른 개인정보 보유・이용기간 또는
+정보주체로부터 개인정보를 수집 시에 동의 받은 개인정보 보유・이용기간 내에서
+개인정보를 처리・보유합니다.<br/>
+② 각각의 개인정보 처리 및 보유 기간은 다음과 같습니다.<br/>
+ 1. 홈페이지 회원 가입 및 관리 : 사업자/단체 홈페이지 탈퇴 시까지
+ 다만, 다음의 사유에 해당하는 경우에는 해당 사유 종료 시까지<br/>
+ 1) 관계 법령 위반에 따른 수사・조사 등이 진행 중인 경우에는 해당 수사・조사
+종료 시까지<br/>
+ 2) 홈페이지 이용에 따른 채권・채무관계 잔존 시에는 해당 채권・채무관계 정산
+시까지<br/>
+ 3) <예외 사유> 시에는 <보유기간> 까지<br/>
+ 2. 재화 또는 서비스 제공 : 재화·서비스 공급완료 및 요금결제・정산 완료시까지
+ 다만, 다음의 사유에 해당하는 경우에는 해당 기간 종료 시까지<br/>
+ 1) 「전자상거래 등에서의 소비자 보호에 관한 법률」 제6조에 따른 표시・광고,
+계약내용 및 이행 등 거래에 관한 기록<br/>
+ - 계약 또는 청약철회, 대금결제, 재화 등의 공급기록 : 5년<br/>
+ - 소비자 불만 또는 분쟁처리에 관한 기록 : 3년<br/>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>계약 또는 청약철회, 대금결제, 재화 등의 공급기록</td>
+                                <td>5년</td>
+                                <td>구매자정보(고객번호, 성명, 연락처, 이메일주소), 상품 구매/취소/교환/환불정보, 수령인정보(성명, 주소, 연락처), 결제정보(결제수단, 결제금액, 결제일시, 결제승인번호), 송장번호</td>
+                            </tr>
+                            <tr>
+                                <td>소비자 불만 또는 분쟁처리에 관한 기록</td>
+                                <td>3년</td>
+                                <td>고객번호, 성명, 전화번호, 이메일주소, 상담기록(상담내용, 상담일시, 음성녹취기록 포함), 불만 또는 분쟁처리 결과</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    2) 「통신비밀보호법」제15조의2에 따른 통신사실확인자료 보관<br/>
+                    - 컴퓨터통신, 인터넷 로그기록자료, 접속지 추적자료 : 3개월<br/>
+                    - 소비자 불만 또는 분쟁처리에 관한 기록 : 3년<br/>
+                    3) <개인정보 보유기간 근거법령 및 조문> : <보유기간><br/>
+                    3. <개인정보 처리업무> : <보유기간><br/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingSix">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                                제 6 조 14세 미만 아동의 개인정보 처리
+                            </button>
+                        </h2>
+                        <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingSix" data-bs-parent="#privacyPolicyAccordion">
+                            <div class="accordion-body">
+                                ① 5기 27조는 14세 미만 아동의 개인정보를 처리하기 위하여 동의가
+                                필요한 경우에는 해당 아동의 법정대리인으로부터 동의를 받습니다.
+                                ② 5기 27조는 14세 미만 아동의 개인정보 처리에 관하여 그
+                                법정대리인의 동의를 받을 때에는 아동에게 법정대리인의 성명, 연락처와
+                                같이 최소한의 정보를 요구할 수 있으며, 동의 내용을 게재한 인터넷 사이트에
+                                법정대리인이 동의 여부를 표시하도록 하고, 그 동의 표시를 확인하였음을
+                                법정대리인의 휴대전화 문자메시지로 알리는 방법으로 그 사실을 확인합니다.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingSeven">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
+                                제 7 조 개인정보의 안전성 확보조치
+                            </button>
+                        </h2>
+                        <div id="collapseSeven" class="accordion-collapse collapse" aria-labelledby="headingSeven" data-bs-parent="#privacyPolicyAccordion">
+                            <div class="accordion-body">
+                                ① 5기 27조는 개인정보의 안전성 확보를 위해 다음과 같은 조치를 취하고 있습니다.<br/>
+                                1. 관리적 조치 : 내부관리계획 수립・시행, 전담조직 운영, 정기적 직원 교육<br/>
+                                2. 기술적 조치 : 개인정보처리시스템 등의 접근권한 관리, 접근통제시스템 설치,
+                                개인정보의 암호화, 보안프로그램 설치 및 갱신<br/>
+                                3. 물리적 조치 : 전산실, 자료보관실 등의 접근통제<br/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingEight">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+                                제 8 조 고정형 영상정보처리기기 운영・관리 방침
+                            </button>
+                        </h2>
+                        <div id="collapseEight" class="accordion-collapse collapse" aria-labelledby="headingEight" data-bs-parent="#privacyPolicyAccordion">
+                            <div class="accordion-body">
+                                <p>
+                                    본 5기 27조는 고정형 영상정보처리기기 운영・관리 방침을 통해 본 기관(사)에서 처리하는 개인영상정보가 어떠한 용도와 방식으로 이용・관리되고 있는지 알려드립니다.
+                                </p>
+                                <h5>1. 고정형 영상정보처리기기의 설치 근거 및 설치 목적</h5>
+                                <p>
+                                    본 기관(사)은 「개인정보 보호법」 제25조제1항에 따라 다음과 같은 목적으로 고정형 영상정보처리기기를 설치・운영합니다.
+                                </p>
+                                <ul>
+                                    <li>해안, 해수욕장 안전을 위한 예방</li>
+                                    <li>이용자의 안전을 위한 범죄 예방</li>
+                                    <li>인명사고, 자살행위 방지</li>
+                                </ul>
+                                <p>
+                                    ※ 주차대수 30대를 초과하는 규모의 경우 「주차장법 시행규칙」 제6조제1항을 근거로 설치・운영 가능
+                                </p>
+                            
+                                <h5>2. 설치 대수, 설치 위치 및 촬영범위</h5>
+                                <table border="1">
+                                    <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>설치대수</th>
+                                            <th>10대</th>
+                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>설치 위치 및 촬영 범위</td>
+                                            <td>대한민국 10개의 해수욕장 해안(반경 1.2km)</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            
+                                <h5>3. 관리책임자 및 접근권한자</h5>
+                                <p>
+                                    귀하의 개인영상정보를 보호하고 개인영상정보와 관련한 불만을 처리하기 위하여 아래와 같이 개인영상정보 관리책임자 및 접근권한자를 두고 있습니다.
+                                </p>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>구분</th>
+                                            <th>이름</th>
+                                            <th>직위</th>
+                                            <th>연락처</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>고도영</td>
+                                            <td>실장</td>
+                                            <td>시크릿걸</td>
+                                        </tr>
+                                        <tr>
+                                            <td>2</td>
+                                            <td>김상호 </td>
+                                            <td>서울지점 본부장</td>
+                                            <td>02-222-5555</td>
+                                        </tr>
+                                        <tr>
+                                            <td>3</td>
+                                            <td>김서현 </td>
+                                            <td>전무</td>
+                                            <td>010-7754-3000</td>
+                                        </tr>
+                                        <tr>
+                                            <td>4</td>
+                                            <td>김은옥 </td>
+                                            <td>계약직 인턴</td>
+                                            <td>010-7754-0299</td>
+                                        </tr>
+                                        <tr>
+                                            <td>5</td>
+                                            <td>김하진</td>
+                                            <td>이대리 사모님</td>
+                                            <td>011-777-2525</td>
+                                        </tr>
+                                        <tr>
+                                            <td>6</td>
+                                            <td>박세리</td>
+                                            <td>이사</td>
+                                            <td>010-1253-4567</td>
+                                        </tr>
+                                        <tr>
+                                            <td>7</td>
+                                            <td>범종원</td>
+                                            <td>회장</td>
+                                            <td>019-436-3300</td>
+                                        </tr>
+                                        <tr>
+                                            <td>8</td>
+                                            <td>이대환</td>
+                                            <td>20년차 만년대리</td>
+                                            <td>010-7777-2525</td>
+                                        </tr>
+                                        <tr>
+                                            <td>9</td>
+                                            <td>임태경</td>
+                                            <td>경영 본부장</td>
+                                            <td>010-1234-2000</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            
+                                <h5>4. 개인영상정보의 촬영시간, 보관기간, 보관장소 및 처리방법</h5>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>촬영시간</th>
+                                            <th>보관기간</th>
+                                            <th>보관장소</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>24시간</td>
+                                            <td>촬영일로부터 30일</td>
+                                            <td>해수욕장 영상관리센터</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <p>
+                                    처리방법 : 개인영상정보의 목적 외 이용, 제3자 제공, 파기, 열람 등 요구에 관한 사항을 기록・관리하고, 보관기간 만료 시 복원이 불가능한 방법으로 영구 삭제(출력물의 경우 파쇄 또는 소각)합니다.
+                                </p>
+                            
+                                <h5>5. 고정형 영상정보처리기기 설치 및 관리 등의 위탁에 관한 사항 </h5>
+                                <p>
+                                    본 기관은 아래와 같이 고정형 영상정보처리기기 설치 및 관리 등을 위탁하고 있으며, 관계 법령에 따라 위탁계약 시 개인정보가 안전하게 관리될 수 있도록 필요한 사항을 규정하고 있습니다.
+                                </p>
+                            
+                                <h5>6. 개인영상정보의 확인 방법 및 장소에 관한 사항</h5>
+                                <p>
+                                    - 확인 방법 : 개인영상정보 관리책임자에게 미리 연락하고 본 기관을 방문하시면 확인 가능합니다.<br/>
+                                    - 확인 장소 : OO부서 OO팀
+                                </p>
+                            
+                                <h5>7. 정보주체의 개인영상정보 열람 등 요구에 대한 조치</h5>
+                                <p>
+                                    귀하는 개인영상정보에 관하여 열람 또는 존재확인・삭제를 원하는 경우 언제든지 고정형영상정보처리기기운영자에게 요구하실 수 있습니다. 단, 귀하가 촬영된 개인영상정보에 한정됩니다.<br/>
+                                    본 기관은 개인영상정보에 관하여 열람 또는 존재확인・삭제를 요구한 경우 지체없이 필요한 조치를 하겠습니다.
+                                </p>
+                            
+                                <h5>8. 개인영상정보의 안전성 확보조치</h5>
+                                <p>
+                                    본 기관에서 처리하는 개인영상정보는 암호화 조치 등을 통하여 안전하게 관리되고 있습니다. 또한 본 기관은 개인영상정보보호를 위한 관리적 대책으로서 개인정보에 대한 접근권한을 차등 부여하고 있고, 개인영상정보의 위・변조 방지를 위하여 개인영상정보의 생성 일시, 열람 시 열람 목적・열람자・열람 일시 등을 기록하여 관리하고 있습니다. 이 외에도 개인영상정보의 안전한 물리적 보관을 위하여 잠금장치를 설치하고 있습니다.
+                                </p>
+                            
+                                <h5>9. 고정형 영상정보처리기기 운영・관리방침 변경에 관한 사항</h5>
+                                <p>
+                                    이 고정형 영상정보처리기기 운영・관리방침은 2024년 1월 1일에 제정되었으며 법령・정책 또는 보안기술의 변경에 따라 내용의 추가ㆍ삭제 및 수정이 있을 시에는 시행하기 최소 7일 전에 본 기관(사) 홈페이지를 통해 변경사유 및 내용 등을 공지하도록 하겠습니다.<br/>
+                                    - 공고일자 : 2024년 6월 17일 / 시행일자 : 2024년 7월 1일
+                                </p>   
+                            </div>
+                        </div> 
+                </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingNine">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNine" aria-expanded="false" aria-controls="collapseNine">
+                                제 9 조 개인정보의 안전성 확보조치에 관한 사항
+                            </button>
+                        </h2>
+                        <div id="collapseNine" class="accordion-collapse collapse" aria-labelledby="headingNine" data-bs-parent="#privacyPolicyAccordion">
+                            <div class="accordion-body">
+                                ① 5기 27조는 개인정보의 안전성 확보를 위해 다음과 같은 조치를 취하고 있습니다.<br/>
+                                1. 관리적 조치 : 내부관리계획 수립・시행, 전담조직 운영, 정기적 직원 교육<br/>
+                                2. 기술적 조치 : 개인정보처리시스템 등의 접근권한 관리, 접근통제시스템 설치, 개인정보의 암호화, 보안프로그램 설치 및 갱신<br/>
+                                3. 물리적 조치 : 전산실, 자료보관실 등의 접근통제<br/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingTen">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTen" aria-expanded="false" aria-controls="collapseTen">
+                                제 10 조 이용자와 법정대리인의 권리·의무 및 행사방법
+                            </button>
+                        </h2>
+                        <div id="collapseTen" class="accordion-collapse collapse" aria-labelledby="headingTen" data-bs-parent="#privacyPolicyAccordion">
+                            <div class="accordion-body">
+                                ① 이용자는  5기 27조에 대해 언제든지 개인정보 열람・정정・삭제・처리정지 및 철회 요구, 자동화된 결정에 대한 거부 또는 설명 요구 등의 권리를 행사(이하 “권리 행사”라 함)할 수 있습니다.
+                                    ※ 14세 미만 아동에 관한 개인정보의 열람등 요구는 법정대리인이 직접 해야 하며, 14세 이상의 미성년자인 정보주체는 정보주체의 개인정보에 관하여 미성년자 본인이 권리를 행사하거나 법정대리인을 통하여 권리를 행사할 수도 있습니다.<br/>
+                                ② 권리 행사는 '5기 27조'에 대해 「개인정보 보호법」 시행령 제41조 제1항에 따라 서면, 전자우편, 모사전송(FAX) 등을 통하여 하실 수 있으며, '5기 27조' 이에 대해 지체없이 조치하겠습니다.<br/>
+                                - 정보주체는 언제든지 홈페이지 ‘내정보 > 회원정보’에서 개인정보를 직접 조회・수정・삭제하거나 ‘문의하기’를 통해 열람을 요청할 수 있습니다.<br/>
+                                - 정보주체는 언제든지 ‘회원탈퇴’를 통해 개인정보의 수집 및 이용 동의 철회가 가능합니다.<br/>
+                                - 정보주체는 언제든지 홈페이지 ‘내정보 > 회원정보 > 문의하기’를 통해 자동화된 결정의 거부 및 설명 요구가 가능합니다.<br/>
+                                ③ 권리 행사는 정보주체의 법정대리인이나 위임을 받은 자 등 대리인을 통하여 하실 수도 있습니다. 이 경우 “개인정보 처리 방법에 관한 고시” 별지 제11호 서식에 따른 위임장을 제출하셔야 합니다.<br/>
+                                ④ 정보주체가 개인정보 열람 및 처리 정지를 요구할 권리는 「개인정보 보호법」 제35조 제4항 및 제37조 제2항에 의하여 제한될 수 있습니다.<br/>
+                                ⑤ 다른 법령에서 그 개인정보가 수집 대상으로 명시되어 있는 경우에는 해당 개인정보의 삭제를 요구할 수 없습니다.<br/>
+                                ⑥ 자동화된 결정이 이루어진다는 사실에 대해 정보주체의 동의를 받았거나, 계약 등을 통해 미리 알린 경우, 법률에 명확히 규정이 있는 경우에는 자동화된 결정에 대한 거부는 인정되지 않으며 설명 및 검토 요구만 가능합니다.<br/>
+                                 - 또한 자동화된 결정에 대한 거부・설명 요구는 다른 사람의 생명・신체・재산과 그 밖의 이익을 부당하게 침해할 우려가 있는 등 정당한 사유가 있는 경우에는 그 요구가 거절될 수 있습니다.<br/>
+                                ⑦ 5기 27조는 권리 행사를 한 자가 본인이거나 정당한 대리인인지를 확인합니다.<br/>
+                                ⑧ 5기 27조는 권리 행사를 아래의 부서에 할 수 있습니다. 5기 27조는 정보주체의 권리 행사가 신속하게 처리되도록 노력하겠습니다.<br/>
+                                <strong>▶ 개인정보 열람 등 청구 접수・처리 부서</strong><br/>
+                                <strong>부서명 : 5기 27조 행운부서</strong><br/>
+                                <strong>주 소 : 사랑시 고백구 행복동</strong><br/>
+                                <strong>연락처 : &lt;02-486-8282&gt;, &lt;luckybicky@kt-aivle.co&gt;</strong><br/>
+                            </div>
+                        </div>
+                    </div>
+                
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingEleven">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEleven" aria-expanded="false" aria-controls="collapseEleven">
+                            제 11 조 의견 수렴 및 불만처리
+                        </button>
+                    </h2>
+                    <div id="collapseEleven" class="accordion-collapse collapse" aria-labelledby="headingEleven" data-bs-parent="#privacyPolicyAccordion">
+                        <div class="accordion-body">
+                            1. 케이티는 고객님의 의견을 매우 소중하게 생각합니다. 고객님께서 문의사항이 있을 경우 회사의 대리점, 플라자를 방문하시거나 고객센터 등에 전화로 문의하시면 신속, 정확한 답변을 드리겠습니다.<br/>
+가. 전화번호 : 국번없이 100(자사 이용 시, 무료), 1588-0010(타사 이용 시, 유료)<br/>
+나. 온라인상담 : kt.com > 고객지원 > 온라인문의 > 이메일 상담<br/>
+2. 기타 개인정보 침해에 대한 신고나 상담에 대하여는 아래 기관에 문의하시기 바랍니다.<br/>
+가. 개인정보 분쟁조정위원회 : (국번없이) 1833-6972 (www.kopico.go.kr)<br/>
+나. 개인정보 침해신고센터 : (국번없이) 118 (privacy.kisa.or.kr)<br/>
+다. 대검찰청 : (국번없이) 1301 (www.spo.go.kr)<br/>
+라. 경찰청 : (국번없이) 182 (ecrm.cyber.go.kr)<br/>
+                        </div>
+                  </div>  
+                </div>  
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingTwelve">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwelve" aria-expanded="false" aria-controls="collapseTwelve">
+                             제 12 조 개인정보처리방침의 고지
+                         </button>
+                    </h2>
+                    <div id="collapseTwelve" class="accordion-collapse collapse" aria-labelledby="headingEleven" data-bs-parent="#privacyPolicyAccordion">
+                        <div class="accordion-body">
+                                개인정보 처리방침 공고일자 : 2024-07-12<br/>
+                                개인정보 처리방침 시행일자 : 2024-07-12
+                        </div>
+                    </div>
+                </div>
+                        </p>
+                    </div>
+                `;
+                break;
+            case 'copyright':
+                policyContent = `
+                    <div class="bg-light rounded p-4">
+                        <h3 class="my-4">저작권보호정책</h3>
+                        <p><hr style="border: 1px solid #ddd; margin: 20px 0;">
+                        <h5>5조 27조 저작권법 정책</h5>
+                            제27조(저작권 보호)에 따라 홈페이/지에서 제공하는 모든 자료의 저작권은 별도의 저작권 표시나 출처를 명시한 경우를 제외하고는 5기 27조 홈페이지에 속합니다.
+                            홈페이지에 게재된 자료는 5기 27조의 허가 · 동의 없이 무단으로 사용할 수 없습니다.
+                            다만, 비수익적 · 공익적 사용은 허용하되 사전에 한국해양교통안전공단 홈페이지 담당자와 사전 협의 또는 승인을 얻어 출처를 명시하여 사용하여 주시기 바랍니다.
+                        </p>
+                    </div>
+                `;
+                break;
+            case 'sources':
+                policyContent = `
+                    <div class="bg-light rounded p-4">
+                        <h3 class="my-4">저작권 및 출처</h3><hr style="border: 1px solid #ddd; margin: 20px 0;">
+                        <p>
+                            <a href="https://www.flaticon.com/kr/free-animated-icon/waves_16104466?term=%EB%B0%94%EB%8B%A4&page=1&position=3&origin=search&related_id=16104466" title="카메라 애니메이션 아이콘">카메라 애니메이션 아이콘 제작자: Freepik - Flaticon</a><br/>
+                            <a href="https://www.flaticon.com/kr/free-animated-icon/weather_14822094?term=%EB%82%A0%EC%94%A8&page=1&position=7&origin=search&related_id=14822094" title="비 애니메이션 아이콘">비 애니메이션 아이콘 제작자: Freepik - Flaticon</a><br/>
+                            <a href="https://www.flaticon.com/kr/free-animated-icon/camera_7920851?term=cctv&page=1&position=1&origin=search&related_id=7920851" title="바다 애니메이션 아이콘">바다 애니메이션 아이콘 제작자: Freepik - Flaticon</a><br/>
+                            <a href="https://www.flaticon.com/kr/free-icons/web-browser" title="네비바 애니메이션 아이콘">네비바 아이콘들 출처</a><br/>
+                            <a href="https://www.gn.go.kr/tour/sub03_02_03.do#n" title="경포 해수욕장">경포해수욕장 사진 출처</a><br/>
+                            <a href="https://blog.naver.com/rapatrip/223372814753" title="고래불 해수욕장">고래불 해수욕장 사진 출처</a><br/>
+                            <a href="https://blog.naver.com/nemcon/223149462345" title="낙산 해수욕장">낙산해수욕장 사진 출처</a><br/>
+                            <a href="https://blog.naver.com/dydrkfl3377/223219492904" title="대천해수욕장 사진 출처">대천해수욕장 사진 출처</a><br/>
+                            <a href="https://korean.visitkorea.or.kr/detail/ms_detail.do?cotid=46a1d5f9-c4f9-434b-879a-2d3f02330709" title="망상 해수욕장">망상해수욕장 사진 출처</a><br/>
+                            <a href="https://blog.naver.com/wishsun1411/223453005254" title="속초해수욕장 사진 출처">속초해수욕장 사진 출처</a><br/>
+                            <a href="https://blog.naver.com/fruit528/223137363603" title="송정 해수욕장">송정해수욕장 사진 출처</a><br/>
+                            <a href="https://blog.naver.com/voyage1977/223290063198" title="임랑해수욕장 gif 출처">임랑해수욕장 사진 출처</a>
+                            
+                            <div>중문해수욕장 사진 출처 - 직접 촬영</div>
+                            <a href="https://blog.naver.com/foodie_taro/223465074478" title="해운대해수욕장 사진 출처">해운대해수욕장 사진 출처</a><br/>
+                        </p>
+                    </div>
+                `;
+                break;
+            default:
+                policyContent = '';
+                break;
+        }
+
+        document.getElementById('policyContent').innerHTML = policyContent;
+        adjustScroll();
+    }
+
+    // Adjust scroll position after content load
+    function adjustScroll() {
+        const offsetTop = document.getElementById('policyContent').offsetTop - 100;
+        window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+    }
+
+    // Initially load copyright policy on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        loadPolicy('copyright');
+    });
+</script>
+{% endblock %}

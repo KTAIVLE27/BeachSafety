@@ -9,6 +9,7 @@
 
 {% block content %}
 {% load static %} 
+
 <div class="container-fluid pt-4 px-4">
     <div class="row g-4">
         <div class="col-lg-12 text-center">
@@ -73,9 +74,9 @@
             </div>
         </div>
     </div>
-    
+   
 
-    <div id="team" class="content-section">
+<div id="team" class="content-section">
         <div class="bg-light text-center rounded p-4 mt-4">
             <h1>팀원 소개</h1>
             <div style="margin-top: 60px;"></div> <!-- 공간을 세 줄 띄웁니다. -->
@@ -184,7 +185,7 @@
                 </div>
                 <!-- Repeat for other gallery photos -->
                 <div class="col-md-3 mb-3">
-                    <img src="{% static 'img/team_gallery/photo5.png' %}" class="img-fluid rounded" alt="Photo 5">
+                    <img src="{% static 'img/team_gallery/photo5.jpg' %}" class="img-fluid rounded" alt="Photo 5">
                 </div>
                 <div class="col-md-3 mb-3">
                     <img src="{% static 'img/team_gallery/photo6.jpg' %}" class="img-fluid rounded" alt="Photo 6">
@@ -211,7 +212,13 @@
                     <img src="{% static 'img/team_gallery/photo13.jpg' %}" class="img-fluid rounded" alt="Photo 13">
                 </div>
                 <div class="col-md-3 mb-3">
-                    <img src="{% static 'img/team_gallery/photo14.jpg' %}" class="img-fluid rounded" alt="Photo 14">
+                    <img src="{% static 'img/team_gallery/photo14.png' %}" class="img-fluid rounded" alt="Photo 14">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <img src="{% static 'img/team_gallery/photo15.jpg' %}" class="img-fluid rounded" alt="Photo 15">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <img src="{% static 'img/team_gallery/photo16.jpg' %}" class="img-fluid rounded" alt="Photo 16">
                 </div>
             </div>
         </div>
@@ -237,7 +244,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // 초기 로드 시 팀원 소개 섹션만 보이도록 설정
-    document.getElementById('team').style.display = 'block';
+    document.getElementById('goal').style.display = 'block';
 });
 </script>
 {% endblock %}
