@@ -13,39 +13,86 @@
 {% endblock %}
 
 {% block content %}
-<!-- Sales Chart Start -->
 <div class="container-fluid pt-4 px-4">
     <div class="row g-4">
         <div class="col-lg-12">
             <div class="bg-light text-center rounded p-4">
                 <div class="d-flex align-items-center justify-content-between mb-4">
-                    <h4 class="mb-0">해수욕장 별 위험도 예측 정보 박스</h4>
+                    <h4 class="mb-0">해수욕장 별 위험도 예측 정보</h4>
                 </div>
-                <!-- Start of 10 boxes in a 2x5 grid -->
-                <div class="custom-box-container">
-                    {% for beach, prediction in predictions.items %}
-                    <div class="custom-box">
-                        <h6 class="mb-3">{{ beach }}</h6>
-                        <hr>
-                        <textarea placeholder="해수욕장 설명 {{ forloop.counter }}">{{ prediction }}</textarea>
+
+                <!-- Risk Level Table Start -->
+                <div class="mb-4">
+                    <h5>위험도 기준</h5>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">레벨</th>
+                                <th scope="col">지수 수치 (S)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>관심</td>
+                                <td>S &lt; 30</td>
+                            </tr>
+                            <tr>
+                                <td>주의</td>
+                                <td>30 ≤ S &lt; 55</td>
+                            </tr>
+                            <tr>
+                                <td>경계</td>
+                                <td>55 ≤ S &lt; 80</td>
+                            </tr>
+                            <tr>
+                                <td>위험</td>
+                                <td>80 ≤ S ≤ 120</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Risk Level Table End -->
+
+                <div class="accordion" id="beachAccordion">
+                    {% for beach in beaches %}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="true" aria-controls="collapse{{ forloop.counter }}">
+                                {{ beach.beach_name }}
+                            </button>
+                        </h2>
+                        <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#beachAccordion">
+                            <div class="accordion-body">
+                                <p>Region: {{ beach.beach_region }}</p>
+                                <p>MAE: {{ beach.mae }}</p>
+                                <p>MSE: {{ beach.mse }}</p>
+                                <p>R2 Score: {{ beach.r2score }}</p>
+                                <button type="button" class="btn btn-primary" onclick="loadPrediction('{{ beach.beach_name }}', '{{ beach.beach_widget_id }}', {{ forloop.counter }})">30분 후 이안류 위험도 예측</button>
+                                <div id="prediction{{ forloop.counter }}" style="display: none; margin-top: 10px;">
+                                    <p><strong>예측 수치:</strong> <span id="score{{ forloop.counter }}"></span></p>
+                                    <p><strong>예측 레벨:</strong> <span id="level{{ forloop.counter }}"></span></p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     {% endfor %}
                 </div>
-                <!-- End of the next row for boxes 6-10 -->
             </div>
         </div>
     </div>
 </div>
-<!-- Sales Chart End -->
 
-<!-- Footer Start -->
-<!-- Footer End -->
-</div>
-<!-- Content End -->
-
-<!-- Back to Top -->
-<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
-</div>
-
-<!-- Sales Chart End -->
+<script>
+function loadPrediction(beachName, beachWidgetId, index) {
+    fetch(`/load_prediction?beach_name=${beachName}&beach_widget_id=${beachWidgetId}`)
+        .then(response => response.json())
+        .then(data => {
+            let score = parseFloat(data.prediction).toFixed(2);
+            document.getElementById(`score${index}`).innerText = score;
+            document.getElementById(`level${index}`).innerText = data.risk_level;
+            document.getElementById(`prediction${index}`).style.display = 'block';
+        })
+        .catch(error => console.error('Error:', error));
+}
+</script>
 {% endblock %}
