@@ -347,7 +347,7 @@ import pandas as pd
 from pathlib import Path
 @login_required
 def risk(request):
-    beaches = Beach.objects.all()
+    beaches = Beach.objects.exclude(Q(beach_name="함덕 해수욕장"))
     return render(request, 'risk.html', {'beaches': beaches})
 
 def load_prediction(request):
