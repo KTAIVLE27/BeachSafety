@@ -26,8 +26,7 @@ SECRET_KEY = "django-insecure-3hu37lq=fcyozm6ogbr1=_o^e(*tv978qe%(%ne(&tuge2vzt+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '3.35.225.12']
 
 # Application definition
 
@@ -145,3 +144,5 @@ AWS_S3_REGION_NAME = 'ap-northeast-2'
 AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
 AWS_S3_CUSTOM_DOMAIN = os.getenv('AWS_S3_CUSTOM_DOMAIN')
 
+# 브라우저 닫으면 로그아웃
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True

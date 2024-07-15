@@ -17,16 +17,16 @@ class mainConfig(AppConfig):
         try:
             if not Beach.objects.exists():
                 beaches = [
-                    {"beach_name": "경포 해수욕장", "beach_region": "강릉시", "beach_lat": 37.8, "beach_lon": 128.909, "nx": 92, "ny": 132, "beach_widget_id": "wl7437"},
-                    {"beach_name": "고래불 해수욕장", "beach_region": "영덕군", "beach_lat": 36.597, "beach_lon": 129.411, "nx": 103, "ny": 107, "beach_widget_id": "wl7463"},
-                    {"beach_name": "낙산 해수욕장", "beach_region": "양양시", "beach_lat": 38.118, "beach_lon": 128.631, "nx": 87, "ny": 140, "beach_widget_id": "wl7478"},
-                    {"beach_name": "대천 해수욕장", "beach_region": "보령시", "beach_lat": 36.305, "beach_lon": 126.507, "nx": 53, "ny": 100, "beach_widget_id": "wl7459"},
-                    {"beach_name": "망상 해수욕장", "beach_region": "동해시", "beach_lat": 37.593, "beach_lon": 129.09, "nx": 96, "ny": 127, "beach_widget_id": "wl7462"},
-                    {"beach_name": "속초 해수욕장", "beach_region": "속초 해수욕장", "beach_lat": 38.19, "beach_lon": 128.601, "nx": 87, "ny": 140, "beach_widget_id": "wl7463"},
-                    {"beach_name": "송정 해수욕장", "beach_region": "송정 해수욕장", "beach_lat": 35.178, "beach_lon": 129.199, "nx": 61, "ny": 126, "beach_widget_id": "wl1419"},
-                    {"beach_name": "임랑 해수욕장", "beach_region": "부산광역시", "beach_lat": 35.318, "beach_lon": 129.264, "nx": 101, "ny": 79, "beach_widget_id": "wl1419"},
-                    {"beach_name": "중문 해수욕장", "beach_region": "제주도", "beach_lat": 33.245, "beach_lon": 126.409, "nx": 51, "ny": 32,  "beach_widget_id": "wl7440"},
-                    {"beach_name": "해운대 해수욕장", "beach_region": "부산광역시", "beach_lat": 35.158, "beach_lon": 129.16, "nx": 99, "ny": 75, "beach_widget_id": "wl1419"},
+                    {"beach_name": "경포 해수욕장", "beach_region": "강릉시", "beach_lat": 37.8, "beach_lon": 128.909, "nx": 92, "ny": 132, "beach_widget_id": "wl7437",  "mae":10.67, "mse":210.93, "r2score" : 0.86},
+                    {"beach_name": "고래불 해수욕장", "beach_region": "영덕군", "beach_lat": 36.597, "beach_lon": 129.411, "nx": 103, "ny": 107, "beach_widget_id": "wl7463",  "mae":5.97, "mse":72.62, "r2score" : 0.95},
+                    {"beach_name": "낙산 해수욕장", "beach_region": "양양시", "beach_lat": 38.118, "beach_lon": 128.631, "nx": 87, "ny": 140, "beach_widget_id": "wl7478", "mae":7.65, "mse":113.02, "r2score" : 0.93},
+                    {"beach_name": "대천 해수욕장", "beach_region": "보령시", "beach_lat": 36.305, "beach_lon": 126.507, "nx": 53, "ny": 100, "beach_widget_id": "wl7459", "mae":6.80, "mse":94.71, "r2score" : 0.84},
+                    {"beach_name": "망상 해수욕장", "beach_region": "동해시", "beach_lat": 37.593, "beach_lon": 129.09, "nx": 96, "ny": 127, "beach_widget_id": "wl7462", "mae":5.34, "mse":64.99, "r2score" : 0.96},
+                    {"beach_name": "속초 해수욕장", "beach_region": "속초 해수욕장", "beach_lat": 38.19, "beach_lon": 128.601, "nx": 87, "ny": 140, "beach_widget_id": "wl7463", "mae":5.22, "mse":71.33, "r2score" : 0.96},
+                    {"beach_name": "송정 해수욕장", "beach_region": "송정 해수욕장", "beach_lat": 35.178, "beach_lon": 129.199, "nx": 61, "ny": 126, "beach_widget_id": "wl1419", "mae":11.07, "mse":220.12, "r2score" : 0.77},
+                    {"beach_name": "임랑 해수욕장", "beach_region": "부산광역시", "beach_lat": 35.318, "beach_lon": 129.264, "nx": 101, "ny": 79, "beach_widget_id": "wl1419", "mae":7.78, "mse":125.08, "r2score" : 0.88},
+                    {"beach_name": "중문 해수욕장", "beach_region": "제주도", "beach_lat": 33.245, "beach_lon": 126.409, "nx": 51, "ny": 32,  "beach_widget_id": "wl7440", "mae":8.73, "mse":121.75, "r2score" : 0.88},
+                    {"beach_name": "해운대 해수욕장", "beach_region": "부산광역시", "beach_lat": 35.158, "beach_lon": 129.16, "nx": 99, "ny": 75, "beach_widget_id": "wl1419", "mae":13.50, "mse":317.04, "r2score" : 0.68},
                     {"beach_name": "함덕 해수욕장", "beach_region": "제주도", "beach_lat": 33.543, "beach_lon": 126.669},
                     
                 ]

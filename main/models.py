@@ -52,6 +52,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     class Meta:
         db_table = 'user'
 
+
+
 class Beach(models.Model):
     beach_no = models.AutoField(primary_key=True)  # 해수욕장 번호
     beach_name = models.CharField(max_length=100, blank=False)  # 해수욕장 이름
@@ -62,6 +64,9 @@ class Beach(models.Model):
     beach_widget_id = models.CharField(null = True, max_length=50 ) # widget_id 
     nx = models.IntegerField(null = True)
     ny =  models.IntegerField(null = True)
+    mae = models.FloatField(null=True, blank=True)
+    mse = models.FloatField(null=True, blank=True)
+    r2score = models.FloatField(null=True, blank=True)
 
     class Meta:
         db_table = 'beach'
@@ -126,8 +131,6 @@ class Scenario(models.Model):
 
     class Meta:
         db_table = 'scenario'
-
-
 
 
 # class ScenarioEval(models.Model):

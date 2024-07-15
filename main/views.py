@@ -18,7 +18,7 @@ from control.utils import *
 from django.db.models import Q
 import boto3
 from django.conf import settings
-
+import joblib
 
 def is_admin(user):
     return user.is_authenticated and user.user_id == 'admin' and user.user_name == 'admin' and user.check_password('aivle2024!')
@@ -332,9 +332,67 @@ def cctv(request):
     }
     return render(request, 'cctv.html', context)
 
+def get_risk_level(score):
+    if score < 30:
+        return '관심'
+    elif 30 <= score < 55:
+        return '주의'
+    elif 55 <= score < 80:
+        return '경계'
+    else:
+        return '위험'
+    
+    
+import pandas as pd
+from pathlib import Path
 @login_required
 def risk(request):
-    return render(request, 'risk.html')
+    base_path = Path(__file__).resolve().parent.parent / 'main' / 'models'
+    models = {
+        'SONGJUNG': joblib.load(base_path / 'SONGJUNG.pkl'),
+        'GYEONGPO' : joblib.load(base_path / 'GYEONGPO.pkl'),
+        'NAKSAN': joblib.load(base_path / 'NAKSAN.pkl'),
+        'DAECHON': joblib.load(base_path / 'DAECHON.pkl'),
+        'GORAEBUL': joblib.load(base_path / 'GORAEBUL.pkl'),
+        'HAE': joblib.load(base_path / 'HAE.pkl'),
+        'MANGSANG': joblib.load(base_path / 'MANGSANG.pkl'),
+        'JUNGMUN': joblib.load(base_path / 'JUNGMUN.pkl'),
+        'IMRANG': joblib.load(base_path / 'IMRANG.pkl'),
+        'SOKCHO': joblib.load(base_path / 'SOKCHO.pkl'),
+    }
+    
+    
+    beaches = ['JUNGMUN', 'MANGSANG', 'DAECHON', 'GORAEBUL', 'HAE', 'NAKSAN', 'GYEONGPO', 'SONGJUNG', 'IMRANG', 'SOKCHO']
+    predictions = {}
+    
+    for beach in beaches:
+        model, feature_names, label_encoders = models[beach]
+        result = get_predict_data(beach, label_encoders) # api 해변, 라벨 인코더 전달
+        if result == 'NaN':
+            predictions[beach] = 'Invalid data'
+        else:
+            wave_period, air_temp, water_temp, wind_speed, score_msg, wave_height, wind_direct = result
+
+            input_data = {
+                'wave_period': [wave_period],
+                'air_temp': [air_temp],
+                'water_temp': [water_temp],
+                'wind_speed': [wind_speed],
+                'score_msg' : [score_msg],
+                'wave_height': [wave_height],
+                'wind_direct': [wind_direct]
+            }
+            df = pd.DataFrame(input_data)
+            # 예측에 사용된 피처만 선택
+            df = df[feature_names]
+            
+            prediction = model.predict(df)
+            risk_level = get_risk_level(prediction[0])
+            predictions[beach] = risk_level
+            
+    return render(request, 'risk.html', {'predictions': predictions})
+
+        
 
 def signin(request):
     # 사용자가 이미 로그인한 상태인지 확인
