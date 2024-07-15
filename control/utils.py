@@ -18,18 +18,18 @@ def fetch_rip_current_data():
         for beach in data['result']['data']:
             beach_code = beach['beach_code']
             beach_data_dict[beach_code] = {
-                #'beach_name': beach['beach_name'],
+                'beach_name': beach['beach_name'],
                 'obs_time': beach['obs_time'],
-                #'water_temp': beach['water_temp'],
-                #'air_temp': beach['air_temp'],
-                #'wind_speed': beach['wind_speed'],
+                'water_temp': beach['water_temp'],
+                'air_temp': beach['air_temp'],
+                'wind_speed': beach['wind_speed'],
                 'lon': beach['lon'],
                 'lat': beach['lat'],
-                #'wind_direct': beach['wind_direct'],
-                #'wave_height': beach['wave_height'],
-                #'wave_period': beach['wave_period'],
+                'wind_direct': beach['wind_direct'],
+                'wave_height': beach['wave_height'],
+                'wave_period': beach['wave_period'],
                 'score_msg': beach['score_msg'],
-                #'score': beach['score'],
+                'score': beach['score'],
             }
         return beach_data_dict
     else:
