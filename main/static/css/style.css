@@ -406,7 +406,7 @@
     min-width: 300px; /* 최소 너비 설정 */
     max-width: 430px; /* 최대 너비 설정 */
     height: auto;
-    max-height: 40vh; /* 기본 최대 높이 설정 */
+    max-height: 30vh; /* 기본 최대 높이 설정 */
     margin: auto;
     border: 1px solid #000000;
     padding: 10px;
@@ -440,31 +440,30 @@
     height: 100%;
 }
 
+
 .footer {
     margin: 0;
     font-family: Arial, sans-serif;
     font-weight: 3;
-    background-color: #2d313f; /* 이미지 배경과 일치하도록 색상 설정 */
-    color: #fff;
-    text-align: center;
-    padding: 10px 0;
+    background-color: #ffffff; 
+    color: #9c9c9cc2;
+    padding-top: 40px; /* Adjust the value as needed */
+    padding-bottom: 10px; /* This ensures the bottom padding remains the same */
 }
+
 .footer .footer-logos img {
     width: 40px;
     height: 50px;
     margin: 0 10px; /* 여백을 좁게 설정 */
-    vertical-align: middle;
     max-width: 50px; /* 최대 너비 설정 */
     height: auto; /* 높이 자동 조정 */
-    }
+}
 
 .footer .footer-info {
-    margin-top: 10px; /* 위 마진 줄이기 */
-    line-height: 1.8; /* 행간  */
-}
-.footer .footer-info p {
+    padding-top: 20px; /* Adjust the value as needed */
+    margin-top: 2px; /* 위 마진 줄이기 */
+    line-height: 0.5; /* 행간  */
     margin: 2px 0; /* 상하 마진 줄이기 */
-    padding: 0; /* 패딩 제거 */
 }
 
 .toggle-container button {
@@ -743,8 +742,12 @@
     margin: 5px; /* 버튼들 사이의 여유 공간 */
 }
 
-#control-weather-icon{
-    width: 50px;
-    height: 50px;
-    background-color: lightblue;
+.policy-section-button {
+    transition: background-color 0.3s, color 0.3s;
 }
+
+.policy-section-button.active, .policy-section-button:hover {
+    background-color: #007bff; /* 호버 및 활성화된 상태의 배경색 */
+    color: white; /* 호버 및 활성화된 상태의 텍스트 색 */
+}
+

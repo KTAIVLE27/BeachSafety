@@ -527,6 +527,11 @@ def agreement(request):
 def team_info(request):
     return render(request, 'team_info.html')
 
+def privacy_policy(request):
+    return render(request, 'privacy_policy.html')
+
+def copyright(request):
+    return render(request, 'copyright.html')
 
 from django.shortcuts import render
 from .utils import fetch_weather_data
