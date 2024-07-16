@@ -1,7 +1,18 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
-
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import os
+from sdk.api.message import Message
+from sdk.exceptions import CoolsmsException
+from main.models import Message as MessageModel
+import time 
+import hmac
+import hashlib
+import uuid
+import requests
+import datetime
 # Create your views here.
 # ['GYEONGPO', 'GORAEBUL','NAKSAN','DAECHON','MANGSANG','SOKCHO','SONGJUNG','IMRANG','JUNGMUN','HAE']
 
@@ -56,16 +67,32 @@ def control_view(request):
         context_json = json.dumps(context)  # JSON 형식의 문자열로 변환
         return render(request, 'control.html', {'contextjson': context_json, 'beaches': beaches, 'cctvs': cctvs, 'api_key' :api_key})
 
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-import os
-from sdk.api.message import Message
-from sdk.exceptions import CoolsmsException
+def get_signature(key, msg):
+    return hmac.new(key.encode(), msg.encode(), hashlib.sha256).hexdigest()
+
+def unique_id():
+    return str(uuid.uuid1().hex)
+
+def get_iso_datetime():
+    utc_offset_sec = time.altzone if time.localtime().tm_isdst else time.timezone
+    utc_offset = datetime.timedelta(seconds=-utc_offset_sec)
+    return datetime.datetime.now().replace(tzinfo=datetime.timezone(offset=utc_offset)).isoformat()
+
+def get_headers(apiKey, apiSecret):
+    date = get_iso_datetime()
+    salt = unique_id()
+    data = date + salt
+    signature = get_signature(apiSecret, data)
+    headers = {
+        'Authorization': f'HMAC-SHA256 ApiKey={apiKey}, Date={date}, salt={salt}, signature={signature}',
+        'Content-Type': 'application/json'
+    }
+    return headers
 
 @csrf_exempt
 def send_sms(request):
     if request.method == 'POST':
-        # set api key, api secret
+        #set api key, api secret
         MESSAGE_API_KEY = os.getenv('MESSAGE_API_KEY')
         MESSAGE_API_SECRET = os.getenv('MESSAGE_API_SECRET')
 
@@ -77,19 +104,34 @@ def send_sms(request):
         if not beach_name:
             return JsonResponse({'status': 'error', 'message': 'Beach name not provided'}, status=400)
 
-        # 4 params(to, from, type, text) are mandatory. must be filled
-        params = dict()
-        params['type'] = 'sms' # Message type ( sms, lms, mms, ata )
-        params['to'] = '01033634184' # Recipients Number
-        params['from'] = '01033634184' # Sender number
-        params['text'] = f'{beach_name} 신고가 접수되었습니다.' # Message
+        
+        data = {
+            "message": {
+                "to": "01085292763",
+                "from": "01085292763",
+                "text": f"{beach_name} 신고가 접수되었습니다.",
+                "type": "SMS"
+            }
+        }
+        
+        data_json = json.dumps(data, ensure_ascii=False)
 
-        cool = Message(MESSAGE_API_KEY, MESSAGE_API_SECRET)
+        url = "http://api.coolsms.co.kr/messages/v4/send"
+        headers = get_headers(MESSAGE_API_KEY, MESSAGE_API_SECRET)
+        
+
         try:
-            response = cool.send(params)
-            return JsonResponse({'status': 'success', 'response': response})
+            response = requests.post(url, headers=headers, data=data_json)
+            response_data = response.json()
+            message_code = response_data.get('messageId')
+
+            if message_code:
+                MessageModel.objects.create(message_code=message_code)
+                return JsonResponse({'status': 'success', 'response': response_data})
+            else:
+                return JsonResponse({'status': 'error', 'message': 'Message ID not found in response'}, status=500)
         except CoolsmsException as e:
-            return JsonResponse({'status': 'error', 'code': e.code, 'message': e.msg})
+             return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
     return JsonResponse({'status': 'invalid request'}, status=400)
 
 

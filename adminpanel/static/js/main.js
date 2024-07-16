@@ -100,35 +100,6 @@
         });
     });
     
-
-    // // Salse & Revenue Chart
-    // $(document).ready(function() {
-    //     // 서버에서 전달된 데이터를 가져옴
-    //     var hours = JSON.parse(document.getElementById('chart-hours-data').textContent);
-    //     var counts = JSON.parse(document.getElementById('chart-counts-data').textContent);
-    
-    //     var ctx2 = $("#salse-revenue").get(0).getContext("2d");
-    //     var myChart2 = new Chart(ctx2, {
-    //         type: "line",
-    //         data: {
-    //             labels: hours,
-    //             datasets: [{
-    //                 label: "시간대별 접속자 수",
-    //                 data: counts,
-    //                 backgroundColor: "rgba(0, 156, 255, .5)",
-    //                 fill: true
-    //             }]
-    //         },
-    //         options: {
-    //             responsive: true,
-    //             scales: {
-    //                 y: {
-    //                     beginAtZero: true
-    //                 }
-    //             }
-    //         }
-    //     });
-    // });
     
     
 
