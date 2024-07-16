@@ -61,6 +61,7 @@ from django.views.decorators.csrf import csrf_exempt
 import os
 from sdk.api.message import Message
 from sdk.exceptions import CoolsmsException
+from main.models import Message as MessageModel
 
 @csrf_exempt
 def send_sms(request):
@@ -87,10 +88,24 @@ def send_sms(request):
         cool = Message(MESSAGE_API_KEY, MESSAGE_API_SECRET)
         try:
             response = cool.send(params)
-            return JsonResponse({'status': 'success', 'response': response})
+            
+            # print("문자 도착!!!:", response.text)
+            group_id = response.get('group_id')
+            if group_id:
+                print("DB저장!!!!:",group_id)
+                MessageModel.objects.create(message_code=group_id)
+                return JsonResponse({'status': 'success', 'response': response})
+            else:
+                return JsonResponse({'status': 'error', 'message': 'Group ID not found in response'}, status=500)
+                
         except CoolsmsException as e:
-            return JsonResponse({'status': 'error', 'code': e.code, 'message': e.msg})
+            return JsonResponse({'status': 'error', 'code': e.code, 'message': e.msg}, status=500)
     return JsonResponse({'status': 'invalid request'}, status=400)
+
+    #         return JsonResponse({'status': 'success', 'response': response})
+    #     except CoolsmsException as e:
+    #         return JsonResponse({'status': 'error', 'code': e.code, 'message': e.msg})
+    # return JsonResponse({'status': 'invalid request'}, status=400)
 
 
 # yolo 모델 적용

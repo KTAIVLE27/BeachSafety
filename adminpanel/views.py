@@ -24,9 +24,7 @@ from django.conf import settings
 from collections import Counter
 from django.utils.timezone import localtime
 def admin_home(request):
-    # 관리 중인 해수욕장 리스트
-    
-    print("관리자 홈 로딩!!!!!!")
+
     beaches = Beach.objects.all()
     beach_count = Beach.objects.count()
     user_count = User.objects.count()
@@ -35,30 +33,33 @@ def admin_home(request):
     
     last_logins = User.objects.values_list('last_login', flat=True)
     
-    if not last_logins:
-        print("아무것도 없다!!!!!!!")
     login_count = Counter()
-    # 마지막 로그인 시간을 시간대별로 그룹화하여 접속사 수를 집계 
     
     for login_time in last_logins:
         local_login_time = localtime(login_time)
-        print(f"로그인 시간 ::{local_login_time}")
         if local_login_time:
             hour = local_login_time.hour
             login_count[hour] +=1
-            print(f"시간 별 로그인 {login_count}")
-        else:
-            print("error!!!!!!!!")
             
             
     hours = list(range(24))
     counts = [login_count[hour] for hour in hours]
-    print(counts)
     
+    messages = []
+    # Fetch all message codes from the database
+    message_records = Message.objects.all()
+    for record in message_records:
+        details = fetch_message_details(record.message_code)
+        if details:
+            print("문자 기록!!:",details.text)
+            messages.append(details)
+        else :
+            print("error!!!!!")
+            
     
     return render(request, 'adminpanel/admin_home.html',
                   {'hours':hours, 'counts':counts, 'beaches': beaches, 
-                   'user_count':user_count, 'beach_count':beach_count, 'board_count':board_count, 'notice_board_count':notice_board_count})
+                   'user_count':user_count, 'beach_count':beach_count, 'board_count':board_count, 'notice_board_count':notice_board_count,'messages':messages})
 
 
 
@@ -362,4 +363,401 @@ def control_load(request):
 
 def main_load(request):
     return render(request, 'home.html')
+
+# import os
+# import time
+# import datetime
+# import uuid
+# import hmac
+# import hashlib
+# import requests
+
+# # Define the necessary functions
+# def unique_id():
+#     return str(uuid.uuid1().hex)
+
+# def get_iso_datetime():
+#     utc_offset_sec = time.altzone if time.localtime().tm_isdst else time.timezone
+#     utc_offset = datetime.timedelta(seconds=-utc_offset_sec)
+#     return datetime.datetime.now().replace(tzinfo=datetime.timezone(offset=utc_offset)).isoformat()
+
+# def get_signature(key, msg):
+#     return hmac.new(key.encode(), msg.encode(), hashlib.sha256).hexdigest()
+
+# def get_headers(apiKey, apiSecret):
+#     date = get_iso_datetime()
+#     salt = unique_id()
+#     data = date + salt
+#     signature = get_signature(apiSecret, data)
+#     headers = {
+#         'Authorization': f'HMAC-SHA256 ApiKey={apiKey}, Date={date}, salt={salt}, signature={signature}',
+#         'Content-Type': 'application/json'
+#     }
+#     return headers
+
+# # Environment variables for API key and secret
+# MESSAGE_API_KEY = os.getenv('MESSAGE_API_KEY')
+# MESSAGE_API_SECRET = os.getenv('MESSAGE_API_SECRET')
+
+# # Choose a specific messageId from the list
+# message_id = "M4V20240716133457QFCYT7I7A4R9XCP"  # Replace with any valid messageId from your list
+
+# # URL for the API request to get the specific message details
+# url = f"http://api.coolsms.co.kr/messages/v4/list?criteria=messageId&value={message_id}&cond=eq"
+
+# # Generate headers
+# headers = get_headers(MESSAGE_API_KEY, MESSAGE_API_SECRET)
+
+# # Make the request
+# response = requests.get(url, headers=headers)
+
+# # Print the response status and body
+# print(response.status_code)
+# print(response.json())
+
+# import os
+# import time
+# import datetime
+# import uuid
+# import hmac
+# import hashlib
+# import requests
+
+# # Define the necessary functions
+# def unique_id():
+#     return str(uuid.uuid1().hex)
+
+# def get_iso_datetime():
+#     utc_offset_sec = time.altzone if time.localtime().tm_isdst else time.timezone
+#     utc_offset = datetime.timedelta(seconds=-utc_offset_sec)
+#     return datetime.datetime.now().replace(tzinfo=datetime.timezone(offset=utc_offset)).isoformat()
+
+# def get_signature(key, msg):
+#     return hmac.new(key.encode(), msg.encode(), hashlib.sha256).hexdigest()
+
+# def get_headers(apiKey, apiSecret):
+#     date = get_iso_datetime()
+#     salt = unique_id()
+#     data = date + salt
+#     signature = get_signature(apiSecret, data)
+#     headers = {
+#         'Authorization': f'HMAC-SHA256 ApiKey={apiKey}, Date={date}, salt={salt}, signature={signature}',
+#         'Content-Type': 'application/json'
+#     }
+#     return headers
+
+# # Environment variables for API key and secret
+# MESSAGE_API_KEY = os.getenv('MESSAGE_API_KEY')
+# MESSAGE_API_SECRET = os.getenv('MESSAGE_API_SECRET')
+
+# # Choose a specific messageId from the list
+# message_id = "M4V20240716133457QFCYT7I7A4R9XCP"  # Replace with any valid messageId from your list
+
+# # URL for the API request to get the specific message details
+# url = f"http://api.coolsms.co.kr/messages/v4/list?criteria=messageId&value={message_id}&cond=eq"
+
+# # Generate headers
+# headers = get_headers(MESSAGE_API_KEY, MESSAGE_API_SECRET)
+
+# # Make the request
+# response = requests.get(url, headers=headers)
+
+# # Print the response status and body
+# print(response.status_code)
+
+# # Parse the response JSON
+# response_json = response.json()
+
+# # Extract and print specific fields
+# if 'messageList' in response_json and response_json['messageList']:
+#     message_details = response_json['messageList'].get(message_id)
+#     if message_details:
+#         text = message_details.get('text')
+#         from_number = message_details.get('from')
+#         deliver_date = None
+#         for log in message_details.get('log', []):
+#             if 'originalData' in log and 'DELIVER_DATE' in log['originalData']:
+#                 deliver_date = log['originalData']['DELIVER_DATE']
+#                 break
+#         print(f"messageId: {message_id}")
+#         print(f"text: {text}")
+#         print(f"DELIVER_DATE: {deliver_date}")
+#         print(f"from: {from_number}")
+# else:
+#     print("No message details found.")
+    
+# import os
+# import time
+# import datetime
+# import uuid
+# import hmac
+# import hashlib
+# import requests
+# from django.shortcuts import render
+# from django.conf import settings
+
+# # Define the necessary functions
+# def unique_id():
+#     return str(uuid.uuid1().hex)
+
+# def get_iso_datetime():
+#     utc_offset_sec = time.altzone if time.localtime().tm_isdst else time.timezone
+#     utc_offset = datetime.timedelta(seconds=-utc_offset_sec)
+#     return datetime.datetime.now().replace(tzinfo=datetime.timezone(offset=utc_offset)).isoformat()
+
+# def get_signature(key, msg):
+#     return hmac.new(key.encode(), msg.encode(), hashlib.sha256).hexdigest()
+
+# def get_headers(apiKey, apiSecret):
+#     date = get_iso_datetime()
+#     salt = unique_id()
+#     data = date + salt
+#     signature = get_signature(apiSecret, data)
+#     headers = {
+#         'Authorization': f'HMAC-SHA256 ApiKey={apiKey}, Date={date}, salt={salt}, signature={signature}',
+#         'Content-Type': 'application/json'
+#     }
+#     return headers
+
+# def fetch_messages():
+#     # Environment variables for API key and secret
+#     MESSAGE_API_KEY = os.getenv('MESSAGE_API_KEY')
+#     MESSAGE_API_SECRET = os.getenv('MESSAGE_API_SECRET')
+
+#     # URL for the API request to get message list
+#     url = "http://api.coolsms.co.kr/messages/v4/list"
+
+#     # Generate headers
+#     headers = get_headers(MESSAGE_API_KEY, MESSAGE_API_SECRET)
+
+#     # Make the request to get the list of messages
+#     response = requests.get(url, headers=headers)
+
+#     # Print the response status and body
+#     print(response.status_code)
+#     response_json = response.json()
+#     print(response_json)
+
+#     messages = []
+
+#     # Extract and save message IDs if available
+#     if 'messageList' in response_json and response_json['messageList']:
+#         for message_id, details in response_json['messageList'].items():
+#             text = details.get('text')
+#             from_number = details.get('from')
+#             deliver_date = None
+#             for log in details.get('log', []):
+#                 if 'originalData' in log and 'DELIVER_DATE' in log['originalData']:
+#                     deliver_date = log['originalData']['DELIVER_DATE']
+#                     break
+#             messages.append({
+#                 'messageId': message_id,
+#                 'text': text,
+#                 'from': from_number,
+#                 'deliver_date': deliver_date
+#             })
+#     return messages
+
+# def admin_home(request):
+#     messages = fetch_messages()
+#     return render(request, 'adminpanel/admin_home.html', {'messages': messages})
+
+# import os
+# import time
+# import datetime
+# import uuid
+# import hmac
+# import hashlib
+# import requests
+# import django
+# from django.conf import settings
+
+# # Setup Django settings
+# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'your_project.settings')
+# django.setup()
+
+# # Define the necessary functions
+# def unique_id():
+#     return str(uuid.uuid1().hex)
+
+# def get_iso_datetime():
+#     utc_offset_sec = time.altzone if time.localtime().tm_isdst else time.timezone
+#     utc_offset = datetime.timedelta(seconds=-utc_offset_sec)
+#     return datetime.datetime.now().replace(tzinfo=datetime.timezone(offset=utc_offset)).isoformat()
+
+# def get_signature(key, msg):
+#     return hmac.new(key.encode(), msg.encode(), hashlib.sha256).hexdigest()
+
+# def get_headers(apiKey, apiSecret):
+#     date = get_iso_datetime()
+#     salt = unique_id()
+#     data = date + salt
+#     signature = get_signature(apiSecret, data)
+#     headers = {
+#         'Authorization': f'HMAC-SHA256 ApiKey={apiKey}, Date={date}, salt={salt}, signature={signature}',
+#         'Content-Type': 'application/json'
+#     }
+#     return headers
+
+# # Environment variables for API key and secret
+# MESSAGE_API_KEY = os.getenv('MESSAGE_API_KEY')
+# MESSAGE_API_SECRET = os.getenv('MESSAGE_API_SECRET')
+
+# # URL for the API request to get message list
+# url = "http://api.coolsms.co.kr/messages/v4/list"
+
+# # Generate headers
+# headers = get_headers(MESSAGE_API_KEY, MESSAGE_API_SECRET)
+
+# # Make the request to get the list of messages
+# response = requests.get(url, headers=headers)
+
+# # Print the response status and body
+# print(response.status_code)
+# response_json = response.json()
+# print(response_json)
+
+# # Extract and save message IDs if available
+# if 'messageList' in response_json and response_json['messageList']:
+#     for message_id in response_json['messageList']:
+#         print("Found messageId:", message_id)
+#         # Save the messageId to the database
+#         Message.objects.create(message_code=message_id)
+# else:
+#     print("No messages found.")
+
+import os
+import time
+import datetime
+import uuid
+import hmac
+import hashlib
+import requests
+from django.shortcuts import render
+from main.models import Message
+
+# Define the necessary functions
+def unique_id():
+    return str(uuid.uuid1().hex)
+
+def get_iso_datetime():
+    utc_offset_sec = time.altzone if time.localtime().tm_isdst else time.timezone
+    utc_offset = datetime.timedelta(seconds=-utc_offset_sec)
+    return datetime.datetime.now().replace(tzinfo=datetime.timezone(offset=utc_offset)).isoformat()
+
+def get_signature(key, msg):
+    return hmac.new(key.encode(), msg.encode(), hashlib.sha256).hexdigest()
+
+def get_headers(apiKey, apiSecret):
+    date = get_iso_datetime()
+    salt = unique_id()
+    data = date + salt
+    signature = get_signature(apiSecret, data)
+    headers = {
+        'Authorization': f'HMAC-SHA256 ApiKey={apiKey}, Date={date}, salt={salt}, signature={signature}',
+        'Content-Type': 'application/json'
+    }
+    return headers
+
+def fetch_message_details(message_code):
+    # Environment variables for API key and secret
+    MESSAGE_API_KEY = os.getenv('MESSAGE_API_KEY')
+    MESSAGE_API_SECRET = os.getenv('MESSAGE_API_SECRET')
+
+    # URL for the API request to get message details
+    url = "http://api.coolsms.co.kr/messages/v4/list"
+
+    # Generate headers
+    headers = get_headers(MESSAGE_API_KEY, MESSAGE_API_SECRET)
+
+    # Make the request to get the message details
+    params = {
+        'groupId' : message_code
+    }
+    response = requests.get(url, headers=headers, params=params)
+    print("문자기록함수:", response)
+
+    # Print the response status and body
+    #print(response.status_code)
+    response_json = response.json()
+    #print(response_json)
+
+    if 'messageList' in response_json and response_json['messageList']:
+        print( response_json['messageList'])
+        message_details = response_json['messageList'].get(message_code)
+        print("여기 if 문!!!1:", message_details)
+        if message_details:
+            text = message_details.get('text')
+            print("문자 가져와야함!!:",text)
+            from_number = message_details.get('from')
+            deliver_date = None
+            for log in message_details.get('log', []):
+                if 'originalData' in log and 'DELIVER_DATE' in log['originalData']:
+                    deliver_date = log['originalData']['DELIVER_DATE']
+                    break
+            return {
+                'messageId': message_code,
+                'text': text,
+                'from': from_number,
+                'deliver_date': deliver_date
+            }
+    return None
+
+
+
+# import os
+# import time
+# import datetime
+# import uuid
+# import hmac
+# import hashlib
+# import requests
+
+# # Define the necessary functions
+# def unique_id():
+#     return str(uuid.uuid1().hex)
+
+# def get_iso_datetime():
+#     utc_offset_sec = time.altzone if time.localtime().tm_isdst else time.timezone
+#     utc_offset = datetime.timedelta(seconds=-utc_offset_sec)
+#     return datetime.datetime.now().replace(tzinfo=datetime.timezone(offset=utc_offset)).isoformat()
+
+# def get_signature(key, msg):
+#     return hmac.new(key.encode(), msg.encode(), hashlib.sha256).hexdigest()
+
+# def get_headers(apiKey, apiSecret):
+#     date = get_iso_datetime()
+#     salt = unique_id()
+#     data = date + salt
+#     signature = get_signature(apiSecret, data)
+#     headers = {
+#         'Authorization': f'HMAC-SHA256 ApiKey={apiKey}, Date={date}, salt={salt}, signature={signature}',
+#         'Content-Type': 'application/json'
+#     }
+#     return headers
+
+# # Environment variables for API key and secret
+# MESSAGE_API_KEY = os.getenv('MESSAGE_API_KEY')
+# MESSAGE_API_SECRET = os.getenv('MESSAGE_API_SECRET')
+
+# # URL for the API request to get message list
+
+
+# # Generate headers
+# headers = get_headers(MESSAGE_API_KEY, MESSAGE_API_SECRET)
+
+# # Request parameters
+
+
+# # Send the GET request
+# response = requests.get(url, headers=headers, params=params)
+
+# # Handle the response
+# if response.status_code == 200:
+#     # Successfully retrieved data
+#     data = response.json()
+#     print("Messages:", data)
+# else:
+#     # Error occurred
+#     print("Error:", response.status_code, response.text)
 
