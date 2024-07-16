@@ -346,7 +346,7 @@ $(document).ready(function() {
         <div class="modal-content">
             <div class="bg-light text-center rounded p-4">
                 <div class="d-flex align-items-center justify-content-between mb-4">
-                    <h6 class="mb-0">해당 CCTV 팝업창</h6>
+                    <h6 class="mb-0">Yolov8 CCTV 팝업창</h6>
                     <div class="dropdown">
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                             해수욕장 선택
@@ -364,7 +364,9 @@ $(document).ready(function() {
                 </div>
                 <div id="cctv-container" class="d-flex justify-content-between">
                     <img id="cctv-frame" width="1000" height="650" />
-                    <p id="human-status" style="margin-top: 10px; font-size: 18px; font-weight: bold;"></p> <!-- 주황색 사람 상태 표시 -->
+                    <p id="human-status" style="margin-top: 10px; font-size: 18px; font-weight: bold;"></p>
+                    <p id="generalCount-status" style="margin-top: 10px; font-size: 18px; font-weight: bold;"></p>
+                    <p id="cacutionCount-status" style="margin-top: 10px; font-size: 18px; font-weight: bold;"></p>
                 </div>
                 <button type="button" id="close-modal" class="btn btn-danger" data-dismiss="modal">닫기</button>
             </div>
@@ -389,10 +391,18 @@ $(document).ready(function() {
         $('#close-modal').click(function() {
             $('#cctv-frame').attr('src', '');
             $('#human-status').text('');
+            $('#generalCount-status').text('');
+            $('#cacutionCount-status').text('');
             $.get('/control/stop_stream/', function(data) {
                 console.log("Stream stopped");
             });
         });
+
+        // 모달이 완전히 숨겨졌을 때 실행
+        $('#CCTV_modal').on('hidden.bs.modal', function () {
+            $('#cctv-frame').attr('src', '');  // Reset the video source        
+        });
+
     
         function checkHumanStatus() {
             if (!cctvCode) return;
@@ -403,7 +413,12 @@ $(document).ready(function() {
                 dataType: 'json',
                 success: function(data) {
                     const humanDetected = data.human_detected;
-                    $('#human-status').text(humanDetected ? '주황색 사람 발견' : '주황색 사람 없음');
+                    const generalCount = data.general_count; 
+                    const cacutionCount  =data.cacution_count;
+                    
+                    $('#human-status').text(humanDetected ? '경고: 주의가 필요한 인원 발생' : '안전: 주의가 필요한 인원 없음');
+                    $('#generalCount-status').text(generalCount? '안전 지역 인원 수'+generalCount : '안전 지역 인원 수'+generalCount);
+                    $('#cacutionCount-status').text(cacutionCount? '주의 지역 인원 수'+cacutionCount : '주의 지역 인원 수'+cacutionCount);
                 },
                 error: function(error) {
                     console.log('Error:', error);
