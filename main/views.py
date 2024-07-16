@@ -19,6 +19,25 @@ from django.db.models import Q
 import boto3
 from django.conf import settings
 import joblib
+from langchain.chat_models import ChatOpenAI
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.vectorstores import Chroma
+from langchain.chains import ConversationalRetrievalChain
+from langchain.memory import ConversationBufferMemory
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+
+
+embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
+database = Chroma(persist_directory="./database", embedding_function=embeddings)
+memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+
+qa_chain = ConversationalRetrievalChain.from_llm(
+    llm=ChatOpenAI(model="gpt-3.5-turbo"),
+    retriever=database.as_retriever(search_kwargs={"k": 20}),
+    memory=memory
+)
+
 
 def is_admin(user):
     return user.is_authenticated and user.user_id == 'admin' and user.user_name == 'admin' and user.check_password('aivle2024!')
@@ -568,3 +587,16 @@ def control_view(request):
     }
     
     return render(request, 'weather.html', context)
+
+@csrf_exempt
+@login_required
+def chat_message(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        message = data.get('message')
+        
+        # ChatOpenAI와 연동하여 챗봇 응답 생성
+        response = qa_chain({"question": message})
+
+        return JsonResponse({'response': response['answer']})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
