@@ -106,8 +106,10 @@ from threading import Event
 model = YOLO('control/best2.pt')  # 세그멘테이션 모델 파일 경로
 
 
+human_detected = False
+
 def stream_video(video_url):
-    global stop_stream_event
+    global stop_stream_event, human_detected
     stop_stream_event.clear()
 
     ydl_opts = {
@@ -121,12 +123,13 @@ def stream_video(video_url):
 
     cap = cv2.VideoCapture(video_url)
     classes = model.names
+    print(classes)  # 디버깅을 위해 추가
     sea_class_index = None
     human_class_index = None
     for i, class_name in enumerate(classes):
-        if class_name == 1:
+        if class_name == 1:  # 클래스 이름을 모델에 맞게 수정
             sea_class_index = i
-        elif class_name == 0:
+        elif class_name == 0:  # 클래스 이름을 모델에 맞게 수정
             human_class_index = i
         if sea_class_index is not None and human_class_index is not None:
             break
@@ -151,6 +154,7 @@ def stream_video(video_url):
         results = model.predict(source=frame, save=False, show=False)
         annotated_frame = results[0].plot()
         human_detected = False
+        sea_box = None
 
         for result in results:
             boxes = result.boxes
@@ -200,48 +204,6 @@ def video_feed(request, cctv_code):
                                  content_type='multipart/x-mixed-replace; boundary=frame')
 
 def human_status(request, cctv_code):
-    cctv = CCTV.objects.get(cctv_code=cctv_code)
-    video_url = cctv.cctv_url
-    cap = cv2.VideoCapture(video_url)
-    classes = model.names
-    sea_class_index = None
-    human_class_index = None
-    for i, class_name in enumerate(classes):
-        if class_name == 1:
-            sea_class_index = i
-        elif class_name == 0:
-            human_class_index = i
-        if sea_class_index is not None and human_class_index is not None:
-            break
-
-    if sea_class_index is None or human_class_index is None:
-        return JsonResponse({'human_detected': False})
-
-    human_detected = False
-    ret, frame = cap.read()
-    if ret:
-        frame = cv2.resize(frame, (640, 360))
-        results = model.predict(source=frame, save=False, show=False)
-        for result in results:
-            boxes = result.boxes
-            for box in boxes:
-                cls = int(box.cls)
-                if cls == sea_class_index:
-                    sea_box = box
-                    break
-
-        if sea_box is not None:
-            x1, y1, x2, y2 = map(int, sea_box.xyxy[0])
-            adjusted_y2 = y2 - 50
-            for box in boxes:
-                cls = int(box.cls)
-                if cls == human_class_index:
-                    hx1, hy1, hx2, hy2 = map(int, box.xyxy[0])
-                    if hy2 < adjusted_y2:
-                        human_detected = True
-                        break
-
-    cap.release()
     return JsonResponse({'human_detected': human_detected})
 
 
