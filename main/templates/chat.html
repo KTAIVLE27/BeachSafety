@@ -34,14 +34,32 @@
                 <h6 class="mb-4">평가 항목</h6>
                 <div class="evaluation-box">
                     <div class="form-group mb-3">
-                        <label for="timeTaken">걸린 시간</label>
-                        <input type="text" id="timeTaken" class="form-control">
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="accuracy">정확도</label>
-                        <input type="text" id="accuracy" class="form-control">
-                    </div>
-                    <!-- 추가 평가 항목 -->
+                        <label for="stopwatch1">스탑워치 1</label>
+                                <div id="stopwatch1" class="stopwatch">00:00:00.000</div>
+                                <button class="btn btn-success mt-2" onclick="startStopwatch(0)">시작 1</button>
+                                <button class="btn btn-primary mt-2" onclick="stopStopwatch(0)">스톱 1</button>
+                                <div id="record1" class="record mt-2"></div>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="stopwatch2">스탑워치 2</label>
+                                <div id="stopwatch2" class="stopwatch">00:00:00.000</div>
+                                <button class="btn btn-success mt-2" onclick="startStopwatch(1)">시작 2</button>
+                                <button class="btn btn-primary mt-2" onclick="stopStopwatch(1)">스톱 2</button>
+                                <div id="record2" class="record mt-2"></div>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="stopwatch3">스탑워치 3</label>
+                                <div id="stopwatch3" class="stopwatch">00:00:00.000</div>
+                                <button class="btn btn-success mt-2" onclick="startStopwatch(2)">시작 3</button>
+                                <button class="btn btn-primary mt-2" onclick="stopStopwatch(2)">스톱 3</button>
+                                <div id="record3" class="record mt-2"></div>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="finalStopwatch">최종 스탑워치</label>
+                                <div id="finalStopwatch" class="stopwatch">00:00:00.000</div>
+                                <button class="btn btn-success mt-2" onclick="showFinalTime()">최종 시간 보기</button>
+                                <button class="btn btn-danger mt-2" onclick="resetAllStopwatches()">정지</button>
+                        </div>
                 </div>
             </div>
         </div>
@@ -57,6 +75,29 @@
 <!-- Content End -->
 </div>
 
+<style>
+    .user-message {
+        text-align: right;
+        color: blue;
+    }
+    .bot-message {
+        text-align: left;
+        color: green;
+    }
+    .message {
+        margin: 10px 0;
+        padding: 10px;
+        border-radius: 10px;
+        display: inline-block;
+    }
+    .user-message .message {
+        background-color: #e1f5fe;
+    }
+    .bot-message .message {
+        background-color: #f1f8e9;
+    }
+</style>
+
 <script>
     document.getElementById('send-button').addEventListener('click', function() {
         const input = document.getElementById('chat-input').value;
@@ -65,9 +106,9 @@
         const chatContent = document.getElementById('chat-content');
         const userMessage = document.createElement('div');
         userMessage.className = 'user-message';
-        userMessage.textContent = input;
+        userMessage.innerHTML = `<div class="message">${input}</div>`;
         chatContent.appendChild(userMessage);
-        
+
         fetch("{% url 'chat_message' %}", {
             method: 'POST',
             headers: {
@@ -80,7 +121,7 @@
         .then(data => {
             const botMessage = document.createElement('div');
             botMessage.className = 'bot-message';
-            botMessage.textContent = data.response;
+            botMessage.innerHTML = `<div class="message">${data.response}</div>`;
             chatContent.appendChild(botMessage);
             chatContent.scrollTop = chatContent.scrollHeight;
         });
@@ -88,5 +129,61 @@
         document.getElementById('chat-input').value = '';
         chatContent.scrollTop = chatContent.scrollHeight;
     });
+
+    var stopwatches = [0, 0, 0];
+    var intervals = [null, null, null];
+    var finalTime = 0;
+
+    function startStopwatch(index) {
+        if (intervals[index] === null) {
+            intervals[index] = setInterval(function() {
+                stopwatches[index] += 10;
+                document.getElementById('stopwatch' + (index + 1)).innerText = formatTime(stopwatches[index]);
+            }, 10);
+        }
+    }
+
+    function stopStopwatch(index) {
+        if (intervals[index] !== null) {
+            clearInterval(intervals[index]);
+            intervals[index] = null;
+            document.getElementById('record' + (index + 1)).innerText = "기록: " + formatTime(stopwatches[index]);
+            finalTime += stopwatches[index];
+        }
+    }
+
+    function resetStopwatch(index) {
+        if (intervals[index] !== null) {
+            clearInterval(intervals[index]);
+            intervals[index] = null;
+        }
+        stopwatches[index] = 0;
+        document.getElementById('stopwatch' + (index + 1)).innerText = "00:00:00.000";
+        document.getElementById('record' + (index + 1)).innerText = "";
+    }
+
+    function resetAllStopwatches() {
+        for (var i = 0; i < 3; i++) {
+            resetStopwatch(i);
+        }
+        finalTime = 0;
+        document.getElementById('finalStopwatch').innerText = "00:00:00.000";
+    }
+
+    function showFinalTime() {
+        document.getElementById('finalStopwatch').innerText = "최종 시간: " + formatTime(finalTime);
+    }
+
+    function formatTime(milliseconds) {
+        var hours = Math.floor(milliseconds / 3600000);
+        var minutes = Math.floor((milliseconds % 3600000) / 60000);
+        var seconds = Math.floor((milliseconds % 60000) / 1000);
+        var ms = milliseconds % 1000;
+        return (hours < 10 ? "0" + hours : hours) + ":" +
+               (minutes < 10 ? "0" + minutes : minutes) + ":" +
+               (seconds < 10 ? "0" + seconds : seconds) + "." +
+               (ms < 100 ? (ms < 10 ? "00" + ms : "0" + ms) : ms);
+    }
+
 </script>
 {% endblock %}
