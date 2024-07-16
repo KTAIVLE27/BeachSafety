@@ -139,8 +139,10 @@ def stream_video(video_url):
     if human_class_index is None:
         raise ValueError("The 'human' class was not found in the model classes.")
 
+
     offset1 = 100
     offset2 = 50
+
 
     while cap.isOpened():
         if stop_stream_event.is_set():
@@ -166,19 +168,28 @@ def stream_video(video_url):
 
         if sea_box is not None:
             x1, y1, x2, y2 = map(int, sea_box.xyxy[0])
+
             adjusted_y1 = y2 - offset1
+
+
             start_point1 = (0, adjusted_y1)
             end_point1 = (640, adjusted_y1)
             color1 = (255, 0, 0)
             thickness = 2
             cv2.line(annotated_frame, start_point1, end_point1, color1, thickness)
 
+
             adjusted_y2 = y2 - offset2
+
             start_point2 = (0, adjusted_y2)
             end_point2 = (640, adjusted_y2)
             color2 = (0, 255, 0)
             thickness = 2
             cv2.line(annotated_frame, start_point2, end_point2, color2, thickness)
+
+            general_count = 0 # 사람 수 세기
+            cacution_count = 0 # 주의 요먕 인원 세기
+            # 사람의 바운딩 박스를 주황색으로 변경
 
             for box in boxes:
                 cls = int(box.cls)
@@ -187,7 +198,17 @@ def stream_video(video_url):
                     if hy2 < adjusted_y2:
                         color_human = (0, 165, 255)
                         cv2.rectangle(annotated_frame, (hx1, hy1), (hx2, hy2), color_human, 2)
+
                         human_detected = True
+                        cacution_count+=1
+                    else:
+                        general_count+=1
+                        
+            # 출력문은 모달창에 사람 수 변수로 넘긴 후 삭제 예정
+            # 파란색, 주황색 바운딩 박스의 사람 수 출력
+            print(f"Number of general people: {general_count}")
+            print(f"Number of cacution people: {cacution_count}")
+
 
         ret, buffer = cv2.imencode('.jpg', annotated_frame)
         frame = buffer.tobytes()
