@@ -1,4 +1,5 @@
 {% extends "base/base.html" %}
+{% load static %}
 {% block title %}위험도{% endblock %}
 
 {% block sidebar_brand %}
@@ -23,7 +24,7 @@
 
                 <!-- Risk Level Table Start -->
                 <div class="mb-4">
-                    <h5>위험도 기준</h5>
+                    <h3>위험도 기준</h3>
                     <table class="table table-bordered">
                         <thead>
                             <tr>
@@ -33,19 +34,19 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>관심</td>
+                                <td>관심🟩</td>
                                 <td>S &lt; 30</td>
                             </tr>
                             <tr>
-                                <td>주의</td>
+                                <td>주의🟨</td>
                                 <td>30 ≤ S &lt; 55</td>
                             </tr>
                             <tr>
-                                <td>경계</td>
+                                <td>경계🟧</td>
                                 <td>55 ≤ S &lt; 80</td>
                             </tr>
                             <tr>
-                                <td>위험</td>
+                                <td>위험🟥</td>
                                 <td>80 ≤ S ≤ 120</td>
                             </tr>
                         </tbody>
@@ -57,20 +58,28 @@
                     {% for beach in beaches %}
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="heading{{ forloop.counter }}">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="true" aria-controls="collapse{{ forloop.counter }}">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="false" aria-controls="collapse{{ forloop.counter }}">
                                 {{ beach.beach_name }}
                             </button>
                         </h2>
                         <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#beachAccordion">
                             <div class="accordion-body">
-                                <p><u><strong>{{ beach.beach_region }}</strong></u></p>
-                                <p>MAE: {{ beach.mae }}</p>
-                                <p>MSE: {{ beach.mse }}</p>
-                                <p>R2 Score: {{ beach.r2score }}</p>
-                                <button type="button" class="btn btn-primary" onclick="loadPrediction('{{ beach.beach_name }}', '{{ beach.beach_widget_id }}', {{ forloop.counter }})">30분 후 이안류 위험도 예측</button>
-                                <div id="prediction{{ forloop.counter }}" style="display: none; margin-top: 10px;">
-                                    <p><strong>예측 수치: <span id="score{{ forloop.counter }}"></span></strong></p>
-                                    <p><strong>예측 레벨: <span id="level{{ forloop.counter }}"></span></strong></p>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <img src="{% static 'img/해수욕장/' %}{{ beach.beach_name }}.jpg" alt="{{ beach.beach_name }}" class="img-fluid mb-3" style="max-width: 350px; height: auto;">
+
+                                    </div>
+                                    <div class="col-md-8">
+                                        <p><u><strong>{{ beach.beach_region }}</strong></u></p>
+                                        <p>MAE: {{ beach.mae }}</p>
+                                        <p>MSE: {{ beach.mse }}</p>
+                                        <p>R2 Score: {{ beach.r2score }}</p>
+                                        <button type="button" class="btn btn-primary" onclick="loadPrediction('{{ beach.beach_name }}', '{{ beach.beach_widget_id }}', {{ forloop.counter }})">30분 후 이안류 위험도 예측</button>
+                                        <div id="prediction{{ forloop.counter }}" style="display: none; margin-top: 10px;">
+                                            <p><strong>예측 수치: <span id="score{{ forloop.counter }}"></span></strong></p>
+                                            <p><strong>예측 레벨: <span id="level{{ forloop.counter }}"></span></strong></p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -83,6 +92,18 @@
 </div>
 
 <script>
+document.addEventListener("DOMContentLoaded", function() {
+    const accordionButtons = document.querySelectorAll('.accordion-button');
+    accordionButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const icon = button.querySelector('i');
+            const isExpanded = button.getAttribute('aria-expanded') === 'true';
+            icon.classList.toggle('bi-chevron-down', !isExpanded);
+            icon.classList.toggle('bi-chevron-up', isExpanded);
+        });
+    });
+});
+
 function loadPrediction(beachName, beachWidgetId, index) {
     fetch(`/load_prediction?beach_name=${beachName}&beach_widget_id=${beachWidgetId}`)
         .then(response => response.json())
