@@ -342,7 +342,7 @@ $(document).ready(function() {
 
 <!-- CCTV Modal -->
 <div class="modal" id="CCTV_modal" tabindex="-1">
-    <div class="modal-dialog modal-lg", style = "max-width: 80%"> <!-- Added 'modal-lg' class for larger width -->
+    <div class="modal-dialog modal-lg" style="max-width: 80%">
         <div class="modal-content">
             <div class="bg-light text-center rounded p-4">
                 <div class="d-flex align-items-center justify-content-between mb-4">
@@ -362,9 +362,9 @@ $(document).ready(function() {
                         </ul>
                     </div>
                 </div>
-                <div id="cctv-container">
-                    <!-- 여기에 동적으로 변경될 영상을 담을 공간 -->
+                <div id="cctv-container" class="d-flex justify-content-between">
                     <img id="cctv-frame" width="1000" height="650" />
+                    <p id="human-status" style="margin-top: 10px; font-size: 18px; font-weight: bold;"></p> <!-- 주황색 사람 상태 표시 -->
                 </div>
                 <button type="button" id="close-modal" class="btn btn-danger" data-dismiss="modal">닫기</button>
             </div>
@@ -397,6 +397,52 @@ $(document).ready(function() {
         $('#CCTV_modal').on('hidden.bs.modal', function () {
             $('#cctv-frame').attr('src', '');  // Reset the video source
         });
+    });
+
+    $(document).ready(function() {
+        let cctvCode;
+    
+        $('#beach-list a.dropdown-item').click(function(e) {
+            e.preventDefault();
+            cctvCode = $(this).data('cctv-id');
+            var videoUrl = '/control/video_feed/' + cctvCode + '/';
+            $('#cctv-frame').attr('src', videoUrl);
+    
+            // 주황색 사람 상태 확인
+            checkHumanStatus();
+        });
+    
+        $('#close-modal').click(function() {
+            $('#cctv-frame').attr('src', '');
+            $.get('/control/stop_stream/', function(data) {
+                console.log("Stream stopped");
+            });
+        });
+    
+        $('#CCTV_modal').on('hidden.bs.modal', function () {
+            $('#cctv-frame').attr('src', '');
+            $('#human-status').text('');
+        });
+    
+        function checkHumanStatus() {
+            if (!cctvCode) return;
+    
+            $.ajax({
+                url: '/control/human_status/' + cctvCode + '/',
+                method: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    const humanDetected = data.human_detected;
+                    $('#human-status').text(humanDetected ? '주황색 사람 발견' : '주황색 사람 없음');
+                },
+                error: function(error) {
+                    console.log('Error:', error);
+                }
+            });
+    
+            // 3초마다 상태 확인
+            setTimeout(checkHumanStatus, 3000);
+        }
     });
 </script>
 
