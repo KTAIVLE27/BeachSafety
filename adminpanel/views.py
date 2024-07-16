@@ -67,7 +67,6 @@ def fetch_message_details(message_code):
     MESSAGE_API_SECRET = os.getenv('MESSAGE_API_SECRET')
 
     # URL for the API request to get message details
-    print(message_code)
     url = f"http://api.coolsms.co.kr/messages/v4/list?criteria=messageId&value={message_code}&cond=eq"
     # Generate headers
     headers = get_headers(MESSAGE_API_KEY, MESSAGE_API_SECRET)
@@ -321,7 +320,6 @@ def delete_notice_boards(request):
     try:
         data = json.loads(request.body)
         ids_to_delete = data['ids']
-        print(ids_to_delete)
         Notice_board.objects.filter(notice_id__in=ids_to_delete).delete()
         return JsonResponse({"status": "success"}, status=200)
     except Exception as e:
