@@ -299,3 +299,102 @@
     background-color: #000; /* 푸터 배경색을 검정으로 설정 */
     color: #fff; /* 텍스트 색상을 흰색으로 설정 */
 }
+
+
+/* Global styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa; /* Light grey background */
+    color: #343a40; /* Dark text color */
+}
+
+.container-fluid {
+    margin-top: 20px; /* Add some top margin for breathing space */
+}
+
+.bg-light {
+    background-color: #ffffff; /* White background for light sections */
+    border: 1px solid #ced4da; /* Light border */
+}
+
+.text-primary {
+    color: #007bff; /* Primary text color */
+}
+
+/* Sidebar brand style */
+.navbar-brand {
+    text-decoration: none;
+    color: #007bff;
+}
+
+.navbar-brand:hover {
+    color: #0056b3;
+}
+
+/* User info style */
+#user-info {
+    text-align: right;
+    font-size: 0.85rem;
+    color: #6c757d; /* Dimmed text color */
+}
+
+/* Content section style */
+#content {
+    margin-top: 20px;
+}
+
+/* Tables */
+.table-bordered {
+    border: 1px solid #dee2e6; /* Light border for tables */
+}
+
+/* Accordion */
+.accordion-button {
+    background-color: #f8f9fa; /* Light grey background for accordion headers */
+    color: #343a40; /* Dark text color for accordion headers */
+    text-decoration: none;
+    padding: 10px;
+    border: 1px solid #dee2e6; /* Light border */
+}
+
+.accordion-button:hover {
+    background-color: #e9ecef; /* Lighter grey on hover */
+}
+
+.accordion-collapse {
+    border: 1px solid #dee2e6; /* Light border for accordion content */
+    border-top: none; /* No top border */
+}
+
+/* Prediction section */
+.btn-primary {
+    background-color: #007bff; /* Primary button color */
+    border-color: #007bff; /* Primary button border color */
+}
+
+.btn-primary:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    border-color: #0056b3; /* Darker blue border on hover */
+}
+
+/* Risk level colors */
+.risk-level-interest {
+    color: green; /* Green for '관심' level */
+}
+
+.risk-level-caution {
+    color: yellow; /* Yellow for '주의' level */
+}
+
+.risk-level-warning {
+    color: orange; /* Orange for '경계' level */
+}
+
+.risk-level-danger {
+    color: red; /* Red for '위험' level */
+}
+
+.prediction-info {
+    margin-top: 10px; /* Add margin above prediction info */
+    display: none; /* Hide initially */
+}
