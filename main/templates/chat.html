@@ -16,12 +16,25 @@
             <div class="bg-light text-center rounded p-4 h-100">
                 <h6 class="mb-4">해양안전 시나리오 챗봇</h6>
                 <div class="chat-box">
-                    <div class="chat-content" id="chat-content" style="height: 400px; overflow-y: scroll;">
+                    <div class="chat-content" style="height: 300px; overflow-y: scroll;">
                         <!-- 채팅 메시지 -->
+                        <div class="chat-message-box">
+                            <!-- 메시지 박스 -->
+                        </div>
+                    </div>
+                    <div class="button-group mt-3">
+                        <button class="btn btn-secondary mb-2">생물보호</button>
+                        <button class="btn btn-secondary mb-2">수상레저</button>
+                        <button class="btn btn-secondary mb-2">불법</button>
+                        <button class="btn btn-secondary mb-2">해양오염</button>
+                        <button class="btn btn-secondary mb-2">피서객안전</button>
+                        <button class="btn btn-secondary mb-2">익수자</button>
+                        <button class="btn btn-secondary mb-2">의료지원</button>
+                        <button class="btn btn-secondary mb-2">실종</button>
                     </div>
                     <div class="input-group mt-3">
-                        <input type="text" id="chat-input" class="form-control" placeholder="메시지 입력">
-                        <button class="btn btn-primary" id="send-button">전송</button>
+                        <input type="text" class="form-control" placeholder="메시지 입력">
+                        <button class="btn btn-primary">전송</button>
                     </div>
                 </div>
             </div>
@@ -34,14 +47,36 @@
                 <h6 class="mb-4">평가 항목</h6>
                 <div class="evaluation-box">
                     <div class="form-group mb-3">
-                        <label for="timeTaken">걸린 시간</label>
-                        <input type="text" id="timeTaken" class="form-control">
+                        <label for="stopwatch1">스탑워치 1</label>
+                        <div id="stopwatch1" class="stopwatch">00:00:00.000</div>
+                        <button class="btn btn-success mt-2" onclick="startStopwatch(0)">시작 1</button>
+                        <button class="btn btn-primary mt-2" onclick="stopStopwatch(0)">스톱 1</button>
+                        <div id="record1" class="record mt-2"></div>
                     </div>
                     <div class="form-group mb-3">
-                        <label for="accuracy">정확도</label>
-                        <input type="text" id="accuracy" class="form-control">
+                        <label for="stopwatch2">스탑워치 2</label>
+                        <div id="stopwatch2" class="stopwatch">00:00:00.000</div>
+                        <button class="btn btn-success mt-2" onclick="startStopwatch(1)">시작 2</button>
+                        <button class="btn btn-primary mt-2" onclick="stopStopwatch(1)">스톱 2</button>
+                        <div id="record2" class="record mt-2"></div>
                     </div>
-                    <!-- 추가 평가 항목 -->
+                    <div class="form-group mb-3">
+                        <label for="stopwatch3">스탑워치 3</label>
+                        <div id="stopwatch3" class="stopwatch">00:00:00.000</div>
+                        <button class="btn btn-success mt-2" onclick="startStopwatch(2)">시작 3</button>
+                        <button class="btn btn-primary mt-2" onclick="stopStopwatch(2)">스톱 3</button>
+                        <div id="record3" class="record mt-2"></div>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="finalStopwatch">최종 스탑워치</label>
+                        <div id="finalStopwatch" class="stopwatch">00:00:00.000</div>
+                        <button class="btn btn-success mt-2" onclick="showFinalTime()">최종 시간 보기</button>
+                        <button class="btn btn-danger mt-2" onclick="resetAllStopwatches()">정지</button>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="largeFinalTime">최종 시간</label>
+                        <div id="largeFinalTime" class="display-4">00:00:00.000</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -50,43 +85,64 @@
 </div>
 <!-- Main Content End -->
 
-<!-- Footer Start -->
-<!-- Footer Content -->
-<!-- Footer End -->
-</div>
-<!-- Content End -->
-</div>
-
 <script>
-    document.getElementById('send-button').addEventListener('click', function() {
-        const input = document.getElementById('chat-input').value;
-        if (input.trim() === "") return;
+    var stopwatches = [0, 0, 0];
+    var intervals = [null, null, null];
+    var finalTime = 0;
 
-        const chatContent = document.getElementById('chat-content');
-        const userMessage = document.createElement('div');
-        userMessage.className = 'user-message';
-        userMessage.textContent = input;
-        chatContent.appendChild(userMessage);
-        
-        fetch("{% url 'chat_message' %}", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': '{{ csrf_token }}'
-            },
-            body: JSON.stringify({ message: input })
-        })
-        .then(response => response.json())
-        .then(data => {
-            const botMessage = document.createElement('div');
-            botMessage.className = 'bot-message';
-            botMessage.textContent = data.response;
-            chatContent.appendChild(botMessage);
-            chatContent.scrollTop = chatContent.scrollHeight;
-        });
+    function startStopwatch(index) {
+        if (intervals[index] === null) {
+            intervals[index] = setInterval(function() {
+                stopwatches[index] += 10;
+                document.getElementById('stopwatch' + (index + 1)).innerText = formatTime(stopwatches[index]);
+            }, 10);
+        }
+    }
 
-        document.getElementById('chat-input').value = '';
-        chatContent.scrollTop = chatContent.scrollHeight;
-    });
+    function stopStopwatch(index) {
+        if (intervals[index] !== null) {
+            clearInterval(intervals[index]);
+            intervals[index] = null;
+            document.getElementById('record' + (index + 1)).innerText = "기록: " + formatTime(stopwatches[index]);
+            finalTime += stopwatches[index];
+        }
+    }
+
+    function resetStopwatch(index) {
+        if (intervals[index] !== null) {
+            clearInterval(intervals[index]);
+            intervals[index] = null;
+        }
+        stopwatches[index] = 0;
+        document.getElementById('stopwatch' + (index + 1)).innerText = "00:00:00.000";
+        document.getElementById('record' + (index + 1)).innerText = "";
+    }
+
+    function resetAllStopwatches() {
+        for (var i = 0; i < 3; i++) {
+            resetStopwatch(i);
+        }
+        finalTime = 0;
+        document.getElementById('finalStopwatch').innerText = "00:00:00.000";
+        document.getElementById('largeFinalTime').innerText = "00:00:00.000";
+    }
+
+    function showFinalTime() {
+        var formattedTime = formatTime(finalTime);
+        document.getElementById('finalStopwatch').innerText = "최종 시간: " + formattedTime;
+        document.getElementById('largeFinalTime').innerText = formattedTime;
+    }
+
+    function formatTime(milliseconds) {
+        var hours = Math.floor(milliseconds / 3600000);
+        var minutes = Math.floor((milliseconds % 3600000) / 60000);
+        var seconds = Math.floor((milliseconds % 60000) / 1000);
+        var ms = milliseconds % 1000;
+        return (hours < 10 ? "0" + hours : hours) + ":" +
+               (minutes < 10 ? "0" + minutes : minutes) + ":" +
+               (seconds < 10 ? "0" + seconds : seconds) + "." +
+               (ms < 100 ? (ms < 10 ? "00" + ms : "0" + ms) : ms);
+    }
 </script>
+
 {% endblock %}
