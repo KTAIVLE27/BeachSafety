@@ -21,9 +21,45 @@ from datetime import datetime
 from main.utils import similarity_function 
 import boto3
 from django.conf import settings
-
+from collections import Counter
+from django.utils.timezone import localtime
 def admin_home(request):
-    return render(request, 'adminpanel/admin_home.html')
+    # 관리 중인 해수욕장 리스트
+    
+    print("관리자 홈 로딩!!!!!!")
+    beaches = Beach.objects.all()
+    beach_count = Beach.objects.count()
+    user_count = User.objects.count()
+    board_count = Event_board.objects.count()
+    notice_board_count = Notice_board.objects.count()
+    
+    last_logins = User.objects.values_list('last_login', flat=True)
+    
+    if not last_logins:
+        print("아무것도 없다!!!!!!!")
+    login_count = Counter()
+    # 마지막 로그인 시간을 시간대별로 그룹화하여 접속사 수를 집계 
+    
+    for login_time in last_logins:
+        local_login_time = localtime(login_time)
+        print(f"로그인 시간 ::{local_login_time}")
+        if local_login_time:
+            hour = local_login_time.hour
+            login_count[hour] +=1
+            print(f"시간 별 로그인 {login_count}")
+        else:
+            print("error!!!!!!!!")
+            
+            
+    hours = list(range(24))
+    counts = [login_count[hour] for hour in hours]
+    print(counts)
+    
+    
+    return render(request, 'adminpanel/admin_home.html',
+                  {'hours':hours, 'counts':counts, 'beaches': beaches, 
+                   'user_count':user_count, 'beach_count':beach_count, 'board_count':board_count, 'notice_board_count':notice_board_count})
+
 
 
 def senario(request):

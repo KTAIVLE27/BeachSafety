@@ -143,3 +143,12 @@ class Scenario(models.Model):
 
 #     class Meta:
 #         db_table = 'scenario_eval'
+
+
+
+class Message(models.Model):
+    message_id = models.AutoField(primary_key=True)
+    message_code = models.CharField(max_length=100, null=False, blank=False)
+
+    class Meta:
+        db_table = 'message'
