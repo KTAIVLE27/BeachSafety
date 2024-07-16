@@ -106,32 +106,30 @@ from threading import Event
 model = YOLO('control/best2.pt')  # 세그멘테이션 모델 파일 경로
 
 
+human_detected = False
+
 def stream_video(video_url):
-    global stop_stream_event
+    global stop_stream_event, human_detected
     stop_stream_event.clear()
 
-    # yt-dlp 옵션 설정
     ydl_opts = {
         'format': 'best',
         'quiet': True
     }
 
-    # 유튜브 비디오 정보 추출
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         info_dict = ydl.extract_info(video_url, download=False)
         video_url = info_dict['url']
 
-    # OpenCV를 사용하여 실시간 스트리밍 재생
     cap = cv2.VideoCapture(video_url)
-
-    # 클래스 인덱스 확인
     classes = model.names
+    print(classes)  # 디버깅을 위해 추가
     sea_class_index = None
     human_class_index = None
     for i, class_name in enumerate(classes):
-        if class_name == 1:
+        if class_name == 1:  # 클래스 이름을 모델에 맞게 수정
             sea_class_index = i
-        elif class_name == 0:
+        elif class_name == 0:  # 클래스 이름을 모델에 맞게 수정
             human_class_index = i
         if sea_class_index is not None and human_class_index is not None:
             break
@@ -141,69 +139,67 @@ def stream_video(video_url):
     if human_class_index is None:
         raise ValueError("The 'human' class was not found in the model classes.")
 
-    # 첫 번째 선의 오프셋 값 설정
-    offset_buoy = 100
-    # 두 번째 선의 오프셋 값 설정
-    offset_cactution = 50
+
+    offset1 = 100
+    offset2 = 50
+
 
     while cap.isOpened():
         if stop_stream_event.is_set():
             break
-        
+
         ret, frame = cap.read()
         if not ret:
             break
 
-        # 프레임 크기 조정 (예: 640x360)
         frame = cv2.resize(frame, (640, 360))
-
-        # YOLOv8 객체 감지
-        results = model.predict(source=frame, save=False, show=False)  # 예측 실행
-
-        # 예측된 결과 프레임에 표시
-        annotated_frame = results[0].plot()  # 감지된 객체가 표시된 프레임
-
-        # 'sea' 객체의 바운딩 박스 찾기
+        results = model.predict(source=frame, save=False, show=False)
+        annotated_frame = results[0].plot()
+        human_detected = False
         sea_box = None
+
         for result in results:
             boxes = result.boxes
             for box in boxes:
-                cls = int(box.cls)  # 클래스 인덱스
-                if cls == sea_class_index:  # 'sea' 객체인 경우
-                    # 바운딩 박스 좌표 추출
+                cls = int(box.cls)
+                if cls == sea_class_index:
                     sea_box = box
                     break
 
         if sea_box is not None:
             x1, y1, x2, y2 = map(int, sea_box.xyxy[0])
-            
-            # 첫 번째 선 그리기
-            adjusted_y1 = y2 - offset_buoy
+
+            adjusted_y1 = y2 - offset1
+
+
             start_point1 = (0, adjusted_y1)
             end_point1 = (640, adjusted_y1)
-            color1 = (255, 0, 0)  # 파란색 (BGR 형식)
-            thickness = 2  # 선의 두께
+            color1 = (255, 0, 0)
+            thickness = 2
             cv2.line(annotated_frame, start_point1, end_point1, color1, thickness)
 
-            # 두 번째 선 그리기
-            adjusted_y2 = y2 - offset_cactution
+
+            adjusted_y2 = y2 - offset2
+
             start_point2 = (0, adjusted_y2)
             end_point2 = (640, adjusted_y2)
-            color2 = (0, 255, 0)  # 초록색 (BGR 형식)
-            thickness = 2  # 선의 두께
+            color2 = (0, 255, 0)
+            thickness = 2
             cv2.line(annotated_frame, start_point2, end_point2, color2, thickness)
-            
+
             general_count = 0 # 사람 수 세기
             cacution_count = 0 # 주의 요먕 인원 세기
             # 사람의 바운딩 박스를 주황색으로 변경
+
             for box in boxes:
-                cls = int(box.cls)  # 클래스 인덱스
-                if cls == human_class_index:  # 'human' 객체인 경우
+                cls = int(box.cls)
+                if cls == human_class_index:
                     hx1, hy1, hx2, hy2 = map(int, box.xyxy[0])
-                    if hy2 < adjusted_y2:  # 사람의 아래쪽 좌표가 두 번째 선 아래에 있는 경우
-                        # 주황색으로 바운딩 박스 그리기
-                        color_human = (0, 165, 255)  # 주황색 (BGR 형식)
+                    if hy2 < adjusted_y2:
+                        color_human = (0, 165, 255)
                         cv2.rectangle(annotated_frame, (hx1, hy1), (hx2, hy2), color_human, 2)
+
+                        human_detected = True
                         cacution_count+=1
                     else:
                         general_count+=1
@@ -213,7 +209,7 @@ def stream_video(video_url):
             print(f"Number of general people: {general_count}")
             print(f"Number of cacution people: {cacution_count}")
 
-        # 이미지를 JPEG로 인코딩
+
         ret, buffer = cv2.imencode('.jpg', annotated_frame)
         frame = buffer.tobytes()
 
@@ -227,6 +223,11 @@ def video_feed(request, cctv_code):
     video_url = cctv.cctv_url
     return StreamingHttpResponse(stream_video(video_url),
                                  content_type='multipart/x-mixed-replace; boundary=frame')
+
+def human_status(request, cctv_code):
+    return JsonResponse({'human_detected': human_detected})
+
+
 
 stop_stream_event = Event()
 def stop_stream(request):
