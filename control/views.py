@@ -107,9 +107,11 @@ model = YOLO('control/best2.pt')  # 세그멘테이션 모델 파일 경로
 
 
 human_detected = False
+general_count = 0 # 사람 수 세기
+cacution_count = 0 # 주의 요먕 인원 세기
 
 def stream_video(video_url):
-    global stop_stream_event, human_detected
+    global stop_stream_event, human_detected, general_count, cacution_count
     stop_stream_event.clear()
 
     ydl_opts = {
@@ -225,8 +227,9 @@ def video_feed(request, cctv_code):
                                  content_type='multipart/x-mixed-replace; boundary=frame')
 
 def human_status(request, cctv_code):
-    return JsonResponse({'human_detected': human_detected})
-
+    return JsonResponse({'human_detected': human_detected,
+                         'general_count':general_count,
+                         'cacution_count':cacution_count,})
 
 
 stop_stream_event = Event()
