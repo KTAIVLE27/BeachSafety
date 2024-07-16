@@ -378,14 +378,20 @@ $(document).ready(function() {
 <script>
     $(document).ready(function() {
         let cctvCode;
-    
+        let statusCheckInterval;
+
         $('#beach-list a.dropdown-item').click(function(e) {
             e.preventDefault();
             cctvCode = $(this).data('cctv-id');
             var videoUrl = '/control/video_feed/' + cctvCode + '/';
             $('#cctv-frame').attr('src', videoUrl);
+
+            if (statusCheckInterval) {
+                clearInterval(statusCheckInterval);
+            }
     
             checkHumanStatus();
+            statusCheckInterval = setInterval(checkHumanStatus, 3000);
         });
     
         $('#close-modal').click(function() {
@@ -393,6 +399,7 @@ $(document).ready(function() {
             $('#human-status').text('');
             $('#generalCount-status').text('');
             $('#cacutionCount-status').text('');
+            clearInterval(statusCheckInterval);
             $.get('/control/stop_stream/', function(data) {
                 console.log("Stream stopped");
             });
@@ -400,7 +407,11 @@ $(document).ready(function() {
 
         // 모달이 완전히 숨겨졌을 때 실행
         $('#CCTV_modal').on('hidden.bs.modal', function () {
-            $('#cctv-frame').attr('src', '');  // Reset the video source        
+            $('#cctv-frame').attr('src', '');  // Reset the video source
+            $('#human-status').text('');
+            $('#generalCount-status').text('');
+            $('#cacutionCount-status').text('');
+            clearInterval(statusCheckInterval);     
         });
 
     
@@ -424,8 +435,6 @@ $(document).ready(function() {
                     console.log('Error:', error);
                 }
             });
-    
-            setTimeout(checkHumanStatus, 3000);
         }
     });
 </script>
@@ -597,19 +606,19 @@ $(document).ready(function() {
             </div>
         </div>
     </div>
-    
+
     <script>
         $(document).ready(function() {
-            const apiKey = "{{ api_key|escapejs }}" 
-    
-            $('.dropdown-item.beach-btn').on('click', function() {
-                const beachName = $(this).data('beach-name');
-                const lat = $(this).data('lat');
-                const lon = $(this).data('lon');
-                
-                // OpenWeatherMap API 호출
+            const apiKey = "{{ api_key|escapejs }}";
+            const defaultBeach = {
+                name: "경포대 해수욕장",
+                lat: 37.768,
+                lon: 128.948
+            };
+            
+            function updateWeather(beachName, lat, lon) {
                 const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=kr`;
-    
+        
                 $.getJSON(weatherUrl, function(data) {
                     const weatherDescription = data.weather[0].description;
                     const temperature = data.main.temp;
@@ -622,7 +631,7 @@ $(document).ready(function() {
                     const tempMax = data.main.temp_max;
                     const tempMin = data.main.temp_min;
                     const windDeg = data.wind.deg;
-    
+        
                     $('#beach-name').text(beachName);
                     $('#weather-description').text(weatherDescription);
                     $('#temperature').text(temperature);
@@ -637,9 +646,20 @@ $(document).ready(function() {
                 }).fail(function() {
                     alert('날씨 정보를 가져오는 데 실패했습니다.');
                 });
+            }
+            
+            // Default beach weather info on page load
+            updateWeather(defaultBeach.name, defaultBeach.lat, defaultBeach.lon);
+            
+            // Update weather info on dropdown item click
+            $('.dropdown-item.beach-btn').on('click', function() {
+                const beachName = $(this).data('beach-name');
+                const lat = $(this).data('lat');
+                const lon = $(this).data('lon');
+                updateWeather(beachName, lat, lon);
             });
-    
-            // 모달 닫기 버튼 클릭 시 날씨 정보 초기화
+        
+            // Reset weather info when modal is closed
             $('#myModal3').on('hidden.bs.modal', function () {
                 $('#beach-name').text('');
                 $('#weather-description').text('날씨 정보를 선택하세요.');
@@ -650,10 +670,11 @@ $(document).ready(function() {
                 $('#temp-max').text('');
                 $('#temp-min').text('');
                 $('#wind-deg').text('');
-                $('#weather-icon').attr('src', ''); // 날씨 아이콘 초기화
+                $('#weather-icon').attr('src', ''); // Reset weather icon
             });
         });
     </script>
+
     
 
     <script>

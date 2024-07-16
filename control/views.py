@@ -103,7 +103,7 @@ from ultralytics import YOLO
 from threading import Event
 
 # YOLOv8 모델 설정
-model = YOLO('control/best2.pt')  # 세그멘테이션 모델 파일 경로
+model = YOLO('control/best3.pt')  # 세그멘테이션 모델 파일 경로
 
 
 human_detected = False
