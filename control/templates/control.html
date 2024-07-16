@@ -378,14 +378,20 @@ $(document).ready(function() {
 <script>
     $(document).ready(function() {
         let cctvCode;
-    
+        let statusCheckInterval;
+
         $('#beach-list a.dropdown-item').click(function(e) {
             e.preventDefault();
             cctvCode = $(this).data('cctv-id');
             var videoUrl = '/control/video_feed/' + cctvCode + '/';
             $('#cctv-frame').attr('src', videoUrl);
+
+            if (statusCheckInterval) {
+                clearInterval(statusCheckInterval);
+            }
     
             checkHumanStatus();
+            statusCheckInterval = setInterval(checkHumanStatus, 3000);
         });
     
         $('#close-modal').click(function() {
@@ -393,6 +399,7 @@ $(document).ready(function() {
             $('#human-status').text('');
             $('#generalCount-status').text('');
             $('#cacutionCount-status').text('');
+            clearInterval(statusCheckInterval);
             $.get('/control/stop_stream/', function(data) {
                 console.log("Stream stopped");
             });
@@ -400,7 +407,11 @@ $(document).ready(function() {
 
         // 모달이 완전히 숨겨졌을 때 실행
         $('#CCTV_modal').on('hidden.bs.modal', function () {
-            $('#cctv-frame').attr('src', '');  // Reset the video source        
+            $('#cctv-frame').attr('src', '');  // Reset the video source
+            $('#human-status').text('');
+            $('#generalCount-status').text('');
+            $('#cacutionCount-status').text('');
+            clearInterval(statusCheckInterval);     
         });
 
     
@@ -424,8 +435,6 @@ $(document).ready(function() {
                     console.log('Error:', error);
                 }
             });
-    
-            setTimeout(checkHumanStatus, 3000);
         }
     });
 </script>
