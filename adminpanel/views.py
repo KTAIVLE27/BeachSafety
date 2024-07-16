@@ -17,16 +17,86 @@ from main.forms import *
 from django.db.models import Q
 import csv
 import io
-from datetime import datetime
+from datetime import datetime,timezone, timedelta
 from main.utils import similarity_function 
 import boto3
 from django.conf import settings
 from collections import Counter
 from django.utils.timezone import localtime
+import time 
+import hmac
+import hashlib
+import uuid
+import requests
+import datetime
+import os
+
+def get_signature(key, msg):
+    return hmac.new(key.encode(), msg.encode(), hashlib.sha256).hexdigest()
+
+def unique_id():
+    return str(uuid.uuid1().hex)
+
+def get_iso_datetime():
+    utc_offset_sec = time.altzone if time.localtime().tm_isdst else time.timezone
+    utc_offset = datetime.timedelta(seconds=-utc_offset_sec)
+    return datetime.datetime.now().replace(tzinfo=datetime.timezone(offset=utc_offset)).isoformat()
+
+def get_headers(apiKey, apiSecret):
+    date = get_iso_datetime()
+    salt = unique_id()
+    data = date + salt
+    signature = get_signature(apiSecret, data)
+    headers = {
+        'Authorization': f'HMAC-SHA256 ApiKey={apiKey}, Date={date}, salt={salt}, signature={signature}',
+        'Content-Type': 'application/json'
+    }
+    return headers
+
+def format_date(date_string):
+    # 문자열을 UTC 시간대의 datetime 객체로 변환
+    date_obj = datetime.datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%S.%fZ').replace(tzinfo=timezone.utc)
+    # 현지 시간대 (예: 한국 표준시 KST)로 변환
+    kst = timezone(timedelta(hours=9))
+    local_date_obj = date_obj.astimezone(kst)
+    return local_date_obj.strftime('%Y-%m-%d %H:%M:%S')
+
+def fetch_message_details(message_code):
+    # Environment variables for API key and secret
+    MESSAGE_API_KEY = os.getenv('MESSAGE_API_KEY')
+    MESSAGE_API_SECRET = os.getenv('MESSAGE_API_SECRET')
+
+    # URL for the API request to get message details
+    print(message_code)
+    url = f"http://api.coolsms.co.kr/messages/v4/list?criteria=messageId&value={message_code}&cond=eq"
+    # Generate headers
+    headers = get_headers(MESSAGE_API_KEY, MESSAGE_API_SECRET)
+
+    response = requests.get(url, headers=headers)
+
+    # Print the response status and body
+    response_json = response.json()
+    if 'messageList' in response_json and response_json['messageList']:
+        message_list = response_json.get('messageList', {})
+        extracted_messages = []
+        for message_id, message_data in message_list.items():
+            #message_code = message_data.get('_id')
+            text = message_data.get('text')
+            from_number = message_data.get('from')
+            deliver_date = message_data.get('dateReceived')
+            if text:
+                extracted_messages.append({
+                    #'messageId': message_code,
+                    'text': text,
+                    'from': from_number,
+                    'deliver_date': format_date(deliver_date)
+                })
+            return extracted_messages
+
+    return None
+
 def admin_home(request):
-    # 관리 중인 해수욕장 리스트
-    
-    print("관리자 홈 로딩!!!!!!")
+
     beaches = Beach.objects.all()
     beach_count = Beach.objects.count()
     user_count = User.objects.count()
@@ -34,31 +104,35 @@ def admin_home(request):
     notice_board_count = Notice_board.objects.count()
     
     last_logins = User.objects.values_list('last_login', flat=True)
-    
-    if not last_logins:
-        print("아무것도 없다!!!!!!!")
+
     login_count = Counter()
-    # 마지막 로그인 시간을 시간대별로 그룹화하여 접속사 수를 집계 
+
     
     for login_time in last_logins:
         local_login_time = localtime(login_time)
-        print(f"로그인 시간 ::{local_login_time}")
         if local_login_time:
             hour = local_login_time.hour
             login_count[hour] +=1
-            print(f"시간 별 로그인 {login_count}")
-        else:
-            print("error!!!!!!!!")
-            
-            
+    
     hours = list(range(24))
     counts = [login_count[hour] for hour in hours]
-    print(counts)
     
     
+    message_codes = Message.objects.values_list('message_code', flat=True)
+    messages = []
+    for message_code in message_codes:
+        message_details = fetch_message_details(message_code)
+        if isinstance(message_details, list):
+            messages.extend(message_details)
+        else:
+            messages.append(message_details)
+        
     return render(request, 'adminpanel/admin_home.html',
                   {'hours':hours, 'counts':counts, 'beaches': beaches, 
-                   'user_count':user_count, 'beach_count':beach_count, 'board_count':board_count, 'notice_board_count':notice_board_count})
+                   'user_count':user_count, 'beach_count':beach_count,
+                   'board_count':board_count, 'notice_board_count':notice_board_count,
+                   'messages':messages
+                   })
 
 
 
