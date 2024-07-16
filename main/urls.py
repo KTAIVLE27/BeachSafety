@@ -29,5 +29,6 @@ urlpatterns = [
     path('load_prediction/', views.load_prediction, name='load_prediction'),
     path('privacy_policy', views.privacy_policy, name='privacy_policy'),
     path('copyright', views.copyright, name='copyright'),
+    path("chat_message/", views.chat_message, name='chat_message'),
 ]
 
