@@ -442,6 +442,8 @@
 
 
 .footer {
+    position: fixed;
+    bottom: 0;
     margin: 0;
     font-family: Arial, sans-serif;
     font-weight: 3;
@@ -751,3 +753,11 @@
     color: white; /* 호버 및 활성화된 상태의 텍스트 색 */
 }
 
+/* CCTV 페이지에서 푸터 숨기기 */
+.cctv-page .footer {
+    display: none;
+}
+
+#main-logo {
+    margin-left: 20px; /* 필요한 만큼 값을 조정하여 로고를 오른쪽으로 이동 */
+}
