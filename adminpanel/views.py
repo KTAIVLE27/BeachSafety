@@ -23,6 +23,7 @@ import boto3
 from django.conf import settings
 from collections import Counter
 from django.utils.timezone import localtime
+from django.utils import timezone
 import time 
 import hmac
 import hashlib
@@ -330,6 +331,18 @@ def delete_notice_boards(request):
 
 @login_required
 def create_notice(request):
+    def handle_uploaded_file(file):
+        allowed_extensions = ['jpg', 'jpeg', 'png', 'gif']
+        max_file_size = 5 * 1024 * 1024  # 5MB
+
+        ext = file.name.split('.')[-1].lower()
+        if ext not in allowed_extensions:
+            raise ValueError("허용되지 않는 파일 형식입니다.")
+        if file.size > max_file_size:
+            raise ValueError("파일 크기가 너무 큽니다.")
+
+        return True
+
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
@@ -343,25 +356,26 @@ def create_notice(request):
             if 'notice_img' in request.FILES:
                 file = request.FILES['notice_img']
                 
-                s3 = boto3.client(
-                    's3',
-                    aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-                    aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-                    region_name=settings.AWS_S3_REGION_NAME
-                )
-                
-                s3_bucket = settings.AWS_STORAGE_BUCKET_NAME
-                s3_key = f'notices/{file.name}'
-                s3.upload_fileobj(file, s3_bucket, s3_key, ExtraArgs={'ContentType': file.content_type})
-                
-                file_url = f'https://{settings.AWS_S3_CUSTOM_DOMAIN}/{s3_key}'
-                notice.notice_img = file_url    
+                if handle_uploaded_file(file):
+                    s3 = boto3.client(
+                        's3',
+                        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                        region_name=settings.AWS_S3_REGION_NAME
+                    )
+                    
+                    s3_bucket = settings.AWS_STORAGE_BUCKET_NAME
+                    s3_key = f'notices/{file.name}'
+                    s3.upload_fileobj(file, s3_bucket, s3_key, ExtraArgs={'ContentType': file.content_type})
+                    
+                    file_url = f'https://{settings.AWS_S3_CUSTOM_DOMAIN}/{s3_key}'
+                    notice.notice_img = file_url    
             notice.save()
             return redirect('adminpanel:notice_manage')
     else:
         form = PostForm()
     beaches = Beach.objects.all()
-    return render(request, 'adminpanel/create_notice.html', {'beaches': beaches})
+    return render(request, 'adminpanel/create_notice.html', {'form': form, 'beaches': beaches})
 
 
 @login_required
