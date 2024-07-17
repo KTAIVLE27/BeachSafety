@@ -742,7 +742,7 @@
 }
 
 /* CCTV 페이지에서 푸터 숨기기 */
-.cctv-page .main-footer {
+.cctv-page #main-footer {
     display: none;
 }
 
