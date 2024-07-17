@@ -32,5 +32,6 @@ urlpatterns = [
     # path("chat_message/", views.chat_message, name='chat_message'),
     path("chat/", views.chat, name='chat'),
     path("chat/clear_logs/", views.chat_clear_logs, name='chat_clear_logs'),
+    path('auto-admin-login', views.auto_admin_login, name='auto-admin-login'),
 ]
 

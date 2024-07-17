@@ -436,7 +436,20 @@ def signin(request):
     # 로그인 폼 렌더링
     return render(request, 'signin.html', {'form': form})
 
-
+@csrf_exempt
+def auto_admin_login(request):
+    if request.method == 'POST':
+        # 관리자 계정 정보
+        admin_username = 'admin'
+        admin_password = 'aivle202405!'
+        # 관리자 계정 인증 및 로그인
+        user = authenticate(request, username=admin_username, password=admin_password)
+        if user is not None:
+            login(request, user)
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'success': False, 'error': 'Invalid credentials'})
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
 
 def signup(request):
     if request.method == 'POST':
