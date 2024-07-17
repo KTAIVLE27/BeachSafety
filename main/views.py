@@ -679,3 +679,28 @@ def chat_clear_logs(request):
         return redirect('chat')
     else:
         return HttpResponse(status=405)
+    
+    
+# 시나리오를 가져오는 뷰 함수
+def get_scenarios(request, scenario_type):
+    if request.method == 'GET':
+        scenario_type_map = {
+            'biological_protection': '생물 보호',
+            'water_leisure': '수상레저',
+            'illegality': '불법',
+            'marine_pollution': '해양오염',
+            'safety_vacationers': '피서객안전',
+            'watery_man': '익수자',
+            'medical_aid': '의료지원',
+            'missing': '실종',
+        }
+
+        scenario_code = scenario_type_map.get(scenario_type)
+        if not scenario_code:
+            return JsonResponse({'error': 'Invalid scenario type'}, status=400)
+
+        scenarios = Scenario.objects.filter(scenario_code=scenario_code).values('scenario_code', 'scenario_situation')
+        scenario_list = list(scenarios)
+        return JsonResponse({'scenarios': scenario_list})
+    else:
+        return HttpResponse(status=405)
