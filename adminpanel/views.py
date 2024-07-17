@@ -28,7 +28,6 @@ import hmac
 import hashlib
 import uuid
 import requests
-import datetime
 import os
 
 def get_signature(key, msg):
