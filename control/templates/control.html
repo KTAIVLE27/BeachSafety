@@ -499,6 +499,68 @@ $(document).ready(function() {
 </script>
 <!-- 119/해군 모달버튼 끝 -->
 
+<style>
+    .chat-box {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 15px;
+        height: 600px;
+        overflow-y: scroll;
+    }
+
+    .chat-message-box {
+        margin-bottom: 10px;
+        padding: 10px;
+        border: 1px solid #e9ecef;
+        border-radius: 5px;
+        background-color: #f8f9fa;
+    }
+
+    .evaluation-box {
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        height: 600px;
+        overflow-y: auto;
+    }
+
+    .stopwatch {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .record {
+        font-size: 14px;
+        color: #6c757d;
+    }
+
+    .display-4 {
+        font-size: 36px;
+        font-weight: bold;
+    }
+
+    #question-input, #send-button {
+        display: none;
+    }
+
+    .loading-spinner {
+        display: none;
+        width: 3rem;
+        height: 3rem;
+        border: 0.5rem solid #f3f3f3;
+        border-top: 0.5rem solid #3498db;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: auto;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+</style>
     <!-- 모의훈련 모달 -->
     <div class="modal" id="myModal2">
         <div class="modal-dialog">
@@ -511,32 +573,74 @@ $(document).ready(function() {
                                 <div class="bg-light text-center rounded p-4 h-100">
                                     <h6 class="mb-4">해양안전 시나리오 챗봇</h6>
                                     <div class="chat-box">
-                                        <div class="chat-content" style="height: 400px; overflow-y: scroll;">
+                                        <div id="chat-content">
                                             <!-- 채팅 메시지 -->
+                                            {% for log in logs %}
+                                            <div class="chat-message-box">
+                                                <strong>질문:</strong> {{ log.question|safe }}<br>
+                                                <strong>답변:</strong><br>
+                                                {{ log.answer|safe|linebreaksbr }}
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                        <div class="loading-spinner" id="loading-spinner"></div>
+                                        <div class="button-group mt-3">
+                                            <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion_biological_protection()">생물보호</button>
+                                            <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion_water_leisure()">수상레저</button>
+                                            <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion_illegality()">불법</button>
+                                            <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion_marine_pollution()">해양오염</button>
+                                            <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion_Safety_vacationers()">피서객안전</button>
+                                            <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion_watery_man()">익수자</button>
+                                            <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion_medical_aid()">의료지원</button>
+                                            <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion_missing()">실종</button>
                                         </div>
                                         <div class="input-group mt-3">
-                                            <input type="text" class="form-control" placeholder="메시지 입력">
-                                            <button class="btn btn-primary">전송</button>
+                                            <input type="text" class="form-control" id="question-input" placeholder="메시지 입력">
+                                            <button class="btn btn-primary" id="send-button">전송</button>
+
                                         </div>
                                     </div>
+                                    <div class="loading-spinner" id="loading-spinner"></div>
                                 </div>
                             </div>
-                            <!-- Chat Box End -->
-        
-                            <!-- Evaluation Box Start -->
-                            <div class="col-sm-12 col-md-6 mb-4">
-                                <div class="bg-light text-center rounded p-4 h-100">
-                                    <h6 class="mb-4">평가 항목</h6>
-                                    <div class="evaluation-box">
-                                        <div class="form-group mb-3">
-                                            <label for="timeTaken">걸린 시간</label>
-                                            <input type="text" id="timeTaken" class="form-control">
+                        <!-- Chat Box End -->
+
+                        <!-- Evaluation Box Start -->
+                        <div class="col-sm-12 col-md-6 mb-4">
+                            <div class="bg-light text-center rounded p-4 h-100">
+                                <h6 class="mb-4">평가 항목</h6>
+                                <div class="evaluation-box">
+                                    <div class="form-group mb-3">
+                                        <label for="stopwatch1">상황 전파 및 출동 준비</label>
+                                        <div id="stopwatch1" class="stopwatch">00:00:00.000</div>
+                                        <button class="btn btn-success mt-2" onclick="startStopwatch(0)">Start</button>
+                                        <button class="btn btn-primary mt-2" onclick="stopStopwatch(0)">Stop</button>
+                                        <div id="record1" class="record mt-2"></div>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="stopwatch2">구조 활동 시간</label>
+                                        <div id="stopwatch2" class="stopwatch">00:00:00.000</div>
+                                        <button class="btn btn-success mt-2" onclick="startStopwatch(1)">Start</button>
+                                        <button class="btn btn-primary mt-2" onclick="stopStopwatch(1)">Stop</button>
+                                        <div id="record2" class="record mt-2"></div>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="stopwatch3">상황 마무리 및 인수 인계</label>
+                                        <div id="stopwatch3" class="stopwatch">00:00:00.000</div>
+                                        <button class="btn btn-success mt-2" onclick="startStopwatch(2)">Start</button>
+                                        <button class="btn btn-primary mt-2" onclick="stopStopwatch(2)">Stop</button>
+                                        <div id="record3" class="record mt-2"></div>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="finalStopwatch">총 훈련 소요 시간</label>
+                                        <div id="finalStopwatch" class="stopwatch">00:00:00.000</div>
+                                        <button class="btn btn-success mt-2" onclick="showFinalTime()">최종 시간 보기</button>
+                                        <button class="btn btn-danger mt-2" onclick="resetAllStopwatches()">초기화</button>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="largeFinalTime">최종 시간</label>
+                                        <div id="largeFinalTime" class="display-4">00:00:00.000</div>
                                         </div>
-                                        <div class="form-group mb-3">
-                                            <label for="accuracy">정확도</label>
-                                            <input type="text" id="accuracy" class="form-control">
-                                        </div>
-                                        <!-- 추가 평가 항목 -->
                                     </div>
                                 </div>
                             </div>
@@ -724,6 +828,343 @@ $(document).ready(function() {
 
     <!-- Template Javascript -->
     <script src="{% static 'js/main.js'%}"></script>
+
+    <script>
+    var stopwatches = [0, 0, 0];
+    var intervals = [null, null, null];
+    var finalTime = 0;
+
+    function startStopwatch(index) {
+        if (intervals[index] === null) {
+            intervals[index] = setInterval(function() {
+                stopwatches[index] += 10;
+                document.getElementById('stopwatch' + (index + 1)).innerText = formatTime(stopwatches[index]);
+            }, 10);
+        }
+    }
+
+    function stopStopwatch(index) {
+        if (intervals[index] !== null) {
+            clearInterval(intervals[index]);
+            intervals[index] = null;
+            document.getElementById('record' + (index + 1)).innerText = "기록: " + formatTime(stopwatches[index]);
+            finalTime += stopwatches[index];
+        }
+    }
+
+    function resetStopwatch(index) {
+        if (intervals[index] !== null) {
+            clearInterval(intervals[index]);
+            intervals[index] = null;
+        }
+        stopwatches[index] = 0;
+        document.getElementById('stopwatch' + (index + 1)).innerText = "00:00:00.000";
+        document.getElementById('record' + (index + 1)).innerText = "";
+    }
+
+    function resetAllStopwatches() {
+        for (var i = 0; i < 3; i++) {
+            resetStopwatch(i);
+        }
+        finalTime = 0;
+        document.getElementById('finalStopwatch').innerText = "00:00:00.000";
+        document.getElementById('largeFinalTime').innerText = "00:00:00.000";
+    }
+
+    function showFinalTime() {
+        var formattedTime = formatTime(finalTime);
+        document.getElementById('finalStopwatch').innerText = "최종 시간: " + formattedTime;
+        document.getElementById('largeFinalTime').innerText = formattedTime;
+    }
+
+    function formatTime(milliseconds) {
+        var hours = Math.floor(milliseconds / 3600000);
+        var minutes = Math.floor((milliseconds % 3600000) / 60000);
+        var seconds = Math.floor((milliseconds % 60000) / 1000);
+        var ms = milliseconds % 1000;
+        return (hours < 10 ? "0" + hours : hours) + ":" +
+               (minutes < 10 ? "0" + minutes : minutes) + ":" +
+               (seconds < 10 ? "0" + seconds : seconds) + "." +
+               (ms < 100 ? (ms < 10 ? "00" + ms : "0" + ms) : ms);
+    }
+
+     function formatTime(milliseconds) {
+        var hours = Math.floor(milliseconds / 3600000);
+        var minutes = Math.floor((milliseconds % 3600000) / 60000);
+        var seconds = Math.floor((milliseconds % 60000) / 1000);
+        var ms = milliseconds % 1000;
+        return (hours < 10 ? "0" + hours : hours) + ":" +
+               (minutes < 10 ? "0" + minutes : minutes) + ":" +
+               (seconds < 10 ? "0" + seconds : seconds) + "." +
+               (ms < 100 ? (ms < 10 ? "00" + ms : "0" + ms) : ms);
+    }
+
+    function sendPredefinedQuestion(question) {
+        document.getElementById('question-input').value = question;
+        document.getElementById('send-button').click();
+    }
+
+    function sendRandomPredefinedQuestion_biological_protection() {
+        var questions = [
+            '유형: 생물 보호, 상황: 어부들이 불법으로 산호를 채집하고 있는 시나리오 작성해주세요.',
+            '유형: 생물 보호, 상황: 관광객들이 불법으로 바다 거북 알을 채집하고 있는 시나리오 작성해주세요.',
+            '유형: 생물 보호, 상황: 다이버들이 불법으로 해삼을 채집하고 있는 시나리오 작성해주세요.',
+            '유형: 생물 보호, 상황: 어린이가 해수욕장에서 해양 생물을 학대하고 있는 시나리오 작성해주세요.',
+            '유형: 생물 보호, 상황: 어부들이 보호 구역에서 불법으로 물고기를 잡고 있는 시나리오 작성해주세요.',
+            '유형: 생물 보호, 상황: 해수욕장에서 어린이가 해양 생물을 수집하고 있는 시나리오 작성해주세요.',
+            '유형: 생물 보호, 상황: 해수욕장에서 사람이 불법으로 해양 식물을 채집하고 있는 시나리오 작성해주세요.',
+            '유형: 생물 보호, 상황: 해양 보호 구역에서 불법 잠수부들이 불법 채집을 하고 있는 시나리오 작성해주세요.',
+            '유형: 생물 보호, 상황: 해양 보호 구역에서 상어를 불법적으로 잡는 사람들이 있는 시나리오 작성해주세요.',
+            '유형: 생물 보호, 상황: 해변에서 관광객이 조개를 불법 채집하고 있는 시나리오 작성해주세요.',
+            '유형: 생물 보호, 상황: 어부들이 보호 구역에서 불법으로 고래를 포획하고 있는 시나리오 작성해주세요.',
+            '유형: 생물 보호, 상황: 해양 보호 구역에서 불법 잠수부들이 불법 채집을 하고 있는 시나리오 작성해주세요.',
+            '유형: 생물 보호, 상황: 해양 보호 구역에서 불법으로 산호를 채집하는 다이버들이 있는 시나리오 작성해주세요.',
+            '유형: 생물 보호, 상황: 해수욕장에서 한 명이 해양 생물을 불법 채집을 하고 있는 시나리오 작성해주세요.',
+            '유형: 생물 보호, 상황: 관광객들이 불법으로 바다 거북 알을 채집하고 있는 시나리오 작성해주세요.',
+            '유형: 생물 보호, 상황: 해수욕장에서 한 명이 해양 생물을 불법 채집을 하고 있는 시나리오 작성해주세요.',
+        ];
+        var randomIndex = Math.floor(Math.random() * questions.length);
+        sendPredefinedQuestion(questions[randomIndex]);
+    }
+
+    function sendRandomPredefinedQuestion_water_leisure() {
+        var questions = [
+            '유형: 수상 레저, 상황: 제트 스키 충돌 사고 발생, 한 명의 탑승자가 물에 빠져 부상당한 시나리오 작성해주세요.',
+            '유형: 수상 레저, 상황: 바나나 보트 전복 사고 발생, 탑승자 3명 물에 빠진 시나리오 작성해주세요.',
+            '유형: 수상 레저, 상황: 패들보드 사용자 물에 빠져 패들보드와 분리된 시나리오 작성해주세요.',
+            '유형: 수상 레저, 상황: 윈드서핑 중 바람이 강하게 불어 서퍼가 해안에서 멀어진 시나리오 작성해주세요.',
+            '유형: 수상 레저, 상황: 수상 스키를 타던 중 한 명의 성인이 밸런스를 잃고 물에 빠진 시나리오 작성해주세요.',
+            '유형: 수상 레저, 상황: 제트스키가 뒤집히면서 두 명의 성인이 물에 빠진 시나리오 작성해주세요.',
+            '유형: 수상 레저, 상황: 패들보드 타던 중 한 명의 어린이가 바람에 밀려 멀리 떠밀려간 시나리오 작성해주세요.',
+            '유형: 수상 레저, 상황: 카약이 전복되어 한 명의 성인이 물에 빠진 시나리오 작성해주세요.',
+            '유형: 수상 레저, 상황: 제트스키 탑승 중 한 명이 제트스키에서 떨어져 다리 부상을 당한 시나리오 작성해주세요.',
+            '유형: 수상 레저, 상황: 제트스키 탑승자가 고장으로 인해 해상에서 조난 당한 시나리오 작성해주세요.',
+            '유형: 수상 레저, 상황: 패러세일러가 착륙 도중 바다에 추락하는 시나리오 작성해주세요.',
+            '유형: 수상 레저, 상황: 바나나보트가 뒤집혀 탑승자 3명이 물에 빠지는 시나리오 작성해주세요.',
+            '유형: 수상 레저, 상황: 서핑 도중 서퍼가 큰 파도에 휩쓸려 익수된 시나리오 작성해주세요.',
+            '유형: 수상 레저, 상황: 카약이 전복되어 탑승자가 물에 빠진 시나리오 작성해주세요.',
+            '유형: 수상 레저, 상황: 윈드서퍼가 강풍에 의해 보드에서 떨어져 바다로 추락한 시나리오 작성해주세요.',
+            '유형: 수상 레저, 상황: 스노클링 도중 한 명이 해류에 휩쓸려 실종된 시나리오 작성해주세요.',
+            '유형: 수상 레저, 상황: 패들보드를 타고 있던 사람이 해류에 떠밀려 바다로 나간 시나리오 작성해주세요.',
+            '유형: 수상 레저, 상황: 워터스키 도중 스키어가 균형을 잃고 물에 빠진 시나리오 작성해주세요.',
+            '유형: 수상 레저, 상황: 수상 자전거 탑승자가 균형을 잃고 물에 빠진 시나리오 작성해주세요.',
+            '유형: 수상 레저, 상황: 제트스키를 타던 사람이 충돌로 인해 바다로 떨어진 시나리오 작성해주세요.',
+            
+        ];
+        var randomIndex = Math.floor(Math.random() * questions.length);
+        sendPredefinedQuestion(questions[randomIndex]);
+    }
+
+    function sendRandomPredefinedQuestion_illegality() {
+        var questions = [
+            '유형: 불법, 상황: 한 남성이 해변에서 금지된 상품을 배로 밀수하려다 적발됨. 시나리오 작성해주세요.',
+            '유형: 불법, 상황: 해변에서 두 명의 남성이 마약 거래를 하다가 발견됨. 시나리오 작성해주세요.',
+            '유형: 불법, 상황: 금지된 지역에서 불법 어업 활동이 발견됨. 시나리오 작성해주세요.',
+            '유형: 불법, 상황: 해변에서 불법 캠핑이 발견됨. 시나리오 작성해주세요.',
+            '유형: 불법, 상황: 해안가에서 무단으로 모래를 채취하는 무리가 발견됨. 시나리오 작성해주세요.',
+            '유형: 불법, 상황: 한 공장에서 해양으로 불법 화학물질을 배출하고 있음. 시나리오 작성해주세요.',
+            '유형: 불법, 상황: 한 남성이 해양 보호구역에서 불법으로 어류를 포획하고 있음. 시나리오 작성해주세요.',
+            '유형: 불법, 상황: 해변에서 불법 야영이 발견됨. 시나리오 작성해주세요.',
+            '유형: 불법, 상황: 해안가에서 무단으로 낚시 대회가 열리고 있음. 시나리오 작성해주세요.',
+            '유형: 불법, 상황: 불법 어망 설치가 발견됨. 시나리오 작성해주세요.',
+            '유형: 불법, 상황: 해수욕장에서 불법으로 해양 생물을 포획하는 사람이 발견됨. 시나리오 작성해주세요.',
+            '유형: 불법, 상황: 해양 보호구역에서 불법 잠수 활동이 발견됨. 시나리오 작성해주세요.',
+            '유형: 불법, 상황: 해안가에서 불법적으로 모래를 채취하는 행위가 목격됨. 시나리오 작성해주세요.',
+            '유형: 불법, 상황: 해양에서 불법 선박 운행이 감지됨. 시나리오 작성해주세요.',
+            '유형: 불법, 상황: 해변가에서 불법 낚시가 진행 중임. 시나리오 작성해주세요.',
+            '유형: 불법, 상황: 불법 상어 지느러미 채집이 발견됨. 시나리오 작성해주세요.',
+            '유형: 불법, 상황: 불법 해양 자원 채취가 해양에서 이루어지고 있음. 시나리오 작성해주세요.',
+            '유형: 불법, 상황: 불법 포경 활동이 해양에서 감지됨. 시나리오 작성해주세요.',
+            '유형: 불법, 상황: 해양 보호구역에서 불법적으로 산호를 채집하는 행위가 발견됨. 시나리오 작성해주세요.',
+            '유형: 불법, 상황: 불법 폐기물 투기가 해안에서 이루어지고 있음. 시나리오 작성해주세요.',
+            
+        ];
+        var randomIndex = Math.floor(Math.random() * questions.length);
+        sendPredefinedQuestion(questions[randomIndex]);
+    }
+
+    function sendRandomPredefinedQuestion_marine_pollution() {
+        var questions = [
+            '유형: 해양오염, 상황: 관광 보트에서 발생한 연료 유출로 인해 해수욕장 근처 해양이 오염되고 있다. 시나리오 작성해주세요.',
+            '유형: 해양오염, 상황: 항구 근처에서 화학물질이 유출되어 해양이 오염되고 있다. 시나리오 작성해주세요.',
+            '유형: 해양오염, 상황: 해양 관광지 근처에서 소형 선박이 침몰하면서 연료가 유출되고 있다. 시나리오 작성해주세요.',
+            '유형: 해양오염, 상황: 산업 단지에서 폐수가 해양으로 유출되고 있다. 시나리오 작성해주세요.',
+            '유형: 해양오염, 상황: 해양 보호 구역에 화학 폐기물 유입 시나리오 작성해주세요.',
+            '유형: 해양오염, 상황: 유조선에서 기름이 유출되어 해안가로 퍼지고 있다. 시나리오 작성해주세요.',
+            '유형: 해양오염, 상황: 화물선에서 유해 화학 물질이 해상으로 유출되고 있다. 시나리오 작성해주세요.',
+            '유형: 해양오염, 상황: 해수욕장에서 기름 유출이 발견되어 해변에 오염이 확산되고 있다. 시나리오 작성해주세요.',
+            '유형: 해양오염, 상황: 어선에서 기름 유출이 발생해 어장이 오염되고 있다. 시나리오 작성해주세요.',
+            '유형: 해양오염, 상황: 해양 드릴링 플랫폼에서 기름이 유출되고 있다. 시나리오 작성해주세요.',
+            '유형: 해양오염, 상황: 해변가에서 쓰레기 더미가 쌓여 해양으로 유입되고 있다. 시나리오 작성해주세요.',
+            '유형: 해양오염, 상황: 공장에서 배출된 폐수가 강을 통해 해양으로 유입되고 있다. 시나리오 작성해주세요.',
+            '유형: 해양오염, 상황: 해양에서 발생한 화학 사고로 인해 해양 생물이 피해를 입고 있다. 시나리오 작성해주세요.',
+            '유형: 해양오염, 상황: 관광객들이 버린 쓰레기가 해변을 오염시키고 있다. 시나리오 작성해주세요.',
+            '유형: 해양오염, 상황: 선박 충돌로 인해 기름 유출이 발생하여 해양이 오염되고 있다. 시나리오 작성해주세요.',
+            '유형: 해양오염, 상황: 해양 파이프라인에서 원유가 유출되고 있다. 시나리오 작성해주세요.',
+            '유형: 해양오염, 상황: 폐기물 처리 시설에서 누출된 오염물이 해양으로 흘러들고 있다. 시나리오 작성해주세요.',
+            '유형: 해양오염, 상황: 해안가에서 화학 폐기물이 발견되어 해양 오염이 우려되고 있다. 시나리오 작성해주세요.',
+            '유형: 해양오염, 상황: 해양에서 발생한 화재로 인해 오염물질이 바다로 흘러들고 있다. 시나리오 작성해주세요.',
+            '유형: 해양오염, 상황: 해변가의 플라스틱 쓰레기가 해양 생태계를 위협하고 있다. 시나리오 작성해주세요.',
+            
+        ];
+        var randomIndex = Math.floor(Math.random() * questions.length);
+        sendPredefinedQuestion(questions[randomIndex]);
+    }
+
+    function sendRandomPredefinedQuestion_Safety_vacationers() {
+        var questions = [
+            '유형: 피서객 안전, 상황: 해수욕장에서 상어가 출현하여 피서객들이 위험에 처했다. 시나리오 작성해주세요.',
+            '유형: 피서객 안전, 상황: 해변 캠핑 중 야생 동물이 출몰하여 피서객들이 놀라 대피 중이다. 시나리오 작성해주세요.',
+            '유형: 피서객 안전, 상황: 해수욕장 남쪽 구역에서 큰 파도가 밀려와 피서객들이 위험에 처했다. 시나리오 작성해주세요.',
+            '유형: 피서객 안전, 상황: 해수욕장 동쪽 구역에서 화학 물질 유출 사고가 발생하여 피서객들이 대피 시나리오 작성해주세요.',
+            '유형: 피서객 안전, 상황: 해수욕장에서 낙뢰로 인한 사고가 발생하여 피서객들이 위험에 처했다. 시나리오 작성해주세요.',
+            '유형: 피서객 안전, 상황: 해양생물(상어 등)이 해수욕장 근처에서 출몰하여 피서객들이 위험에 처함. 시나리오 작성해주세요.',
+            '유형: 피서객 안전, 상황: 해변 파티 중 폭죽 폭발로 인한 사고 발생. 시나리오 작성해주세요.',
+            '유형: 피서객 안전, 상황: 피서객 인파가 몰려 혼잡하여 이동이 어려운 상황 발생. 시나리오 작성해주세요.',
+            '유형: 피서객 안전, 상황: 해양에서 발생한 폭우로 인해 피서객들이 안전하게 대피해야 한다. 시나리오 작성해주세요.',
+            '유형: 피서객 안전, 상황: 해변에서 일어난 사고로 인해 응급 처치가 필요한 상황 발생. 시나리오 작성해주세요.',
+            '유형: 피서객 안전, 상황: 해변가에서 발생한 화재로 인해 피서객들이 대피해야 하는 상황 발생. 시나리오 작성해주세요.',
+            '유형: 피서객 안전, 상황: 해양 스포츠 중 사고가 발생하여 구조가 필요한 상황. 시나리오 작성해주세요.',
+            '유형: 피서객 안전, 상황: 해수욕장에서 피서객이 익사 위기에 처했다. 시나리오 작성해주세요.',
+            '유형: 피서객 안전, 상황: 해양에서 큰 파도로 인해 피서객들이 위험에 처한 상황. 시나리오 작성해주세요.',
+            '유형: 피서객 안전, 상황: 해변에서 강한 바람으로 인해 텐트와 장비가 날아갔다. 시나리오 작성해주세요.',
+            '유형: 피서객 안전, 상황: 해수욕장에서 어린이가 실종된 상황 발생. 시나리오 작성해주세요.',
+            '유형: 피서객 안전, 상황: 해양에서 발생한 지진으로 인해 피서객들이 대피해야 한다. 시나리오 작성해주세요.',
+            '유형: 피서객 안전, 상황: 해수욕장에서 발생한 수질 오염으로 인해 피서객들이 대피해야 한다. 시나리오 작성해주세요.',
+            '유형: 피서객 안전, 상황: 해변가에서 발생한 구조물 붕괴로 인해 피서객들이 위험에 처했다. 시나리오 작성해주세요.',
+            '유형: 피서객 안전, 상황: 해양에서 발생한 태풍으로 인해 피서객들이 안전하게 대피해야 한다. 시나리오 작성해주세요.',
+            
+        ];
+        var randomIndex = Math.floor(Math.random() * questions.length);
+        sendPredefinedQuestion(questions[randomIndex]);
+    }
+
+    function sendRandomPredefinedQuestion_watery_man() {
+        var questions = [
+            '유형: 익수자, 상황: 해수욕장에서 성인 남성이 파도에 휩쓸려 바다로 떠밀려가고 있습니다. 시나리오 작성해주세요.',
+            '유형: 익수자, 상황: 해수욕장에서 노인 여성이 파도에 휩쓸려 바다로 떠밀려가고 있습니다. 시나리오 작성해주세요.',
+            '유형: 익수자, 상황: 해수욕장에서 두 명의 친구가 파도에 휩쓸려 바다로 떠밀려가고 있습니다. 시나리오 작성해주세요.',
+            '유형: 익수자, 상황: 해수욕장에서 두 명의 부모와 함께 온 어린이 두 명이 파도에 휩쓸려 바다로 떠밀려가고 있습니다. 시나리오 작성해주세요.',
+            '유형: 익수자, 상황: 해수욕장에서 한 명의 성인 남성이 파도에 휩쓸려 바다로 떠밀려가고 있습니다. 그는 수영을 잘 하지 못하며 패닉 상태입니다. 시나리오 작성해주세요.',
+            '유형: 익수자, 상황: 해수욕장에서 한 명의 성인 여성이 파도에 휩쓸려 바다로 떠밀려가고 있습니다. 그녀는 수영을 잘 하지 못하며 패닉 상태입니다. 시나리오 작성해주세요.',
+            '유형: 익수자, 상황: 해수욕장에서 한 명의 어린이가 파도에 휩쓸려 바다로 떠밀려가고 있습니다. 시나리오 작성해주세요.',
+            '유형: 익수자, 상황: 해수욕장에서 두 명의 청소년이 파도에 휩쓸려 바다로 떠밀려가고 있습니다. 시나리오 작성해주세요.',
+            '유형: 익수자, 상황: 해수욕장에서 가족 단위의 관광객 세 명이 파도에 휩쓸려 바다로 떠밀려가고 있습니다. 시나리오 작성해주세요.',
+            '유형: 익수자, 상황: 해수욕장에서 어린이 두 명이 파도에 휩쓸려 바다로 떠밀려가고 있습니다. 시나리오 작성해주세요.',
+            '유형: 익수자, 상황: 해수욕장에서 두 명의 청년이 파도에 휩쓸려 바다로 떠밀려가고 있습니다. 시나리오 작성해주세요.',
+            '유형: 익수자, 상황: 해수욕장에서 한 명의 남성이 파도에 휩쓸려 바다로 떠밀려가고 있습니다. 시나리오 작성해주세요.',
+            '유형: 익수자, 상황: 해수욕장에서 한 명의 여성이 파도에 휩쓸려 바다로 떠밀려가고 있습니다. 시나리오 작성해주세요.',
+            '유형: 익수자, 상황: 해수욕장에서 부모와 함께 온 어린이 한 명이 파도에 휩쓸려 바다로 떠밀려가고 있습니다. 시나리오 작성해주세요.',
+            '유형: 익수자, 상황: 해수욕장에서 친구와 함께 온 청소년 한 명이 파도에 휩쓸려 바다로 떠밀려가고 있습니다. 시나리오 작성해주세요.',
+            '유형: 익수자, 상황: 해수욕장에서 가족과 함께 온 어린이 한 명이 파도에 휩쓸려 바다로 떠밀려가고 있습니다. 시나리오 작성해주세요.',
+            '유형: 익수자, 상황: 해수욕장에서 친구와 함께 온 청년 한 명이 파도에 휩쓸려 바다로 떠밀려가고 있습니다. 시나리오 작성해주세요.',
+            '유형: 익수자, 상황: 해수욕장에서 두 명의 아이들이 파도에 휩쓸려 바다로 떠밀려가고 있습니다. 시나리오 작성해주세요.',
+            '유형: 익수자, 상황: 해수욕장에서 가족과 함께 온 청소년 한 명이 파도에 휩쓸려 바다로 떠밀려가고 있습니다. 시나리오 작성해주세요.',
+            '유형: 익수자, 상황: 해수욕장에서 부모와 함께 온 두 명의 아이들이 파도에 휩쓸려 바다로 떠밀려가고 있습니다. 시나리오 작성해주세요.',
+            
+        ];
+        var randomIndex = Math.floor(Math.random() * questions.length);
+        sendPredefinedQuestion(questions[randomIndex]);
+    }
+
+    function sendRandomPredefinedQuestion_medical_aid() {
+        var questions = [
+            '유형: 의료지원, 상황: 해변에서 한 성인이 일사병 증상을 보이고 있다. 시나리오 작성해주세요.',
+            '유형: 의료지원, 상황: 한 어린이가 해변에서 넘어져 다리를 다쳤다. 시나리오 작성해주세요.',
+            '유형: 의료지원, 상황: 한 관광객이 해변에서 식중독 증상을 보이고 있다. 시나리오 작성해주세요.',
+            '유형: 의료지원, 상황: 한 성인이 해파리에 쏘여 알레르기 반응을 보이고 있다. 시나리오 작성해주세요.',
+            '유형: 의료지원, 상황: 한 성인이 해변에서 어지러움과 메스꺼움을 느끼고 있다. 시나리오 작성해주세요.',
+            '유형: 의료지원, 상황: 한 어린아이가 해변에서 모래에 묻혀 호흡 곤란을 겪고 있다. 시나리오 작성해주세요.',
+            '유형: 의료지원, 상황: 한 성인이 해변에서 두통과 고열 증상을 보이고 있다. 시나리오 작성해주세요.',
+            '유형: 의료지원, 상황: 해변에서 한 사람이 심장마비 증상을 보이고 있다. 시나리오 작성해주세요.',
+            '유형: 의료지원, 상황: 한 성인이 해변에서 발목을 삐었다. 시나리오 작성해주세요.',
+            '유형: 의료지원, 상황: 해변에서 한 아이가 탈수 증상을 보이고 있다. 시나리오 작성해주세요.',
+            '유형: 의료지원, 상황: 해변에서 한 성인이 독사에 물렸다. 시나리오 작성해주세요.',
+            '유형: 의료지원, 상황: 한 어린이가 해변에서 넘어져 팔을 다쳤다. 시나리오 작성해주세요.',
+            '유형: 의료지원, 상황: 한 성인이 해변에서 갑작스러운 복통을 호소하고 있다. 시나리오 작성해주세요.',
+            '유형: 의료지원, 상황: 한 관광객이 해변에서 현기증을 느끼고 있다. 시나리오 작성해주세요.',
+            '유형: 의료지원, 상황: 한 어린아이가 해변에서 벌에 쏘였다. 시나리오 작성해주세요.',
+            '유형: 의료지원, 상황: 한 성인이 해변에서 심한 탈진 상태이다. 시나리오 작성해주세요.',
+            '유형: 의료지원, 상황: 한 어린아이가 해변에서 찰과상을 입었다. 시나리오 작성해주세요.',
+            '유형: 의료지원, 상황: 해변에서 한 사람이 호흡 곤란을 겪고 있다. 시나리오 작성해주세요.',
+            '유형: 의료지원, 상황: 한 성인이 해변에서 의식을 잃었다. 시나리오 작성해주세요.',
+            '유형: 의료지원, 상황: 해변에서 한 아이가 체온이 급격히 떨어졌다. 시나리오 작성해주세요.',
+            
+        ];
+        var randomIndex = Math.floor(Math.random() * questions.length);
+        sendPredefinedQuestion(questions[randomIndex]);
+    }
+
+    function sendRandomPredefinedQuestion_missing() {
+        var questions = [
+            '유형: 실종, 상황: 해수욕장에서 한 명의 어린이가 부모와 떨어져 실종되었습니다. 시나리오 작성해주세요.',
+            '유형: 실종, 상황: 해수욕장에서 한 명의 청소년이 친구들과 떨어져 실종되었습니다. 시나리오 작성해주세요.',
+            '유형: 실종, 상황: 해수욕장에서 한 명의 성인이 산책 중 실종되었습니다. 시나리오 작성해주세요.',
+            '유형: 실종, 상황: 해수욕장에서 한 명의 관광객이 수영 중 실종되었습니다. 시나리오 작성해주세요.',
+            '유형: 실종, 상황: 해수욕장에서 한 명의 노인이 산책 중 실종되었습니다. 시나리오 작성해주세요.',
+            '유형: 실종, 상황: 해수욕장에서 한 명의 어린이가 부모와 떨어져 실종되었습니다. 시나리오 작성해주세요.',
+            '유형: 실종, 상황: 해수욕장에서 한 청소년이 친구들과 놀다가 실종되었습니다. 시나리오 작성해주세요.',
+            '유형: 실종, 상황: 해수욕장에서 한 여성이 서핑 중 실종되었습니다. 시나리오 작성해주세요.',
+            '유형: 실종, 상황: 해수욕장에서 한 명의 어린이가 부모와 떨어져 실종되었습니다. 시나리오 작성해주세요.',
+            '유형: 실종, 상황: 해수욕장에서 한 명의 청소년이 친구들과 떨어져 실종되었습니다. 시나리오 작성해주세요.',
+            '유형: 실종, 상황: 해수욕장에서 한 명의 성인이 산책 중 실종되었습니다. 시나리오 작성해주세요.',
+            '유형: 실종, 상황: 해수욕장에서 한 명의 관광객이 수영 중 실종되었습니다. 시나리오 작성해주세요.',
+            '유형: 실종, 상황: 해수욕장에서 한 명의 노인이 산책 중 실종되었습니다. 시나리오 작성해주세요.',
+            '유형: 실종, 상황: 해수욕장에서 한 명의 어린이가 부모와 떨어져 실종되었습니다. 시나리오 작성해주세요.',
+            '유형: 실종, 상황: 해수욕장에서 한 청소년이 친구들과 놀다가 실종되었습니다. 시나리오 작성해주세요.',
+            '유형: 실종, 상황: 해수욕장에서 한 여성이 서핑 중 실종되었습니다. 시나리오 작성해주세요.',
+            '유형: 실종, 상황: 해수욕장에서 한 명의 어린이가 부모와 떨어져 실종되었습니다. 시나리오 작성해주세요.',
+            '유형: 실종, 상황: 해수욕장에서 한 명의 청소년이 친구들과 떨어져 실종되었습니다. 시나리오 작성해주세요.',
+            '유형: 실종, 상황: 해수욕장에서 한 명의 성인이 산책 중 실종되었습니다. 시나리오 작성해주세요.',
+            '유형: 실종, 상황: 해수욕장에서 한 명의 관광객이 수영 중 실종되었습니다. 시나리오 작성해주세요.',
+            
+        ];
+        var randomIndex = Math.floor(Math.random() * questions.length);
+        sendPredefinedQuestion(questions[randomIndex]);
+    }
+
+    document.getElementById('send-button').addEventListener('click', function() {
+        var question = document.getElementById('question-input').value;
+        if (question.trim() === '') {
+            alert('질문을 입력하세요.');
+            return;
+        }
+
+       // 로딩 스피너 표시
+        document.getElementById('loading-spinner').style.display = 'block';
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '{% url "chat" %}', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
+
+        xhr.onload = function() {
+            // 로딩 스피너 숨기기
+            document.getElementById('loading-spinner').style.display = 'none';
+
+            if (xhr.status === 200) {
+                var response = JSON.parse(xhr.responseText);
+                var chatContent = document.getElementById('chat-content');
+                chatContent.innerHTML = ''; // Clear previous chat messages
+                var newMessage = document.createElement('div');
+                newMessage.classList.add('chat-message-box');
+                newMessage.innerHTML = '<strong>질문:</strong> ' + response.question + '<br>' +
+                                       '<strong>답변:</strong><br>' +
+                                       response.answer.replace(/\n/g, "<br>") + '<br>';
+                chatContent.appendChild(newMessage);
+                chatContent.scrollTop = chatContent.scrollHeight;
+
+                document.getElementById('question-input').value = '';
+            } else {
+                alert('오류가 발생했습니다.');
+            }
+        };
+
+        xhr.send('question=' + encodeURIComponent(question));
+    });
+</script>
+
+
 </body>
     
 
