@@ -50,6 +50,10 @@
         font-size: 36px;
         font-weight: bold;
     }
+
+    #question-input, #send-button {
+        display: none;
+    }
 </style>
 
 <!-- Main Content Start -->
@@ -72,14 +76,14 @@
                         {% endfor %}
                     </div>
                     <div class="button-group mt-3">
-                        <button class="btn btn-secondary mb-2">생물보호</button>
-                        <button class="btn btn-secondary mb-2">수상레저</button>
-                        <button class="btn btn-secondary mb-2">불법</button>
-                        <button class="btn btn-secondary mb-2">해양오염</button>
-                        <button class="btn btn-secondary mb-2">피서객안전</button>
-                        <button class="btn btn-secondary mb-2">익수자</button>
-                        <button class="btn btn-secondary mb-2">의료지원</button>
-                        <button class="btn btn-secondary mb-2">실종</button>
+                        <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion_biological_protection()">생물보호</button>
+                        <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion_water_leisure()">수상레저</button>
+                        <button class="btn btn-secondary mb-2" onclick="sendPredefinedQuestion('불법 시나리오 작성해줘')">불법</button>
+                        <button class="btn btn-secondary mb-2" onclick="sendPredefinedQuestion('해양오염 시나리오 작성해줘')">해양오염</button>
+                        <button class="btn btn-secondary mb-2" onclick="sendPredefinedQuestion('피서객안전 시나리오 작성해줘')">피서객안전</button>
+                        <button class="btn btn-secondary mb-2" onclick="sendPredefinedQuestion('익수자 시나리오 작성해줘')">익수자</button>
+                        <button class="btn btn-secondary mb-2" onclick="sendPredefinedQuestion('의료지원 시나리오 작성해줘')">의료지원</button>
+                        <button class="btn btn-secondary mb-2" onclick="sendPredefinedQuestion('실종 시나리오 작성해줘')">실종</button>
                     </div>
                     <div class="input-group mt-3">
                         <input type="text" class="form-control" id="question-input" placeholder="메시지 입력">
@@ -193,6 +197,61 @@
                (ms < 100 ? (ms < 10 ? "00" + ms : "0" + ms) : ms);
     }
 
+    function sendPredefinedQuestion(question) {
+        document.getElementById('question-input').value = question;
+        document.getElementById('send-button').click();
+    }
+
+    function sendRandomPredefinedQuestion_biological_protection() {
+        var questions = [
+            '유형: 생물 보호, 상황: 어부들이 불법으로 산호를 채집하고 있는 시나리오 작성해주세요.',
+            '유형: 생물 보호, 상황: 관광객들이 불법으로 바다 거북 알을 채집하고 있는 시나리오 작성해주세요.',
+            '유형: 생물 보호, 상황: 다이버들이 불법으로 해삼을 채집하고 있는 시나리오 작성해주세요.',
+            '유형: 생물 보호, 상황: 어린이가 해수욕장에서 해양 생물을 학대하고 있는 시나리오 작성해주세요.',
+            '유형: 생물 보호, 상황: 어부들이 보호 구역에서 불법으로 물고기를 잡고 있는 시나리오 작성해주세요.',
+            '유형: 생물 보호, 상황: 해수욕장에서 어린이가 해양 생물을 수집하고 있는 시나리오 작성해주세요.',
+            '유형: 생물 보호, 상황: 해수욕장에서 사람이 불법으로 해양 식물을 채집하고 있는 시나리오 작성해주세요.',
+            '유형: 생물 보호, 상황: 해양 보호 구역에서 불법 잠수부들이 불법 채집을 하고 있는 시나리오 작성해주세요.',
+            '유형: 생물 보호, 상황: 해양 보호 구역에서 상어를 불법적으로 잡는 사람들이 있는 시나리오 작성해주세요.',
+            '유형: 생물 보호, 상황: 해변에서 관광객이 조개를 불법 채집하고 있는 시나리오 작성해주세요.',
+            '유형: 생물 보호, 상황: 어부들이 보호 구역에서 불법으로 고래를 포획하고 있는 시나리오 작성해주세요.',
+            '유형: 생물 보호, 상황: 해양 보호 구역에서 불법 잠수부들이 불법 채집을 하고 있는 시나리오 작성해주세요.',
+            '유형: 생물 보호, 상황: 해양 보호 구역에서 불법으로 산호를 채집하는 다이버들이 있는 시나리오 작성해주세요.',
+            '유형: 생물 보호, 상황: 해수욕장에서 한 명이 해양 생물을 불법 채집을 하고 있는 시나리오 작성해주세요.',
+            '유형: 생물 보호, 상황: 관광객들이 불법으로 바다 거북 알을 채집하고 있는 시나리오 작성해주세요.',
+            '유형: 생물 보호, 상황: 해수욕장에서 한 명이 해양 생물을 불법 채집을 하고 있는 시나리오 작성해주세요.',
+        ];
+        var randomIndex = Math.floor(Math.random() * questions.length);
+        sendPredefinedQuestion(questions[randomIndex]);
+    }
+
+    function sendRandomPredefinedQuestion_water_leisure() {
+        var questions = [
+            '유형: 수상 레저, 상황: 제트 스키 충돌 사고 발생, 한 명의 탑승자가 물에 빠져 부상당한 시나리오 작성해주세요.',
+            '유형: 수상 레저, 상황: 바나나 보트 전복 사고 발생, 탑승자 3명 물에 빠진 시나리오 작성해주세요.',
+            '유형: 수상 레저, 상황: 패들보드 사용자 물에 빠져 패들보드와 분리된 시나리오 작성해주세요.',
+            '유형: 수상 레저, 상황: 윈드서핑 중 바람이 강하게 불어 서퍼가 해안에서 멀어진 시나리오 작성해주세요.',
+            '유형: 수상 레저, 상황: 수상 스키를 타던 중 한 명의 성인이 밸런스를 잃고 물에 빠진 시나리오 작성해주세요.',
+            '유형: 수상 레저, 상황: 제트스키가 뒤집히면서 두 명의 성인이 물에 빠진 시나리오 작성해주세요.',
+            '유형: 수상 레저, 상황: 패들보드 타던 중 한 명의 어린이가 바람에 밀려 멀리 떠밀려간 시나리오 작성해주세요.',
+            '유형: 수상 레저, 상황: 카약이 전복되어 한 명의 성인이 물에 빠진 시나리오 작성해주세요.',
+            '유형: 수상 레저, 상황: 제트스키 탑승 중 한 명이 제트스키에서 떨어져 다리 부상을 당한 시나리오 작성해주세요.',
+            '유형: 수상 레저, 상황: 제트스키 탑승자가 고장으로 인해 해상에서 조난 당한 시나리오 작성해주세요.',
+            '유형: 수상 레저, 상황: 패러세일러가 착륙 도중 바다에 추락하는 시나리오 작성해주세요.',
+            '유형: 수상 레저, 상황: 바나나보트가 뒤집혀 탑승자 3명이 물에 빠지는 시나리오 작성해주세요.',
+            '유형: 수상 레저, 상황: 서핑 도중 서퍼가 큰 파도에 휩쓸려 익수된 시나리오 작성해주세요.',
+            '유형: 수상 레저, 상황: 카약이 전복되어 탑승자가 물에 빠진 시나리오 작성해주세요.',
+            '유형: 수상 레저, 상황: 윈드서퍼가 강풍에 의해 보드에서 떨어져 바다로 추락한 시나리오 작성해주세요.',
+            '유형: 수상 레저, 상황: 스노클링 도중 한 명이 해류에 휩쓸려 실종된 시나리오 작성해주세요.',
+            '유형: 수상 레저, 상황: 패들보드를 타고 있던 사람이 해류에 떠밀려 바다로 나간 시나리오 작성해주세요.',
+            '유형: 수상 레저, 상황: 워터스키 도중 스키어가 균형을 잃고 물에 빠진 시나리오 작성해주세요.',
+            '유형: 수상 레저, 상황: 수상 자전거 탑승자가 균형을 잃고 물에 빠진 시나리오 작성해주세요.',
+            '유형: 수상 레저, 상황: 제트스키를 타던 사람이 충돌로 인해 바다로 떨어진 시나리오 작성해주세요.',
+            
+        ];
+        var randomIndex = Math.floor(Math.random() * questions.length);
+        sendPredefinedQuestion(questions[randomIndex]);
+    }
 
     document.getElementById('send-button').addEventListener('click', function() {
         var question = document.getElementById('question-input').value;
@@ -210,6 +269,7 @@
             if (xhr.status === 200) {
                 var response = JSON.parse(xhr.responseText);
                 var chatContent = document.getElementById('chat-content');
+                chatContent.innerHTML = ''; // Clear previous chat messages
                 var newMessage = document.createElement('div');
                 newMessage.classList.add('chat-message-box');
                 newMessage.innerHTML = '<strong>질문:</strong> ' + response.question + '<br>' +
