@@ -337,9 +337,9 @@ def delete_freeboard(request, post_id):
     return JsonResponse({'success': True})
 
 
-@login_required
-def chat(request):
-    return render(request, 'chat.html')
+# @login_required
+# def chat(request):
+#     return render(request, 'chat.html')
 
 @login_required
 def cctv(request):
@@ -588,15 +588,61 @@ def control_view(request):
     
     return render(request, 'weather.html', context)
 
-@csrf_exempt
-@login_required
-def chat_message(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        message = data.get('message')
+# @csrf_exempt
+# @login_required
+# def chat_message(request):
+#     if request.method == 'POST':
+#         data = json.loads(request.body)
+#         message = data.get('message')
         
-        # ChatOpenAI와 연동하여 챗봇 응답 생성
-        response = qa_chain({"question": message})
+#         # ChatOpenAI와 연동하여 챗봇 응답 생성
+#         response = qa_chain({"question": message})
 
-        return JsonResponse({'response': response['answer']})
-    return JsonResponse({'error': 'Invalid request'}, status=400)
+#         return JsonResponse({'response': response['answer']})
+#     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+from django.shortcuts import render, redirect
+from django.http import HttpResponse, JsonResponse
+from django.utils import timezone
+from langchain.chat_models import ChatOpenAI
+from langchain.vectorstores import Chroma
+from langchain.chains import RetrievalQA
+from .models import Chatlog
+import logging
+
+logger = logging.getLogger(__name__)
+embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
+database = Chroma(persist_directory="./database", embedding_function=embeddings)
+
+def chat(request):
+    if request.method == 'POST':
+        query = request.POST.get('question')
+
+        chat = ChatOpenAI(model="gpt-3.5-turbo")
+        k = 3
+        retriever = database.as_retriever(search_kwargs={"k": k})
+        qa = RetrievalQA.from_llm(llm=chat, retriever=retriever, return_source_documents=True)
+
+        result = qa(query)
+        answer = result["result"]
+
+        timestamp = timezone.now()
+        chatlog = Chatlog(question=query, answer=answer, created_at=timestamp)
+        chatlog.save()
+
+        logs = request.session.get('logs', [])
+        logs.append({'question': query, 'answer': answer, 'timestamp': timestamp.strftime('%Y-%m-%d %H:%M:%S')})
+        request.session['logs'] = logs
+
+        return JsonResponse({'question': query, 'answer': answer, 'timestamp': timestamp.strftime('%Y-%m-%d %H:%M:%S')})
+    else:
+        logs = request.session.get('logs', [])
+        return render(request, 'chat.html', {'logs': logs})
+
+def chat_clear_logs(request):
+    if request.method == 'POST':
+        request.session['logs'] = []
+        return redirect('chat')
+    else:
+        return HttpResponse(status=405)
