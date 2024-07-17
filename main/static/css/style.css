@@ -441,19 +441,7 @@
 }
 
 
-.footer {
-    position: fixed;
-    bottom: 0;
-    margin: 0;
-    font-family: Arial, sans-serif;
-    font-weight: 3;
-    background-color: #ffffff; 
-    color: #9c9c9cc2;
-    padding-top: 40px; /* Adjust the value as needed */
-    padding-bottom: 10px; /* This ensures the bottom padding remains the same */
-}
-
-.footer .footer-logos img {
+.footer-logos img {
     width: 40px;
     height: 50px;
     margin: 0 10px; /* 여백을 좁게 설정 */
@@ -754,7 +742,7 @@
 }
 
 /* CCTV 페이지에서 푸터 숨기기 */
-.cctv-page .footer {
+.cctv-page .main-footer {
     display: none;
 }
 
