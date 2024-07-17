@@ -128,6 +128,7 @@ class Scenario(models.Model):
     scenario_situation = models.TextField(blank=False, null=False) # 시나리오 상황
     scenario_process = models.TextField(blank=False, null=False)  # 시나리오 절차
     scenario_goals = models.TextField(blank=False, null=False) # 시나리오 목표
+    scenario_qa = models.TextField(blank=False, null=False) # 시나리오 QA
 
 
     class Meta:

@@ -602,18 +602,38 @@ def control_view(request):
 #     return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
+import sqlite3
+import pandas as pd
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.utils import timezone
 from langchain.chat_models import ChatOpenAI
 from langchain.vectorstores import Chroma
 from langchain.chains import RetrievalQA
+from langchain.schema import Document
+from langchain.embeddings import OpenAIEmbeddings
 from .models import Chatlog
 import logging
 
 logger = logging.getLogger(__name__)
+
+# SQLite 데이터베이스에서 QA 데이터를 가져오는 함수 (새로 추가된 레코드만 가져오도록 수정)
+def get_new_qa_data(last_id):
+    conn = sqlite3.connect('db.sqlite3')
+    query = f"SELECT scenario_qa FROM Scenario WHERE scenario_id > {last_id}"
+    df = pd.read_sql_query(query, conn)
+    conn.close()
+    return df
+
+# Embeddings 및 Chroma 데이터베이스 설정
 embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
 database = Chroma(persist_directory="./database", embedding_function=embeddings)
+
+# QA 데이터를 Document 객체로 변환하고 Chroma 데이터베이스에 추가
+def add_qa_to_database(last_id):
+    data = get_new_qa_data(last_id)
+    documents = [Document(page_content=text) for text in data['scenario_qa'].tolist()]
+    database.add_documents(documents)
 
 def chat(request):
     if request.method == 'POST':
