@@ -22,7 +22,7 @@ from main.utils import similarity_function
 import boto3
 from django.conf import settings
 from collections import Counter
-# from django.utils.timezone import localtime
+from django.utils.timezone import localtime
 from django.utils import timezone
 import time 
 import hmac
