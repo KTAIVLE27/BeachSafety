@@ -10,7 +10,7 @@ urlpatterns = [
     path("myprofile", views.myprofile, name='myprofile'),
     path("board", views.board, name='board'),
     path("free_board", views.free_board, name='free_board'),
-    path("chat", views.chat, name='chat'),
+    # path("chat", views.chat, name='chat'),
     path("cctv", views.cctv, name='cctv'),
     path("weather", views.control_view, name='weather'),
     path("signup", views.signup,name='signup'),
@@ -29,6 +29,8 @@ urlpatterns = [
     path('load_prediction/', views.load_prediction, name='load_prediction'),
     path('privacy_policy', views.privacy_policy, name='privacy_policy'),
     path('copyright', views.copyright, name='copyright'),
-    path("chat_message/", views.chat_message, name='chat_message'),
+    # path("chat_message/", views.chat_message, name='chat_message'),
+    path("chat/", views.chat, name='chat'),
+    path("chat/clear_logs/", views.chat_clear_logs, name='chat_clear_logs'),
 ]
 
