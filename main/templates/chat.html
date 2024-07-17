@@ -244,7 +244,7 @@
                 if (scenarios.length > 0) {
                     var randomIndex = Math.floor(Math.random() * scenarios.length);
                     var selectedScenario = scenarios[randomIndex];
-                    var question = '유형: ' + selectedScenario.scenario_code + ', 상황: ' + selectedScenario.scenario_situation;
+                    var question = '유형: ' + selectedScenario.scenario_code + ', 상황: ' + selectedScenario.scenario_situation + '시나리오 생성';
                     sendPredefinedQuestion(question);
                 } else {
                     alert(type + ' 시나리오가 없습니다.');
