@@ -29,6 +29,7 @@ import hashlib
 import uuid
 import requests
 import os
+import datetime
 
 def get_signature(key, msg):
     return hmac.new(key.encode(), msg.encode(), hashlib.sha256).hexdigest()
@@ -172,7 +173,7 @@ def csv_upload(request):
             
             try:
                 # '시간' 데이터를 적절한 datetime 형식으로 변환
-                scenario_time = datetime.strptime(row[2], '%H:%M')
+                scenario_time = datetime.datetime.strptime(row[2], '%H:%M')
             except ValueError:
                 # 변환할 수 없는 경우 건너뜀
                 continue
