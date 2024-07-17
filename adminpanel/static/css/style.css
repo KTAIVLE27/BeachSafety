@@ -290,16 +290,34 @@
     justify-content: space-between;
     align-items: center;
 }
-
 .footer {
-    height: 50px; /* 푸터 높이 설정 */
-    background-color: #f1f1f1; /* 푸터 배경색 */
-    text-align: center; /* 텍스트 중앙 정렬 */
-    line-height: 50px; /* 세로 중앙 정렬을 위한 라인 높이 */
-    background-color: #000; /* 푸터 배경색을 검정으로 설정 */
-    color: #fff; /* 텍스트 색상을 흰색으로 설정 */
+    position: fixed;
+    bottom: 0;
+    margin: 0;
+    display: flex; /* flexbox 레이아웃을 사용 */
+    justify-content: space-between; /* 텍스트와 이미지를 양쪽 끝으로 정렬 */
+    align-items: center; 
+    font-family: Arial, sans-serif;
+    font-weight: 3;
+    background-color: #ffffff; 
+    color: #9c9c9cc2;
+    padding-top: 40px; /* Adjust the value as needed */
+    padding-bottom: 10px; /* This ensures the bottom padding remains the same */
+}
+.footer .footer-logos img {
+    width: 40px;
+    height: 50px;
+    margin: 0 10px; /* 여백을 좁게 설정 */
+    max-width: 50px; /* 최대 너비 설정 */
+    height: auto; /* 높이 자동 조정 */
 }
 
+.footer .footer-info {
+    padding-top: 20px; /* Adjust the value as needed */
+    margin-top: 2px; /* 위 마진 줄이기 */
+    line-height: 0.5; /* 행간  */
+    margin: 2px 0; /* 상하 마진 줄이기 */
+}
 
 /* Global styles */
 body {
@@ -397,4 +415,8 @@ body {
 .prediction-info {
     margin-top: 10px; /* Add margin above prediction info */
     display: none; /* Hide initially */
+}
+
+#admin-logo{
+    margin-left: 100px; 
 }

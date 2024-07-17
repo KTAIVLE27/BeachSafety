@@ -10,6 +10,7 @@
 {% block content %}
 <!-- Sale & Revenue Start -->
 <div class="container-fluid pt-4 px-4">
+    <div class="container-fluid pt-4 px-4">
     <div class="row g-4">
         <div class="col-sm-6 col-xl-3">
             <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
@@ -48,14 +49,14 @@
             </div>
         </div>
     </div>
-</div>
+    </div>
 
-<!-- Hidden elements to store chart data -->
-<div id="chart-hours-data" style="display: none;">{{ hours|safe }}</div>
-<div id="chart-counts-data" style="display: none;">{{ counts|safe }}</div>
+    <!-- Hidden elements to store chart data -->
+    <div id="chart-hours-data" style="display: none;">{{ hours|safe }}</div>
+    <div id="chart-counts-data" style="display: none;">{{ counts|safe }}</div>
 
-<!-- Hourly Login Chart and Messages Start -->
-<div class="container-fluid pt-4 px-4">
+    <!-- Hourly Login Chart and Messages Start -->
+    <div class="container-fluid pt-4 px-4">
     <div class="row g-4">
         <!-- 시간대별 접속자 수 그래프 -->
         <div class="col-sm-12 col-xl-6">
@@ -87,11 +88,11 @@
             </div>
         </div>
     </div>
-</div>
-<!-- Hourly Login Chart and Messages End -->
+    </div>
+    <!-- Hourly Login Chart and Messages End -->
 
-<!-- Beach List Start -->
-<div class="container-fluid pt-4 px-4">
+    <!-- Beach List Start -->
+    <div class="container-fluid pt-4 px-4">
     <div class="bg-light text-center rounded p-4">
         <div class="d-flex align-items-center justify-content-between mb-4">
             <h6 class="mb-0">해수욕장 리스트</h6>
@@ -121,9 +122,9 @@
             </table>
         </div>
     </div>
+    </div>
+    <!-- Beach List End -->
 </div>
-<!-- Beach List End -->
-
 {% endblock %}
 
 {% block end-script %}

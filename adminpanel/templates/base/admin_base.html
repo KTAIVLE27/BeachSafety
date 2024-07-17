@@ -66,11 +66,11 @@
                 </div>
                 <div class="navbar-nav w-100">
                     
-                    <a href="{% url 'adminpanel:admin_home' %}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/home_24dp.png'%}" style="width: 40px; height: 40px;"></i>관리자 홈</a>
-                    <a href="{% url 'adminpanel:user_list_view'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/face_24dp.png'%}" style="width: 40px; height: 40px;"></i>사용자 정보 관리</a>
-                    <a href="{% url 'adminpanel:senario'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/wysiwyg_24dp.png'%}" style="width: 40px; height: 40px;"></i>훈련시나리오 관리</a>
-                    <a href="{% url 'adminpanel:notice_manage'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/chat_24dp.png'%}" style="width: 40px; height: 40px;"></i>공지사항 관리</a>
-                    <a href="{% url 'adminpanel:board_manage'%}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/chat_24dp.png'%}" style="width: 40px; height: 40px;"></i>자유게시판 관리</a>
+                    <a href="{% url 'adminpanel:admin_home' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'admin_home' %}active{% endif %}"><img class="fa fa-th me-2" src="{% static 'img/home_24dp.png'%}" style="width: 40px; height: 40px;"></i>관리자 홈</a>
+                    <a href="{% url 'adminpanel:user_list_view'%}" class="nav-item nav-link {% if request.resolver_match.url_name == 'user_list_view' %}active{% endif %}"><img class="fa fa-th me-2" src="{% static 'img/face_24dp.png'%}" style="width: 40px; height: 40px;"></i>사용자 정보 관리</a>
+                    <a href="{% url 'adminpanel:senario'%}" class="nav-item nav-link {% if request.resolver_match.url_name == 'senario' %}active{% endif %}"><img class="fa fa-th me-2" src="{% static 'img/wysiwyg_24dp.png'%}" style="width: 40px; height: 40px;"></i>훈련시나리오 관리</a>
+                    <a href="{% url 'adminpanel:notice_manage'%}" class="nav-item nav-link {% if request.resolver_match.url_name == 'notice_manage' %}active{% endif %}"><img class="fa fa-th me-2" src="{% static 'img/chat_24dp.png'%}" style="width: 40px; height: 40px;"></i>공지사항 관리</a>
+                    <a href="{% url 'adminpanel:board_manage'%}" class="nav-item nav-link {% if request.resolver_match.url_name == 'board_manage' %}active{% endif %}"><img class="fa fa-th me-2" src="{% static 'img/chat_24dp.png'%}" style="width: 40px; height: 40px;"></i>자유게시판 관리</a>
                     
                     
                     
@@ -89,7 +89,7 @@
                     <i class="fa fa-bars"></i>
                 </a>
                 
-                <a href="{% url 'adminpanel:admin_home' %}"><img src="{% static 'img/logo_new1.png' %}" width="50" height="55"></i></a>
+                <a href="{% url 'adminpanel:admin_home' %}"><img src="{% static 'img/logo_new1.png' %}" width="50" height="55" id="main-logo"></i></a>
                 <div class="navbar-nav align-items-center ms-auto">
                     <div class="nav-item dropdown">
                         <form method="post" action="{% url 'logout' %}">
@@ -111,25 +111,27 @@
 
             {% block content %}{% endblock %}
             <!-- Content End -->
-
+            <!-- Footer Start -->
             <footer class='footer'>
-                <!-- Footer Start -->
-                <div class="footer-logos">
-                    <a href="https://corp.kt.com/" target="_blank"><img src="/static/img/kt_logo.png" alt="KT Logo"></a>
-                    <a href="https://aivle.kt.co.kr/home/main/indexMain" target="_blank"><img src="/static/img/aivle_logo.png" alt="Aivle Logo"></a>
-                    <a href="https://www.instagram.com/reel/C9NQkQDyf9a/?igsh=a3hjMTVzb2kxZjV6" target="_blank"><img src="/static/img/logo_new1.png" alt="New Logo"></a></p>
+                <div class="footer-content" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div class="footer-text" style="text-align: left; padding-left: 20px;"> <!-- Left padding added -->
+                        <p>
+                            <a href="{% url 'team_info' %}">팀 소개</a> | 
+                            <a href="{% url 'privacy_policy' %}">개인정보처리방침</a> |
+                            <a href="{% url 'copyright' %}">저작권보호정책</a>
+                        </p>
+                        <div class="footer-info">
+                            <p>[61251] 7F, 15, Mudeung-ro 202beon-gil, Buk-gu, Gwangju, Republic of Korea.</p>
+                            <p>ⓒ2024. Aivle-School 5th BigProject Team27.</p>
+                            <p>문의 a055555@aivle.kt.co.kr
+                        </div>
+                    </div>
+                    <div class="footer-logos" style="text-align: right; padding-right: 20px;">
+                        <a href="https://corp.kt.com/" target="_blank"><img src="/static/img/kt_logo.png" alt="KT Logo"></a>
+                        <a href="https://aivle.kt.co.kr/home/main/indexMain" target="_blank"><img src="/static/img/aivle_logo.png" alt="Aivle Logo"></a>
+                        <a href="https://www.instagram.com/reel/C9NQkQDyf9a/?igsh=a3hjMTVzb2kxZjV6" target="_blank"><img src="/static/img/logo_new1.png" alt="New Logo"></a>
+                    </div>
                 </div>
-                <p>
-                    <a href="{% url 'team_info' %}">팀 소개</a> | 
-                    <a href="privacy_policy.html">개인정보처리방침</a> |
-                    <a href="copyright.html">저작권</a>
-                </p>
-                <div class="footer-info">
-                    <p>[61251] 7F, 15, Mudeung-ro 202beon-gil, Buk-gu, Gwangju, Republic of Korea.</p>
-                    <p>ⓒ2024. Aivle-School 5th BigProject Team27.</p>
-                    
-                </div>
-            </footer>
             </footer>
             <!-- Footer End -->
         </div>
