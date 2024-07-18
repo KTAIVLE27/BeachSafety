@@ -83,8 +83,8 @@
                             <img class="fa fa-th me-2" src="{% static 'img/face_24dp.png' %}" style="width: 40px; height: 40px;">마이 페이지
                         </a>
                         <div class="dropdown-menu" id="myProfileMenu">
-                            <a class="dropdown-item {% if request.resolver_match.url_name == 'myprofile' %}active{% endif %}" href="{% url 'myprofile' %}">내 정보 수정</a>
-                            <a class="dropdown-item {% if request.resolver_match.url_name == 'myposts' %}active{% endif %}" href="{% url 'myposts' %}">내가 쓴 글 관리</a>
+                            <a class="dropdown-item {% if request.resolver_match.url_name == 'myprofile' %}active{% endif %}" href="{% url 'myprofile' %}">📄 내 정보 수정</a>
+                            <a class="dropdown-item {% if request.resolver_match.url_name == 'myposts' %}active{% endif %}" href="{% url 'myposts' %}">✒️ 내가 쓴 글 관리</a>
                         </div>
                     </div>
                     <a href="{% url 'cctv' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'cctv' %}active{% endif %}">
