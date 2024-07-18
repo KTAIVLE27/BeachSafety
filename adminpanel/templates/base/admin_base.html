@@ -85,29 +85,26 @@
         <div class="content">
            <!-- Navbar Start -->
             <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
-                <a href="#" class="sidebar-toggler flex-shrink-0">
-                    <i class="fa fa-bars"></i>
-                </a>
+                <a href="#" class="sidebar-toggler flex-shrink-0"><i class="fa fa-bars"></i></a>
                 
                 <a href="{% url 'adminpanel:admin_home' %}"><img src="{% static 'img/logo_new1.png' %}" width="50" height="55" id="main-logo"></i></a>
+                
                 <div class="navbar-nav align-items-center ms-auto">
                     <div class="nav-item dropdown">
                         <form method="post" action="{% url 'logout' %}">
                             {% csrf_token %}
-                            <button type="submit" style="border:none; background:none;">
-                                <img src="{% static 'img/logout_24dp.png' %}" width="50" height="50" alt="Logout">
-                            </button>
+                            <button type="submit" style="border:none; background:none;">로그아웃</button>
                         </form>
                     </div>
                     <div class="nav-item dropdown">
-                        <a href="{% url 'home' %}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/home_24dp.png' %}" style="width: 50px; height: 50px;"></a>
+                        <a href="{% url 'home' %}" class="nav-item nav-link">메인 홈</a>
                     </div>
                     <div class="nav-item dropdown">
-                        <a href="{% url 'control:control' %}" class="nav-item nav-link"><img class="fa fa-th me-2" src="{% static 'img/videocam.png' %}" style="width: 50px; height: 50px;"></a>
+                        <a href="{% url 'control:control' %}" class="nav-item nav-link">해양 관제 시스템</a>
                     </div>
                 </div>
             </nav>
-     <!-- Navbar End -->
+            <!-- Navbar End -->
      <div class="container-fluid pt-4 px-4">
         {% block content %}{% endblock %}
     </div>

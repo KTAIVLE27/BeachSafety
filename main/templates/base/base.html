@@ -116,44 +116,34 @@
             <!-- Navbar Start -->
             <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
                 <a href="#" class="sidebar-toggler flex-shrink-0"><i class="fa fa-bars"></i></a>
+
                 <a href="{% url 'home' %}"><img src="{% static 'img/logo_new1.png' %}" width="50" height="55" id="main-logo"></i></a>      
-               
                
                 <div class="navbar-nav align-items-center ms-auto">
                     <!-- Add buttons based on user role ㅇㅇ-->
+                        <div class="nav-item dropdown">
+                            <form method="post" action="{% url 'logout' %}">
+                                {% csrf_token %}
+                                <button type="submit" style="border:none; background:none;">로그아웃</button>
+                            </form>
+                        </div>
+
                     {% if user.user_role == 'admin' %}
                         <div class="nav-item dropdown">
-                            <a href="{% url 'adminpanel:admin_home' %}">
-                                <img class="rounded-circle me-lg-2" src="{% static 'img/wysiwyg_24dp.png' %}" alt="" style="width: 50px; height: 50px;">
-                            </a>
+                            <a href="{% url 'adminpanel:admin_home' %}" class="nav-item nav-link">관리자 홈</a>
                         </div>
                        
                         <div class="nav-item dropdown">
-                            <a href="{% url 'control:control' %}">
-                                <img class="rounded-circle me-lg-2" src="{% static 'img/videocam.png' %}" alt="" style="width: 50px; height: 50px;">
-                            </a>
+                            <a href="{% url 'control:control' %}" class="nav-item nav-link">해양 관제 시스템</a>
                         </div>
                     {% elif user.user_role == 'supervisor' %}
                         <div class="nav-item dropdown">
-                            <a href="{% url 'control:control' %}">
-                                <img class="rounded-circle me-lg-2" src="{% static 'img/videocam.png' %}" alt="" style="width: 50px; height: 50px;">
-                            </a>
+                            <a href="{% url 'control:control' %}" class="nav-item nav-link">해양 관제 시스템</a>
                         </div>
                     {% endif %}
-                   
-                    <div class="nav-item dropdown">
-                        <form method="post" action="{% url 'logout' %}">
-                            {% csrf_token %}
-                            <button type="submit" style="border:none; background:none;">
-                                <img src="{% static 'img/logout_24dp.png' %}" width="50" height="50" alt="Logout">
-                            </button>
-                        </form>
-                    </div>
                
                     <div class="nav-item dropdown">
-                        <a href="{% url 'myprofile' %}">
-                            <img class="rounded-circle me-lg-2" src="{% static 'img/face_24dp.png' %}" alt="" style="width: 50px; height: 50px;">
-                        </a>
+                        <a href="{% url 'myprofile' %}" class="nav-item nav-link">내 정보</a>
                     </div>
                 </div>
             </nav>
