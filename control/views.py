@@ -147,126 +147,344 @@ from threading import Event
 # YOLOv8 모델 설정
 model = YOLO('control/best3.pt')  # 세그멘테이션 모델 파일 경로
 
-
 human_detected = False
 general_count = 0 # 사람 수 세기
 cacution_count = 0 # 주의 요먕 인원 세기
 
-def stream_video(video_url):
+# 함덕 해수욕장
+def stream_video(video_url, cctv_code):
     global stop_stream_event, human_detected, general_count, cacution_count
-    stop_stream_event.clear()
+    
+    if cctv_code == 1:
+        stop_stream_event.clear()
 
-    ydl_opts = {
-        'format': 'best',
-        'quiet': True
-    }
+        ydl_opts = {
+            'format': 'best',
+            'quiet': True
+        }
 
-    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        info_dict = ydl.extract_info(video_url, download=False)
-        video_url = info_dict['url']
+        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            info_dict = ydl.extract_info(video_url, download=False)
+            video_url = info_dict['url']
 
-    cap = cv2.VideoCapture(video_url)
-    classes = model.names
-    print(classes)  # 디버깅을 위해 추가
-    sea_class_index = None
-    human_class_index = None
-    for i, class_name in enumerate(classes):
-        if class_name == 1:  # 클래스 이름을 모델에 맞게 수정
-            sea_class_index = i
-        elif class_name == 0:  # 클래스 이름을 모델에 맞게 수정
-            human_class_index = i
-        if sea_class_index is not None and human_class_index is not None:
-            break
+        cap = cv2.VideoCapture(video_url)
+        classes = model.names
+        print(classes)  # 디버깅을 위해 추가
+        sea_class_index = None
+        human_class_index = None
+        for i, class_name in enumerate(classes):
+            if class_name == 1:  # 클래스 이름을 모델에 맞게 수정
+                sea_class_index = i
+            elif class_name == 0:  # 클래스 이름을 모델에 맞게 수정
+                human_class_index = i
+            if sea_class_index is not None and human_class_index is not None:
+                break
 
-    if sea_class_index is None:
-        raise ValueError("The 'sea' class was not found in the model classes.")
-    if human_class_index is None:
-        raise ValueError("The 'human' class was not found in the model classes.")
-
-
-    offset1 = 100
-    offset2 = 50
+        if sea_class_index is None:
+            raise ValueError("The 'sea' class was not found in the model classes.")
+        if human_class_index is None:
+            raise ValueError("The 'human' class was not found in the model classes.")
 
 
-    while cap.isOpened():
-        if stop_stream_event.is_set():
-            break
-
-        ret, frame = cap.read()
-        if not ret:
-            break
-
-        frame = cv2.resize(frame, (640, 360))
-        results = model.predict(source=frame, save=False, show=False)
-        annotated_frame = results[0].plot()
-        human_detected = False
-        sea_box = None
-
-        for result in results:
-            boxes = result.boxes
-            for box in boxes:
-                cls = int(box.cls)
-                if cls == sea_class_index:
-                    sea_box = box
-                    break
-
-        if sea_box is not None:
-            x1, y1, x2, y2 = map(int, sea_box.xyxy[0])
-
-            adjusted_y1 = y2 - offset1
+        offset1 = 100
+        offset2 = 50
 
 
-            start_point1 = (0, adjusted_y1)
-            end_point1 = (640, adjusted_y1)
-            color1 = (255, 0, 0)
-            thickness = 2
-            cv2.line(annotated_frame, start_point1, end_point1, color1, thickness)
+        while cap.isOpened():
+            if stop_stream_event.is_set():
+                break
+
+            ret, frame = cap.read()
+            if not ret:
+                break
+
+            frame = cv2.resize(frame, (640, 360))
+            results = model.predict(source=frame, save=False, show=False)
+            annotated_frame = results[0].plot()
+            human_detected = False
+            sea_box = None
+
+            for result in results:
+                boxes = result.boxes
+                for box in boxes:
+                    cls = int(box.cls)
+                    if cls == sea_class_index:
+                        sea_box = box
+                        break
+
+            if sea_box is not None:
+                x1, y1, x2, y2 = map(int, sea_box.xyxy[0])
+
+                adjusted_y1 = y2 - offset1
 
 
-            adjusted_y2 = y2 - offset2
+                start_point1 = (0, adjusted_y1)
+                end_point1 = (640, adjusted_y1)
+                color1 = (255, 0, 0)
+                thickness = 2
+                cv2.line(annotated_frame, start_point1, end_point1, color1, thickness)
 
-            start_point2 = (0, adjusted_y2)
-            end_point2 = (640, adjusted_y2)
-            color2 = (0, 255, 0)
-            thickness = 2
-            cv2.line(annotated_frame, start_point2, end_point2, color2, thickness)
 
-            general_count = 0 # 사람 수 세기
-            cacution_count = 0 # 주의 요먕 인원 세기
-            # 사람의 바운딩 박스를 주황색으로 변경
+                adjusted_y2 = y2 - offset2
 
-            for box in boxes:
-                cls = int(box.cls)
-                if cls == human_class_index:
-                    hx1, hy1, hx2, hy2 = map(int, box.xyxy[0])
-                    if hy2 < adjusted_y2:
-                        color_human = (0, 165, 255)
-                        cv2.rectangle(annotated_frame, (hx1, hy1), (hx2, hy2), color_human, 2)
+                start_point2 = (0, adjusted_y2)
+                end_point2 = (640, adjusted_y2)
+                color2 = (0, 255, 0)
+                thickness = 2
+                cv2.line(annotated_frame, start_point2, end_point2, color2, thickness)
 
-                        human_detected = True
-                        cacution_count+=1
-                    else:
-                        general_count+=1
+                general_count = 0 # 사람 수 세기
+                cacution_count = 0 # 주의 요먕 인원 세기
+                # 사람의 바운딩 박스를 주황색으로 변경
+
+                for box in boxes:
+                    cls = int(box.cls)
+                    if cls == human_class_index:
+                        hx1, hy1, hx2, hy2 = map(int, box.xyxy[0])
+                        if hy2 < adjusted_y2:
+                            color_human = (0, 165, 255)
+                            cv2.rectangle(annotated_frame, (hx1, hy1), (hx2, hy2), color_human, 2)
+
+                            human_detected = True
+                            cacution_count+=1
+                        else:
+                            general_count+=1
+                            
+                # 출력문은 모달창에 사람 수 변수로 넘긴 후 삭제 예정
+                # 파란색, 주황색 바운딩 박스의 사람 수 출력
+                print(f"Number of general people: {general_count}")
+                print(f"Number of cacution people: {cacution_count}")
+
+
+            ret, buffer = cv2.imencode('.jpg', annotated_frame)
+            frame = buffer.tobytes()
+
+            yield (b'--frame\r\n'
+                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+
+        cap.release()
+        
+    elif cctv_code == 2:
+        stop_stream_event.clear()
+
+        ydl_opts = {
+            'format': 'best',
+            'quiet': True
+        }
+
+        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            info_dict = ydl.extract_info(video_url, download=False)
+            video_url = info_dict['url']
+
+        cap = cv2.VideoCapture(video_url)
+        classes = model.names
+        print(classes)  # 디버깅을 위해 추가
+        
+        sea_class_index = None
+        human_class_index = None
+        for i, class_name in enumerate(classes):
+            if class_name == 1:  # 클래스 이름을 모델에 맞게 수정
+                sea_class_index = i
+            elif class_name == 0:  # 클래스 이름을 모델에 맞게 수정
+                human_class_index = i
+            if sea_class_index is not None and human_class_index is not None:
+                break
+
+        if sea_class_index is None:
+            raise ValueError("The 'sea' class was not found in the model classes.")
+        if human_class_index is None:
+            raise ValueError("The 'human' class was not found in the model classes.")
+
+        offset1 = 300 # blue
+        offset2 = 200 # green
+
+        while cap.isOpened():
+            if stop_stream_event.is_set():
+                break
+
+            ret, frame = cap.read()
+            if not ret:
+                break
+
+            frame = cv2.resize(frame, (640, 360))
+            results = model.predict(source=frame, save=False, show=False)
+            annotated_frame = results[0].plot()
+            human_detected = False
+            sea_box = None
+
+            for result in results:
+                boxes = result.boxes
+                for box in boxes:
+                    cls = int(box.cls)
+                    if cls == sea_class_index:
+                        sea_box = box
+                        break
+
+            if sea_box is not None:
+                x1, y1, x2, y2 = map(int, sea_box.xyxy[0])
+
+                adjusted_y1 = y2 - offset1
+                start_point1 = (adjusted_y1, 0)
+                end_point1 = (adjusted_y1, 640)
+                color1 = (255, 0, 0)
+                thickness = 2
+                cv2.line(annotated_frame, start_point1, end_point1, color1, thickness)
+
+
+                adjusted_y2 = y2 - offset2
+
+                start_point2 = (adjusted_y2, 0)
+                end_point2 = (adjusted_y2, 640)
+                color2 = (0, 255, 0)
+                thickness = 2
+                cv2.line(annotated_frame, start_point2, end_point2, color2, thickness)
+
+                general_count = 0 # 사람 수 세기
+                cacution_count = 0 # 주의 요먕 인원 세기
+                # 사람의 바운딩 박스를 주황색으로 변경
+
+                for box in boxes:
+                    cls = int(box.cls)
+                    if cls == human_class_index:
+                        hx1, hy1, hx2, hy2 = map(int, box.xyxy[0])
+                        if hy2 < adjusted_y2:
+                            color_human = (0, 165, 255)
+                            cv2.rectangle(annotated_frame, (hx1, hy1), (hx2, hy2), color_human, 2)
+
+                            human_detected = True
+                            cacution_count+=1
+                        else:
+                            general_count+=1
+                            
+                # 출력문은 모달창에 사람 수 변수로 넘긴 후 삭제 예정
+                # 파란색, 주황색 바운딩 박스의 사람 수 출력
+                print(f"Number of general people: {general_count}")
+                print(f"Number of cacution people: {cacution_count}")
+
+
+            ret, buffer = cv2.imencode('.jpg', annotated_frame)
+            frame = buffer.tobytes()
+
+            yield (b'--frame\r\n'
+                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+
+        cap.release()
+
+# # 중문 해수욕장
+# def stream_video2(video_url):
+#     global stop_stream_event, human_detected, general_count, cacution_count
+#     stop_stream_event.clear()
+
+#     ydl_opts = {
+#         'format': 'best',
+#         'quiet': True
+#     }
+
+#     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+#         info_dict = ydl.extract_info(video_url, download=False)
+#         video_url = info_dict['url']
+
+#     cap = cv2.VideoCapture(video_url)
+#     classes = model.names
+#     print(classes)  # 디버깅을 위해 추가
+    
+#     sea_class_index = None
+#     human_class_index = None
+#     for i, class_name in enumerate(classes):
+#         if class_name == 1:  # 클래스 이름을 모델에 맞게 수정
+#             sea_class_index = i
+#         elif class_name == 0:  # 클래스 이름을 모델에 맞게 수정
+#             human_class_index = i
+#         if sea_class_index is not None and human_class_index is not None:
+#             break
+
+#     if sea_class_index is None:
+#         raise ValueError("The 'sea' class was not found in the model classes.")
+#     if human_class_index is None:
+#         raise ValueError("The 'human' class was not found in the model classes.")
+
+#     offset1 = 300 # blue
+#     offset2 = 200 # green
+
+#     while cap.isOpened():
+#         if stop_stream_event.is_set():
+#             break
+
+#         ret, frame = cap.read()
+#         if not ret:
+#             break
+
+#         frame = cv2.resize(frame, (640, 360))
+#         results = model.predict(source=frame, save=False, show=False)
+#         annotated_frame = results[0].plot()
+#         human_detected = False
+#         sea_box = None
+
+#         for result in results:
+#             boxes = result.boxes
+#             for box in boxes:
+#                 cls = int(box.cls)
+#                 if cls == sea_class_index:
+#                     sea_box = box
+#                     break
+
+#         if sea_box is not None:
+#             x1, y1, x2, y2 = map(int, sea_box.xyxy[0])
+
+#             adjusted_y1 = y2 - offset1
+#             start_point1 = (adjusted_y1, 0)
+#             end_point1 = (adjusted_y1, 640)
+#             color1 = (255, 0, 0)
+#             thickness = 2
+#             cv2.line(annotated_frame, start_point1, end_point1, color1, thickness)
+
+
+#             adjusted_y2 = y2 - offset2
+
+#             start_point2 = (adjusted_y2, 0)
+#             end_point2 = (adjusted_y2, 640)
+#             color2 = (0, 255, 0)
+#             thickness = 2
+#             cv2.line(annotated_frame, start_point2, end_point2, color2, thickness)
+
+#             general_count = 0 # 사람 수 세기
+#             cacution_count = 0 # 주의 요먕 인원 세기
+#             # 사람의 바운딩 박스를 주황색으로 변경
+
+#             for box in boxes:
+#                 cls = int(box.cls)
+#                 if cls == human_class_index:
+#                     hx1, hy1, hx2, hy2 = map(int, box.xyxy[0])
+#                     if hy2 < adjusted_y2:
+#                         color_human = (0, 165, 255)
+#                         cv2.rectangle(annotated_frame, (hx1, hy1), (hx2, hy2), color_human, 2)
+
+#                         human_detected = True
+#                         cacution_count+=1
+#                     else:
+#                         general_count+=1
                         
-            # 출력문은 모달창에 사람 수 변수로 넘긴 후 삭제 예정
-            # 파란색, 주황색 바운딩 박스의 사람 수 출력
-            print(f"Number of general people: {general_count}")
-            print(f"Number of cacution people: {cacution_count}")
+#             # 출력문은 모달창에 사람 수 변수로 넘긴 후 삭제 예정
+#             # 파란색, 주황색 바운딩 박스의 사람 수 출력
+#             print(f"Number of general people: {general_count}")
+#             print(f"Number of cacution people: {cacution_count}")
 
 
-        ret, buffer = cv2.imencode('.jpg', annotated_frame)
-        frame = buffer.tobytes()
+#         ret, buffer = cv2.imencode('.jpg', annotated_frame)
+#         frame = buffer.tobytes()
 
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+#         yield (b'--frame\r\n'
+#                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
-    cap.release()
+#     cap.release()
+
 
 def video_feed(request, cctv_code):
     cctv = CCTV.objects.get(cctv_code=cctv_code)
     video_url = cctv.cctv_url
-    return StreamingHttpResponse(stream_video(video_url),
-                                 content_type='multipart/x-mixed-replace; boundary=frame')
+    
+    return StreamingHttpResponse(stream_video(video_url, cctv_code),
+                                content_type='multipart/x-mixed-replace; boundary=frame')
 
 def human_status(request, cctv_code):
     return JsonResponse({'human_detected': human_detected,
