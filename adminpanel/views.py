@@ -17,13 +17,13 @@ from main.forms import *
 from django.db.models import Q
 import csv
 import io
-from datetime import datetime,timezone, timedelta
+# from datetime import datetime,timezone, timedelta
 from main.utils import similarity_function 
 import boto3
 from django.conf import settings
 from collections import Counter
 from django.utils.timezone import localtime
-from django.utils import timezone
+# from django.utils import timezone
 import time 
 import hmac
 import hashlib
@@ -33,6 +33,9 @@ import os
 import datetime
 from main.views import add_qa_to_database
 
+from datetime import datetime, timedelta, timezone as dt_timezone  # Import datetime and rename timezone
+from django.utils import timezone as django_timezone  # Rename the django.utils timezone
+
 def get_signature(key, msg):
     return hmac.new(key.encode(), msg.encode(), hashlib.sha256).hexdigest()
 
@@ -41,8 +44,8 @@ def unique_id():
 
 def get_iso_datetime():
     utc_offset_sec = time.altzone if time.localtime().tm_isdst else time.timezone
-    utc_offset = datetime.timedelta(seconds=-utc_offset_sec)
-    return datetime.datetime.now().replace(tzinfo=datetime.timezone(offset=utc_offset)).isoformat()
+    utc_offset = timedelta(seconds=-utc_offset_sec)
+    return datetime.now().replace(tzinfo=dt_timezone(offset=utc_offset)).isoformat()
 
 def get_headers(apiKey, apiSecret):
     date = get_iso_datetime()
@@ -56,10 +59,10 @@ def get_headers(apiKey, apiSecret):
     return headers
 
 def format_date(date_string):
-    # 문자열을 UTC 시간대의 datetime 객체로 변환
-    date_obj = datetime.datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%S.%fZ').replace(tzinfo=timezone.utc)
-    # 현지 시간대 (예: 한국 표준시 KST)로 변환
-    kst = timezone(timedelta(hours=9))
+    # Convert string to UTC timezone datetime object
+    date_obj = datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%S.%fZ').replace(tzinfo=dt_timezone.utc)
+    # Convert to local timezone (e.g., Korea Standard Time KST)
+    kst = dt_timezone(timedelta(hours=9))
     local_date_obj = date_obj.astimezone(kst)
     return local_date_obj.strftime('%Y-%m-%d %H:%M:%S')
 
