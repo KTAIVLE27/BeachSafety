@@ -62,12 +62,12 @@
                                 <div class="text-danger" id="profile-phone_error">{{ form.user_phone.errors }}</div>
                             </div>
                             <div class="form-floating mb-3">
-                                <input type="text" class="form-control" name="user_address" id="id_address" placeholder="주소" required maxlength="150" onclick="execDaumPostcode()">
-                                <label for="profile-address" class="form-label">주소</label>
-                                <div class="text-danger" id="profile-address_error">{{ form.user_address.errors }}</div>
+                                <input type="text" class="form-control" name="user_address" id="id_address" placeholder="주소" required maxlength="150" onclick="execDaumPostcode()" oninput="validateField(this)">
+                                <label for="id_address">주소</label>
+                                <div class="text-danger" id="id_address_error">{{ form.user_address.errors }}</div>
                             </div>
                             <div class="form-floating mb-3">
-                                <input type="text" class="form-control" name="user_detail_address" id="id_detail_address" placeholder="주소" required maxlength="150" oninput="validateField(this)">
+                                <input type="text" class="form-control" name="user_detail_address" id="id_detail_address" placeholder="상세주소" required maxlength="150" oninput="validateField(this)">
                                 <label for="id_detail_address">상세주소</label>
                                 <div class="text-danger" id="id_detail_address_error">{{ form.user_detail_address.errors }}</div>
                             </div>
@@ -249,13 +249,14 @@
         }
 
         if (field.name === "user_address") {
+            console.log("Validating user_address:", field.value);
             if (field.value.length < 1) {
                 errorDiv.textContent = "주소를 입력하십시오.";
             } else {
                 errorDiv.textContent = "";
             }
         }
-
+    
         if (field.name === "user_detail_address") {
             if (field.value.length < 1) {
                 errorDiv.textContent = "상세 주소를 입력하십시오.";
