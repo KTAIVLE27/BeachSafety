@@ -44,7 +44,7 @@
                         <tr>
                             <td><input type="checkbox" class="selectRow" data-id="{{ user.user_no }}"></td>
                             <td>{{ forloop.counter }}</td>
-                            <td>{{ user.user_name }}</td>
+                            <td><a href="{% url 'adminpanel:user_detail' user.user_no %}">{{ user.user_name }}</td>
                             <td>{{ user.user_role }}</td>
                             <td>{{ user.user_phone }}</td>
                             <td>{{ user.user_email }}</td>

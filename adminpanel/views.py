@@ -273,6 +273,10 @@ def user_list_view(request):
     }
     return render(request, 'adminpanel/user_list.html', context)
 
+def user_detail(request, user_no):
+    user_info = User.objects.get(user_no=user_no)
+    return render(request, 'adminpanel/user_detail.html', {'user_info': user_info})
+
 @csrf_exempt
 def delete_users(request):
     if request.method == 'POST':
