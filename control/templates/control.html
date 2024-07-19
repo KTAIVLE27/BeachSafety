@@ -329,8 +329,23 @@ $(document).ready(function() {
                  </button>
              </form>
          </div>
-</div>
 
+        <div id="current-time" style="color: orange; margin-top: 10px;"></div>
+</div>
+<script>
+    function updateTime() {
+        var now = new Date();
+        var formattedTime = '현재시각: ' + now.getFullYear() + '-' +
+                            ('0' + (now.getMonth() + 1)).slice(-2) + '-' +
+                            ('0' + now.getDate()).slice(-2) + ' ' +
+                            ('0' + now.getHours()).slice(-2) + ':' +
+                            ('0' + now.getMinutes()).slice(-2) + ':' +
+                            ('0' + now.getSeconds()).slice(-2);
+        document.getElementById('current-time').innerText = formattedTime;
+    }
+    setInterval(updateTime, 1000);
+    updateTime();  // Initial call to set the time immediately
+</script>
 
 <div class="side-buttons">
     <a href="#"class="btn btn-primary"title="119"data-toggle="modal"data-target="#myModal"><i class="fa fa-phone"></i></a>  
