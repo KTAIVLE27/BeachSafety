@@ -12,6 +12,7 @@ urlpatterns = [
     path('csv_upload/', views.csv_upload, name='csv_upload'),
     path('delete-senario/', views.delete_senario, name='delete_senario'),
     path('user_list/', views.user_list_view, name='user_list_view'),
+    path('user_list/<int:user_no>/', views.user_detail, name='user_detail'),
     path('delete_users/', views.delete_users, name='delete_users'),
     path('notice_manage/', views.notice_manage, name='notice_manage'),
     path('delete-notice-boards/', views.delete_notice_boards, name='delete_notice_boards'),
