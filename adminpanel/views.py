@@ -36,6 +36,7 @@ from main.views import add_qa_to_database
 from datetime import datetime, timedelta
 from datetime import timezone as dt_timezone  # Import datetime and rename timezone
 from django.utils import timezone as django_timezone  # Rename the django.utils timezone
+from .utils import mask_user_data
 
 def get_signature(key, msg):
     return hmac.new(key.encode(), msg.encode(), hashlib.sha256).hexdigest()
@@ -261,7 +262,8 @@ def delete_boards(request):
 
 def user_list_view(request):
     users = User.objects.all().order_by('user_no')  # Order by 'user_no' or another appropriate field
-    paginator = Paginator(users, 10)  # Show 10 users per page
+    masked_users = [mask_user_data(user) for user in users]
+    paginator = Paginator(masked_users, 10)  # Show 10 users per page
 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
