@@ -595,37 +595,6 @@
 }
 /* ////////////////// */
 
-
-/* weather css */
-.weather-box {
-    background-color: #f8f9fa;
-    border: 1px solid #dee2e6;
-    border-radius: 10px;
-    padding: 20px;
-    text-align: left;
-    margin-top: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.weather-box h6 {
-    font-weight: 600;
-    font-size: 18px;
-    color: #343a40;
-    margin-bottom: 15px;
-}
-
-.weather-box p {
-    font-size: 16px;
-    color: #6c757d;
-    margin-bottom: 10px;
-}
-
-.weather-icon {
-    font-size: 36px;
-    margin-right: 15px;
-}
-/* ///////////////// */
-
 .btn-h img {
     width: 150px; /* 이미지 원하는 너비 설정 */
     height: auto; /* 이미지 높이 자동 조정 */
@@ -751,3 +720,222 @@
     color: white; /* 호버 및 활성화된 상태의 텍스트 색 */
 }
 
+/* 위험도 기준 표 스타일 */
+.risk-table-container {
+    width: 50%; /* 너비를 50%로 설정 */
+    margin: 0 auto; /* 가운데 정렬 */
+    margin-bottom: 1.5rem; /* 하단 여백 */
+}
+
+.risk-table-container h3 {
+    margin-bottom: 1rem;
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #1d2124;
+}
+
+.risk-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #f8f9fa;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.risk-table thead {
+    background-color: #004085;
+    color: #fff;
+}
+
+.risk-table thead th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 500;
+    text-transform: uppercase;
+    border: none;
+}
+
+.risk-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.risk-table tbody tr:hover {
+    background-color: #e9ecef;
+}
+
+.risk-table tbody td {
+    padding: 1rem;
+    border-top: 1px solid #dee2e6;
+    text-align: left;
+    font-size: 1rem;
+    color: #1d2124;
+}
+
+.risk-table tbody td:first-child {
+    font-weight: 600;
+}
+
+/* 아코디언 스타일 */
+.risk-accordion .accordion-item {
+    border: none;
+    border-bottom: 1px solid #dee2e6;
+    background-color: #f8f9fa;
+}
+
+.risk-accordion .accordion-header {
+    background-color: #004085;
+    color: #fff;
+}
+
+.risk-accordion .accordion-button {
+    background-color: #004085;
+    color: #fff;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.risk-accordion .accordion-button:not(.collapsed) {
+    background-color: #0056b3;
+}
+
+.risk-accordion .accordion-button:hover {
+    background-color: #003366;
+}
+
+.risk-accordion .accordion-button:focus {
+    box-shadow: none;
+}
+
+.risk-accordion .accordion-body {
+    padding: 1rem 1.5rem;
+    background-color: #e9ecef;
+}
+
+.risk-accordion img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.risk-accordion .btn-primary {
+    background-color: #004085;
+    border-color: #004085;
+    transition: background-color 0.2s ease;
+}
+
+.risk-accordion .btn-primary:hover {
+    background-color: #003366;
+    border-color: #003366;
+}
+
+.risk-accordion .risk-prediction {
+    display: none;
+    margin-top: 10px;
+    font-size: 1rem;
+}
+
+.risk-accordion .risk-prediction strong {
+    display: inline-block;
+    margin-right: 0.5rem;
+}
+
+.beach-region {
+    font-size: 3em; /* 폰트 크기를 1.5배로 설정 (기본값의 1.5배) */
+    font-weight: bold; /* 폰트를 두껍게 설정 */
+}
+
+/* 스타일 파일: style.css */
+
+/* 예측 레벨 텍스트 크기 */
+.prediction-level {
+    font-size: 1.5em; /* 폰트 크기를 1.5배로 설정 */
+    font-weight: bold; /* 폰트를 두껍게 설정 */
+    color: #000000ba; /* 기본 텍스트 색상 (필요에 따라 조정) */
+}
+
+/* weather css */
+.weather-box {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: left;
+    margin-top: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.weather-box h6 {
+    font-weight: 600;
+    font-size: 18px;
+    color: #ffffffb1;
+    margin-bottom: 15px;
+}
+
+.weather-box p {
+    font-size: 16px;
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+.weather-icon {
+    font-size: 36px;
+    margin-right: 15px;
+}
+/* 해양경찰 로고 스타일 */
+.marine-logo {
+    width: 40px; /* 로고의 너비 */
+    height: auto; /* 자동 높이 */
+    margin-left: 10px; /* 로고와 텍스트 간의 여백 */
+}
+
+/* 날씨 정보 박스 스타일 */
+.marine-weather-box {
+    border-radius: 12px; /* 둥근 모서리 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
+    background: linear-gradient(0deg, #013d787c, #003366); /* 그라디언트 배경 */
+}
+
+/* 날씨 제목 스타일 */
+.marine-weather-title {
+    font-size: 1.5em; /* 제목 폰트 크기 */
+    color: #ffffffdb; /* 제목 색상 */
+}
+
+/* 날씨 정보 텍스트 스타일 */
+.marine-weather-info {
+    font-size: 1.2em; /* 정보 텍스트 폰트 크기 */
+    color: #ffffff; /* 정보 텍스트 색상 */
+}
+
+/* 날씨 아이콘 스타일 */
+.marine-weather-icon {
+    font-size: 2em; /* 아이콘 크기 */
+    vertical-align: middle; /* 수직 정렬 */
+}
+
+/* 상단으로 돌아가기 버튼 스타일 */
+.back-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    border-radius: 50%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
+}
+
+/* 미디어 쿼리 (반응형 디자인) */
+@media (max-width: 768px) {
+    .marine-logo {
+        width: 30px; /* 작은 화면에서 로고 크기 조정 */
+    }
+
+    .marine-weather-title {
+        font-size: 1.2em; /* 제목 폰트 크기 조정 */
+    }
+
+    .marine-weather-info {
+        font-size: 1em; /* 정보 텍스트 폰트 크기 조정 */
+    }
+}

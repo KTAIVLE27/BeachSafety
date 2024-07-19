@@ -1,5 +1,5 @@
-
 {% extends "base/base.html" %}
+{% load static %}
 {% block title %}날씨{% endblock %}
 
 {% block sidebar_brand %}
@@ -9,95 +9,91 @@
 {% endblock %}
 
 {% block content %}
-        <!-- Weather Information -->
-        <div class="container-fluid pt-4 px-4">
-            <div class="row g-4">
-                <div class="dropdown me-2">
-                    <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                        구분
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        {% for beach in beaches %}
-                            <a class="dropdown-item" href="?beach_no={{ beach.pk }}">{{ beach.beach_name }}</a>
-                        {% endfor %}
-                    </div>
-                </div>
-
-                <!-- Display weather data for the selected beach -->
-                {% if selected_beach %}
-                <div class="col-md-6">
-                    <div class="weather-box bg-light text-center rounded p-4">
-                        <div class="d-flex align-items-center justify-content-between mb-4">
-                            <h6 class="mb-0">{{ selected_beach }} 날씨 정보</h6>
-                        </div>
-                        <p class="text-primary"><i class="bi bi-cloud-sun weather-icon"></i>{{ weather_data.TMP }}</p>
-                        <p>🏖️ 해수욕장: {{ selected_beach }}</p>
-                        <p>🌡️ 현재 기온: {{ weather_data.TMP }}°C</p>
-                        <p>💧 1시간 강수량: {{ weather_data.PCP }}mm</p>
-                        <p>🌬️ 동서바람 성분: {{ weather_data.UUU }}m/s</p>
-                        <p>🌬️ 남북바람 성분: {{ weather_data.VVV }}m/s</p>
-                        <p>💦 습도: {{ weather_data.REH }}%</p>
-                        <p>🌧️ 강수 형태: {{ weather_data.PTY }}</p>
-                        <p>🧭 풍향: {{ weather_data.VEC }}°</p>
-                        <p>💨 풍속: {{ weather_data.WSD }}m/s</p>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="weather-box bg-light text-center rounded p-4">
-                        <div class="d-flex align-items-center justify-content-between mb-4">
-                            <h6 class="mb-0">{{ selected_beach }} 주간 날씨 정보</h6>
-                        </div>
-                        <style>
-                            /* ww_800c1a7721eaa 요소에 대한 사용자 정의 스타일 */
-                            #ww_800c1a7721eaa {
-                                border-radius: 8px; /* 테두리 둥글기 설정 */
-                                box-shadow: 0 0 10px rgba(0,0,0,0.1); /* 그림자 효과 설정 */
-                                max-width: 1000px !important;
-                                width: 100%;
-                                height: 100%;
-                                place-content: center;
-                            }
-                        </style>
-                        <div id="ww_800c1a7721eaa-wrapper" class="d-flex justify-content-center align-items-center" style="height: 370px;">
-                            <div id="ww_800c1a7721eaa" v='1.3' loc='id' a='{"t":"horizontal",
-                                                                            "lang":"ko",
-                                                                            "sl_lpl":1,
-                                                                            "ids":["{{ widget_id }}"],
-                                                                            "font":"Arial",
-                                                                            "sl_ics":"one_a",
-                                                                            "sl_sot":"celsius",
-                                                                            "cl_bkg":"image",
-                                                                            "cl_font":"#FFFFFF",
-                                                                            "cl_cloud":"#FFFFFF",
-                                                                            "cl_persp":"#81D4FA",
-                                                                            "cl_sun":"#FFC107",
-                                                                            "cl_moon":"#FFC107",
-                                                                            "cl_thund":"#FF5722"}'>
-                                More forecasts: 
-                                <a href="https://oneweather.org/seoul/30_days/" id="ww_800c1a7721eaa_u" target="_blank">
-                                    30 day weather forecast Seoul</a>
-                            </div>
-                        </div>
-                        <script async src="https://app2.weatherwidget.org/js/?id=ww_800c1a7721eaa"></script>
-                    </div>
-                </div>
-                {% else %}
-                <div class="col-md-6">
-                    <div class="weather-box bg-light text-center rounded p-4">
-                        <h6 class="mb-0">날씨 정보를 확인하려면 해수욕장을 선택하세요.</h6>
-                    </div>
-                </div>
-                {% endif %}
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="dropdown me-2">
+            <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                해수욕장 선택
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                {% for beach in beaches %}
+                    <a class="dropdown-item" href="?beach_no={{ beach.pk }}">{{ beach.beach_name }}</a>
+                {% endfor %}
             </div>
         </div>
 
-        <!-- Weather Information End -->
+        <!-- Display weather data for the selected beach -->
+        {% if selected_beach %}
+        <div class="col-md-6">
+            <div class="weather-box bg-light text-center rounded p-4 marine-weather-box">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h2 class="mb-0 marine-weather-title">{{ selected_beach }} 날씨 정보</h2>
+                </div>
+                <p class="marine-weather-info text-primary"><i class="bi bi-cloud-sun marine-weather-icon"></i>{{ weather_data.TMP }}°C</p>
+                <p>🏖️ 해수욕장: {{ selected_beach }}</p>
+                <p>🌡️ 현재 기온: {{ weather_data.TMP }}°C</p>
+                <p>💧 1시간 강수량: {{ weather_data.PCP }}mm</p>
+                <p>🌬️ 동서바람 성분: {{ weather_data.UUU }}m/s</p>
+                <p>🌬️ 남북바람 성분: {{ weather_data.VVV }}m/s</p>
+                <p>💦 습도: {{ weather_data.REH }}%</p>
+                <p>🌧️ 강수 형태: {{ weather_data.PTY }}</p>
+                <p>🧭 풍향: {{ weather_data.VEC }}°</p>
+                <p>💨 풍속: {{ weather_data.WSD }}m/s</p>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="weather-box bg-light text-center rounded p-4 marine-weather-box">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h2 class="mb-0 marine-weather-title">{{ selected_beach }} 주간 날씨 정보</h2>
+                </div>
+                <style>
+                    /* ww_800c1a7721eaa 요소에 대한 사용자 정의 스타일 */
+                    #ww_800c1a7721eaa {
+                        border-radius: 8px; /* 테두리 둥글기 설정 */
+                        box-shadow: 0 0 10px rgba(0,0,0,0.1); /* 그림자 효과 설정 */
+                        max-width: 1000px !important;
+                        width: 100%;
+                        height: 100%;
+                        place-content: center;
+                    }
+                </style>
+                <div id="ww_800c1a7721eaa-wrapper" class="d-flex justify-content-center align-items-center" style="height: 370px;">
+                    <div id="ww_800c1a7721eaa" v='1.3' loc='id' a='{"t":"horizontal",
+                                                                        "lang":"ko",
+                                                                        "sl_lpl":1,
+                                                                        "ids":["{{ widget_id }}"],
+                                                                        "font":"Arial",
+                                                                        "sl_ics":"one_a",
+                                                                        "sl_sot":"celsius",
+                                                                        "cl_bkg":"image",
+                                                                        "cl_font":"#FFFFFF",
+                                                                        "cl_cloud":"#FFFFFF",
+                                                                        "cl_persp":"#81D4FA",
+                                                                        "cl_sun":"#FFC107",
+                                                                        "cl_moon":"#FFC107",
+                                                                        "cl_thund":"#FF5722"}'>
+                        More forecasts: 
+                        <a href="https://oneweather.org/seoul/30_days/" id="ww_800c1a7721eaa_u" target="_blank">
+                            30 day weather forecast Seoul</a>
+                    </div>
+                </div>
+                <script async src="https://app2.weatherwidget.org/js/?id=ww_800c1a7721eaa"></script>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-md-6">
+            <div class="weather-box bg-light text-center rounded p-4 marine-weather-box">
+                <h6 class="mb-0">날씨 정보를 확인하려면 해수욕장을 선택하세요.</h6>
+            </div>
+        </div>
+        {% endif %}
     </div>
-    <!-- Content End -->
-
-    <!-- Back to Top Button -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
-
 </div>
+
+<!-- Weather Information End -->
+
+<!-- Back to Top Button -->
+<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
 {% endblock %}
