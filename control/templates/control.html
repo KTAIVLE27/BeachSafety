@@ -307,30 +307,31 @@ $(document).ready(function() {
 </div> 
 
 <div class="nav-buttons">
+    <div class="nav-items">
+        {% if user.user_role == 'admin' %}
+            <div class="nav-item dropdown">
+                <a href="{% url 'adminpanel:admin_home' %}">
+                    <img class="rounded-circle me-lg-2" src="{% static 'img/wysiwyg_24dp.png' %}" alt="" style="width: 50px; height: 50px;">
+                </a>
+            </div>
+        {% endif %}     
+            <div class="nav-item dropdown">
+                <a href="{% url 'home' %}">
+                    <img class="rounded-circle me-lg-2" src="{% static 'img/home_24dp.png' %}" alt="" style="width: 50px; height: 50px;">
+                </a>
+            </div>
+
+            <div class="nav-item dropdown">
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" style="border:none; background:none;">
+                        <img src="{% static 'img/logout_24dp.png' %}" width="50" height="50" alt="Logout">
+                    </button>
+                </form>
+            </div>
+    </div>
     
-    {% if user.user_role == 'admin' %}
-         <div class="nav-item dropdown">
-             <a href="{% url 'adminpanel:admin_home' %}">
-                 <img class="rounded-circle me-lg-2" src="{% static 'img/wysiwyg_24dp.png' %}" alt="" style="width: 50px; height: 50px;">
-             </a>
-         </div>
-    {% endif %}     
-         <div class="nav-item dropdown">
-             <a href="{% url 'home' %}">
-                 <img class="rounded-circle me-lg-2" src="{% static 'img/home_24dp.png' %}" alt="" style="width: 50px; height: 50px;">
-             </a>
-         </div>
-
-         <div class="nav-item dropdown">
-             <form method="post" action="{% url 'logout' %}">
-                 {% csrf_token %}
-                 <button type="submit" style="border:none; background:none;">
-                     <img src="{% static 'img/logout_24dp.png' %}" width="50" height="50" alt="Logout">
-                 </button>
-             </form>
-         </div>
-
-        <div id="current-time" style="color: orange; margin-top: 10px;"></div>
+    <div id="current-time"></div>
 </div>
 <script>
     function updateTime() {
