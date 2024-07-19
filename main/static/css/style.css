@@ -340,12 +340,29 @@
 
 .nav-buttons {
     position: fixed;
-    top: 5%;
+    top: 8%;
     right: 20px;
     transform: translateY(-50%);
     display: flex;
-    flex-direction: row;
-    gap: 10px;
+    flex-direction: column;
+}
+
+.nav-items {
+    display: flex;
+    flex-direction: row; /* 수평으로 정렬 */
+    gap: 10px; /* 아이템 간의 간격 */
+}
+
+.nav-item {
+    display: flex; /* 플렉스 컨테이너 설정 */
+    align-items: center; /* 아이콘 중앙 정렬 */
+    overflow: hidden; /* 넘치는 부분 숨기기 */
+    padding: 0; /* 불필요한 여백 제거 */
+    margin: 0; /* 불필요한 여백 제거 */
+}
+
+#current-time {
+    color: orange;
 }
 
 .logo{
