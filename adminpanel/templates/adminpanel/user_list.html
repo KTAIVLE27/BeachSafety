@@ -1,3 +1,5 @@
+<!-- templates/adminpanel/user_list.html -->
+
 {% extends "base/admin_base.html" %}
 {% block title %}사용자 정보 관리{% endblock %}
 
@@ -14,7 +16,7 @@
 
 {% block content %}
   <!-- User List Start -->
-  <div class="container-fluid pt-4 px-4">
+<div class="container-fluid pt-4 px-4">
     <div class="row g-4">
         <div class="bg-light text-center rounded p-4">
             <div class="d-flex align-items-center justify-content-between mb_4">
@@ -42,7 +44,7 @@
                         <tr>
                             <td><input type="checkbox" class="selectRow" data-id="{{ user.user_no }}"></td>
                             <td>{{ forloop.counter }}</td>
-                            <td>{{ user.user_name }}</td>
+                            <td><a href="{% url 'adminpanel:user_detail' user.user_no %}">{{ user.user_name }}</td>
                             <td>{{ user.user_role }}</td>
                             <td>{{ user.user_phone }}</td>
                             <td>{{ user.user_email }}</td>
@@ -99,10 +101,10 @@
     </div>
 </div>
 <!-- User List End -->
+<div class="container-fluid pt-4 px-4" style="height: 500px">
+    <div class="white-box">
 
-</div>
-<!-- Content End -->
-
+    </div>
 </div>
 {% endblock %}
 

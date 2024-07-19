@@ -13,17 +13,30 @@
 {% endblock %}
 
 {% block content %}
-        <div class="container">
-            <h2 class="mt-4">CSV 파일 업로드</h2>
-                <form method="post" enctype="multipart/form-data" action="{% url 'adminpanel:csv_upload' %}">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="csvFile" class="form-label">CSV 파일 선택</label>
-                        <input class="form-control" type="file" id="csvFile" name="csv_file" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">업로드</button>
-                </form>
+<div class="container">
+    <h2 class="mt-4">CSV 파일 업로드</h2>
+    <form id="csvUploadForm" method="post" enctype="multipart/form-data" action="{% url 'adminpanel:csv_upload' %}">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="csvFile" class="form-label">CSV 파일 선택</label>
+            <input class="form-control" type="file" id="csvFile" name="csv_file" required>
         </div>
+        <div class="d-flex align-items-center">
+            <button type="submit" class="btn btn-primary">업로드</button>
+            <div id="loadingSpinner" class="spinner-border text-primary ms-3" role="status" style="display: none;">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="container-fluid pt-4 px-4" style="height: 500px">
+    <div class="white-box">
+
     </div>
 </div>
+<script>
+document.getElementById('csvUploadForm').addEventListener('submit', function() {
+    document.getElementById('loadingSpinner').style.display = 'block';
+});
+</script>
 {% endblock %}

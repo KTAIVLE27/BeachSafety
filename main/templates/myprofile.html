@@ -25,16 +25,6 @@
                 <div class="profile-box">
                     <form id="profile-form" method="post" action="{% url 'myprofile' %}" enctype="multipart/form-data">
                         {% csrf_token %}
-                        <!-- 프로필 이미지 -->
-                        <div class="mb-3 text-center">
-                            <label for="profile-img-upload" class="profile-img-label">
-                                <img src="/static/img/face_24dp.png" id="profile-img" class="rounded-circle mb-3" alt="Profile Picture" style="width: 100px; height: 100px;">
-                                <div class="overlay">
-                                    <div class="text">편집</div>
-                                </div>
-                            </label>
-                            <input type="file" id="profile-img-upload" name="profile-img-upload" class="d-none" accept="image/*" onchange="previewImage(event)">
-                        </div>
 
                         <!-- ID -->
                         <div class="row mb-3">
@@ -107,7 +97,7 @@
                             </div>
                             <div class="col-md-8">
                                 <input type="text" id="profile-address" name="user_address" class="form-control" value="{{ user.user_address }}" onclick="execDaumPostcode()" oninput="validateField(this)">
-                                <div class="text-danger" id="profile-address_error"></div>
+                               <div class="text-danger" id="profile-address_error"></div>
                             </div>
                         </div>
 
@@ -131,9 +121,10 @@
     </div>
 </div>
 <!-- Profile Section End -->
+<div class="container-fluid pt-4 px-4" style="height: 100px">
+    <div class="white-box">
 
-</div>
-<!-- Content End -->
+    </div>
 </div>
 {% block end-script %}
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>

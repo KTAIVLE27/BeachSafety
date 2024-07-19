@@ -192,7 +192,7 @@ function getColorScoreMsg(score_msg) {
         case "경계":
             return '/static/img/oring1.png';
         case "위험":
-            return '/static/img/red1.png';
+            return '/static/img/red2.png';
         case "NaN": //API에 정보가 없을떄
             return '/static/img/white1.png';
         default:
@@ -307,30 +307,46 @@ $(document).ready(function() {
 </div> 
 
 <div class="nav-buttons">
+    <div class="nav-items">
+        {% if user.user_role == 'admin' %}
+            <div class="nav-item dropdown">
+                <a href="{% url 'adminpanel:admin_home' %}">
+                    <img class="rounded-circle me-lg-2" src="{% static 'img/wysiwyg_24dp.png' %}" alt="" style="width: 50px; height: 50px;">
+                </a>
+            </div>
+        {% endif %}     
+            <div class="nav-item dropdown">
+                <a href="{% url 'home' %}">
+                    <img class="rounded-circle me-lg-2" src="{% static 'img/home_24dp.png' %}" alt="" style="width: 50px; height: 50px;">
+                </a>
+            </div>
+
+            <div class="nav-item dropdown">
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" style="border:none; background:none;">
+                        <img src="{% static 'img/logout_24dp.png' %}" width="50" height="50" alt="Logout">
+                    </button>
+                </form>
+            </div>
+    </div>
     
-    {% if user.user_role == 'admin' %}
-         <div class="nav-item dropdown">
-             <a href="{% url 'adminpanel:admin_home' %}">
-                 <img class="rounded-circle me-lg-2" src="{% static 'img/wysiwyg_24dp.png' %}" alt="" style="width: 50px; height: 50px;">
-             </a>
-         </div>
-    {% endif %}     
-         <div class="nav-item dropdown">
-             <a href="{% url 'home' %}">
-                 <img class="rounded-circle me-lg-2" src="{% static 'img/home_24dp.png' %}" alt="" style="width: 50px; height: 50px;">
-             </a>
-         </div>
-
-         <div class="nav-item dropdown">
-             <form method="post" action="{% url 'logout' %}">
-                 {% csrf_token %}
-                 <button type="submit" style="border:none; background:none;">
-                     <img src="{% static 'img/logout_24dp.png' %}" width="50" height="50" alt="Logout">
-                 </button>
-             </form>
-         </div>
+    <div id="current-time"></div>
 </div>
-
+<script>
+    function updateTime() {
+        var now = new Date();
+        var formattedTime = '현재시각: ' + now.getFullYear() + '-' +
+                            ('0' + (now.getMonth() + 1)).slice(-2) + '-' +
+                            ('0' + now.getDate()).slice(-2) + ' ' +
+                            ('0' + now.getHours()).slice(-2) + ':' +
+                            ('0' + now.getMinutes()).slice(-2) + ':' +
+                            ('0' + now.getSeconds()).slice(-2);
+        document.getElementById('current-time').innerText = formattedTime;
+    }
+    setInterval(updateTime, 1000);
+    updateTime();  // Initial call to set the time immediately
+</script>
 
 <div class="side-buttons">
     <a href="#"class="btn btn-primary"title="119"data-toggle="modal"data-target="#myModal"><i class="fa fa-phone"></i></a>  
@@ -342,11 +358,12 @@ $(document).ready(function() {
 
 <!-- CCTV Modal -->
 <div class="modal" id="CCTV_modal" tabindex="-1">
-    <div class="modal-dialog modal-lg", style = "max-width: 80%"> <!-- Added 'modal-lg' class for larger width -->
+    <div class="modal-dialog modal-lg" style="max-width: 80%">
         <div class="modal-content">
             <div class="bg-light text-center rounded p-4">
                 <div class="d-flex align-items-center justify-content-between mb-4">
-                    <h6 class="mb-0">해당 CCTV 팝업창</h6>
+                    <h5 class="mb-0">Yolov8 CCTV 팝업창</h5>
+                    <h6 class="mb-0">해수욕장 선택후 CCTV에 Yolov8을 적용하는 데 약 5초가 소요됩니다.</h6>
                     <div class="dropdown">
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                             해수욕장 선택
@@ -362,10 +379,12 @@ $(document).ready(function() {
                         </ul>
                     </div>
                 </div>
-                <div id="cctv-container">
-                    <!-- 여기에 동적으로 변경될 영상을 담을 공간 -->
-                    <img id="cctv-frame" width="1000" height="650" />
+                <div id="cctv-container" class="d-flex justify-content-between">
+                    <img id="cctv-frame" width="1822" height="900" />
                 </div>
+                    <p id="generalCount-status" style="margin-top: 10px; font-size: 18px; font-weight: bold;"></p>
+                    <p id="human-status" style="margin-top: 10px; font-size: 18px; font-weight: bold;"></p>
+                    <p id="cacutionCount-status" style="margin-top: 10px; font-size: 18px; font-weight: bold;"></p>
                 <button type="button" id="close-modal" class="btn btn-danger" data-dismiss="modal">닫기</button>
             </div>
         </div>
@@ -375,19 +394,29 @@ $(document).ready(function() {
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
-        // 드롭다운 메뉴 클릭 시
+        let cctvCode;
+        let statusCheckInterval;
+
         $('#beach-list a.dropdown-item').click(function(e) {
             e.preventDefault();
-            var cctv_code = $(this).data('cctv-id');
-            var videoUrl = '/control/video_feed/' + cctv_code + '/';
-
-            // 영상 스트리밍 URL 설정
+            cctvCode = $(this).data('cctv-id');
+            var videoUrl = '/control/video_feed/' + cctvCode + '/';
             $('#cctv-frame').attr('src', videoUrl);
-        });
 
-        // 모달 닫기 버튼 클릭 시
+            if (statusCheckInterval) {
+                clearInterval(statusCheckInterval);
+            }
+    
+            checkHumanStatus();
+            statusCheckInterval = setInterval(checkHumanStatus, 3000);
+        });
+    
         $('#close-modal').click(function() {
-            $('#cctv-frame').attr('src', '');  // 영상 스트리밍 중지
+            $('#cctv-frame').attr('src', '');
+            $('#human-status').text('');
+            $('#generalCount-status').text('');
+            $('#cacutionCount-status').text('');
+            clearInterval(statusCheckInterval);
             $.get('/control/stop_stream/', function(data) {
                 console.log("Stream stopped");
             });
@@ -396,7 +425,34 @@ $(document).ready(function() {
         // 모달이 완전히 숨겨졌을 때 실행
         $('#CCTV_modal').on('hidden.bs.modal', function () {
             $('#cctv-frame').attr('src', '');  // Reset the video source
+            $('#human-status').text('');
+            $('#generalCount-status').text('');
+            $('#cacutionCount-status').text('');
+            clearInterval(statusCheckInterval);     
         });
+
+    
+        function checkHumanStatus() {
+            if (!cctvCode) return;
+    
+            $.ajax({
+                url: '/control/human_status/' + cctvCode + '/',
+                method: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    const humanDetected = data.human_detected;
+                    const generalCount = data.general_count; 
+                    const cacutionCount  =data.cacution_count;
+                    
+                    $('#human-status').text(humanDetected ? '경고: 주의가 필요한 인원 발생' : '안전: 주의가 필요한 인원 없음');
+                    $('#generalCount-status').text(generalCount? '안전 지역 인원 수'+generalCount : '안전 지역 인원 수'+generalCount);
+                    $('#cacutionCount-status').text(cacutionCount? '주의 지역 인원 수'+cacutionCount : '주의 지역 인원 수'+cacutionCount);
+                },
+                error: function(error) {
+                    console.log('Error:', error);
+                }
+            });
+        }
     });
 </script>
 
@@ -460,48 +516,151 @@ $(document).ready(function() {
 </script>
 <!-- 119/해군 모달버튼 끝 -->
 
+<style>
+    .chat-box {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 15px;
+        height: 600px;
+        overflow-y: scroll;
+    }
+
+    .chat-message-box {
+        margin-bottom: 10px;
+        padding: 10px;
+        border: 1px solid #e9ecef;
+        border-radius: 5px;
+        background-color: #f8f9fa;
+    }
+
+    .evaluation-box {
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        height: 600px;
+        overflow-y: auto;
+    }
+
+    .stopwatch {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .record {
+        font-size: 14px;
+        color: #6c757d;
+    }
+
+    .display-4 {
+        font-size: 36px;
+        font-weight: bold;
+    }
+
+    #question-input, #send-button {
+        display: none;
+    }
+
+    .loading-spinner {
+        display: none;
+        width: 3rem;
+        height: 3rem;
+        border: 0.5rem solid #f3f3f3;
+        border-top: 0.5rem solid #3498db;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: auto;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+</style>
     <!-- 모의훈련 모달 -->
     <div class="modal" id="myModal2">
         <div class="modal-dialog">
             <div class="modal-content">
                 
-                    <div class="container-fluid pt-4 px-4">
-                        <div class="row">
-                            <!-- Chat Box Start -->
-                            <div class="col-sm-12 col-md-6 mb-4">
-                                <div class="bg-light text-center rounded p-4 h-100">
-                                    <h6 class="mb-4">해양안전 시나리오 챗봇</h6>
-                                    <div class="chat-box">
-                                        <div class="chat-content" style="height: 400px; overflow-y: scroll;">
-                                            <!-- 채팅 메시지 -->
+                <div class="container-fluid pt-4 px-4">
+                    <div class="row">
+                        <!-- Chat Box Start -->
+                        <div class="col-sm-12 col-md-6 mb-4">
+                            <div class="bg-light text-center rounded p-4 h-100">
+                                <h6 class="mb-4">해양안전 시나리오 챗봇</h6>
+                                <div class="chat-box">
+                                    <div id="chat-content">
+                                        <!-- 채팅 메시지 -->
+                                        <!-- {% for log in logs %}
+                                        <div class="chat-message-box">
+                                            <strong>질문:</strong> {{ log.question|safe }}<br>
+                                            <strong>답변:</strong><br>
+                                            {{ log.answer|safe|linebreaksbr }}
                                         </div>
-                                        <div class="input-group mt-3">
-                                            <input type="text" class="form-control" placeholder="메시지 입력">
-                                            <button class="btn btn-primary">전송</button>
-                                        </div>
+                                        {% endfor %} -->
+                                    </div>
+                                    <div class="loading-spinner" id="loading-spinner"></div>
+                                    <div class="button-group mt-3">
+                                        <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion('생물 보호')">생물보호</button>
+                                        <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion('수상레저')">수상레저</button>
+                                        <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion('불법')">불법</button>
+                                        <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion('해양오염')">해양오염</button>
+                                        <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion('피서객 안전')">피서객 안전</button>
+                                        <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion('익수자')">익수자</button>
+                                        <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion('의료지원')">의료지원</button>
+                                        <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion('실종')">실종</button>
+                                    </div>
+                                    <div class="input-group mt-3">
+                                        <input type="text" class="form-control" id="question-input" placeholder="메시지 입력">
+                                        <button class="btn btn-primary" id="send-button">전송</button>
+                                    </div>
+                                </div>
+                                <div class="loading-spinner" id="loading-spinner"></div>
+                            </div>
+                        </div>
+                        <!-- Chat Box End -->
+                
+                        <!-- Evaluation Box Start -->
+                        <div class="col-sm-12 col-md-6 mb-4">
+                            <div class="bg-light text-center rounded p-4 h-100">
+                                <h6 class="mb-4">평가 항목</h6>
+                                <div class="evaluation-box">
+                                    <div class="form-group mb-3">
+                                        <label for="stopwatch1">상황 전파 및 출동 준비</label>
+                                        <div id="stopwatch1" class="stopwatch">00:00:00.000</div>
+                                        <button class="btn btn-success mt-2" onclick="startStopwatch(0)">Start</button>
+                                        <button class="btn btn-primary mt-2" onclick="stopStopwatch(0)">Stop</button>
+                                        <div id="record1" class="record mt-2"></div>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="stopwatch2">구조 활동 시간</label>
+                                        <div id="stopwatch2" class="stopwatch">00:00:00.000</div>
+                                        <button class="btn btn-success mt-2" onclick="startStopwatch(1)">Start</button>
+                                        <button class="btn btn-primary mt-2" onclick="stopStopwatch(1)">Stop</button>
+                                        <div id="record2" class="record mt-2"></div>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="stopwatch3">상황 마무리 및 인수 인계</label>
+                                        <div id="stopwatch3" class="stopwatch">00:00:00.000</div>
+                                        <button class="btn btn-success mt-2" onclick="startStopwatch(2)">Start</button>
+                                        <button class="btn btn-primary mt-2" onclick="stopStopwatch(2)">Stop</button>
+                                        <div id="record3" class="record mt-2"></div>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="finalStopwatch">총 훈련 소요 시간</label>
+                                        <div id="finalStopwatch" class="stopwatch">00:00:00.000</div>
+                                        <button class="btn btn-success mt-2" onclick="showFinalTime()">최종 시간 보기</button>
+                                        <button class="btn btn-danger mt-2" onclick="resetAllStopwatches()">초기화</button>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="largeFinalTime">최종 시간</label>
+                                        <div id="largeFinalTime" class="display-4">00:00:00.000</div>
                                     </div>
                                 </div>
                             </div>
-                            <!-- Chat Box End -->
-        
-                            <!-- Evaluation Box Start -->
-                            <div class="col-sm-12 col-md-6 mb-4">
-                                <div class="bg-light text-center rounded p-4 h-100">
-                                    <h6 class="mb-4">평가 항목</h6>
-                                    <div class="evaluation-box">
-                                        <div class="form-group mb-3">
-                                            <label for="timeTaken">걸린 시간</label>
-                                            <input type="text" id="timeTaken" class="form-control">
-                                        </div>
-                                        <div class="form-group mb-3">
-                                            <label for="accuracy">정확도</label>
-                                            <input type="text" id="accuracy" class="form-control">
-                                        </div>
-                                        <!-- 추가 평가 항목 -->
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Evaluation Box End -->
+                        </div>
+                        <!-- Evaluation Box End -->
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -567,19 +726,19 @@ $(document).ready(function() {
             </div>
         </div>
     </div>
-    
+
     <script>
         $(document).ready(function() {
-            const apiKey = "{{ api_key|escapejs }}" 
-    
-            $('.dropdown-item.beach-btn').on('click', function() {
-                const beachName = $(this).data('beach-name');
-                const lat = $(this).data('lat');
-                const lon = $(this).data('lon');
-                
-                // OpenWeatherMap API 호출
+            const apiKey = "{{ api_key|escapejs }}";
+            const defaultBeach = {
+                name: "경포대 해수욕장",
+                lat: 37.768,
+                lon: 128.948
+            };
+            
+            function updateWeather(beachName, lat, lon) {
                 const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=kr`;
-    
+        
                 $.getJSON(weatherUrl, function(data) {
                     const weatherDescription = data.weather[0].description;
                     const temperature = data.main.temp;
@@ -592,7 +751,7 @@ $(document).ready(function() {
                     const tempMax = data.main.temp_max;
                     const tempMin = data.main.temp_min;
                     const windDeg = data.wind.deg;
-    
+        
                     $('#beach-name').text(beachName);
                     $('#weather-description').text(weatherDescription);
                     $('#temperature').text(temperature);
@@ -607,9 +766,20 @@ $(document).ready(function() {
                 }).fail(function() {
                     alert('날씨 정보를 가져오는 데 실패했습니다.');
                 });
+            }
+            
+            // Default beach weather info on page load
+            updateWeather(defaultBeach.name, defaultBeach.lat, defaultBeach.lon);
+            
+            // Update weather info on dropdown item click
+            $('.dropdown-item.beach-btn').on('click', function() {
+                const beachName = $(this).data('beach-name');
+                const lat = $(this).data('lat');
+                const lon = $(this).data('lon');
+                updateWeather(beachName, lat, lon);
             });
-    
-            // 모달 닫기 버튼 클릭 시 날씨 정보 초기화
+        
+            // Reset weather info when modal is closed
             $('#myModal3').on('hidden.bs.modal', function () {
                 $('#beach-name').text('');
                 $('#weather-description').text('날씨 정보를 선택하세요.');
@@ -620,10 +790,11 @@ $(document).ready(function() {
                 $('#temp-max').text('');
                 $('#temp-min').text('');
                 $('#wind-deg').text('');
-                $('#weather-icon').attr('src', ''); // 날씨 아이콘 초기화
+                $('#weather-icon').attr('src', ''); // Reset weather icon
             });
         });
     </script>
+
     
 
     <script>
@@ -673,6 +844,150 @@ $(document).ready(function() {
 
     <!-- Template Javascript -->
     <script src="{% static 'js/main.js'%}"></script>
+
+    <script>
+    var stopwatches = [0, 0, 0];
+    var intervals = [null, null, null];
+    var finalTime = 0;
+
+    function startStopwatch(index) {
+        if (intervals[index] === null) {
+            intervals[index] = setInterval(function() {
+                stopwatches[index] += 10;
+                document.getElementById('stopwatch' + (index + 1)).innerText = formatTime(stopwatches[index]);
+            }, 10);
+        }
+    }
+
+    function stopStopwatch(index) {
+        if (intervals[index] !== null) {
+            clearInterval(intervals[index]);
+            intervals[index] = null;
+            document.getElementById('record' + (index + 1)).innerText = "기록: " + formatTime(stopwatches[index]);
+            finalTime += stopwatches[index];
+        }
+    }
+
+    function resetStopwatch(index) {
+        if (intervals[index] !== null) {
+            clearInterval(intervals[index]);
+            intervals[index] = null;
+        }
+        stopwatches[index] = 0;
+        document.getElementById('stopwatch' + (index + 1)).innerText = "00:00:00.000";
+        document.getElementById('record' + (index + 1)).innerText = "";
+    }
+
+    function resetAllStopwatches() {
+        for (var i = 0; i < 3; i++) {
+            resetStopwatch(i);
+        }
+        finalTime = 0;
+        document.getElementById('finalStopwatch').innerText = "00:00:00.000";
+        document.getElementById('largeFinalTime').innerText = "00:00:00.000";
+    }
+
+    function showFinalTime() {
+        var formattedTime = formatTime(finalTime);
+        document.getElementById('finalStopwatch').innerText = "최종 시간: " + formattedTime;
+        document.getElementById('largeFinalTime').innerText = formattedTime;
+    }
+
+    function formatTime(milliseconds) {
+        var hours = Math.floor(milliseconds / 3600000);
+        var minutes = Math.floor((milliseconds % 3600000) / 60000);
+        var seconds = Math.floor((milliseconds % 60000) / 1000);
+        var ms = milliseconds % 1000;
+        return (hours < 10 ? "0" + hours : hours) + ":" +
+               (minutes < 10 ? "0" + minutes : minutes) + ":" +
+               (seconds < 10 ? "0" + seconds : seconds) + "." +
+               (ms < 100 ? (ms < 10 ? "00" + ms : "0" + ms) : ms);
+    }
+
+
+    function sendPredefinedQuestion(question) {
+        document.getElementById('question-input').value = question;
+        document.getElementById('send-button').click();
+    }
+
+    function sendRandomPredefinedQuestion(type) {
+        var urlMap = {
+            '생물 보호': 'biological_protection',
+            '수상레저': 'water_leisure',
+            '불법': 'illegality',
+            '해양오염': 'marine_pollution',
+            '피서객 안전': 'safety_vacationers',
+            '익수자': 'watery_man',
+            '의료지원': 'medical_aid',
+            '실종': 'missing',
+        };
+
+        var scenarioType = urlMap[type];
+        if (!scenarioType) {
+            alert('Invalid scenario type');
+            return;
+        }
+
+        fetch(`/get_scenarios/${scenarioType}/`)
+            .then(response => response.json())
+            .then(data => {
+                var scenarios = data.scenarios;
+                if (scenarios.length > 0) {
+                    var randomIndex = Math.floor(Math.random() * scenarios.length);
+                    var selectedScenario = scenarios[randomIndex];
+                    var question = '유형: ' + selectedScenario.scenario_code + ', 상황: ' + selectedScenario.scenario_situation + '시나리오 생성';
+                    sendPredefinedQuestion(question);
+                } else {
+                    alert(type + ' 시나리오가 없습니다.');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching scenarios:', error);
+            });
+    }
+
+    document.getElementById('send-button').addEventListener('click', function() {
+        var question = document.getElementById('question-input').value;
+        if (question.trim() === '') {
+            alert('질문을 입력하세요.');
+            return;
+        }
+
+        // 로딩 스피너 표시
+        document.getElementById('loading-spinner').style.display = 'block';
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '{% url "chat" %}', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
+
+        xhr.onload = function() {
+            // 로딩 스피너 숨기기
+            document.getElementById('loading-spinner').style.display = 'none';
+
+            if (xhr.status === 200) {
+                var response = JSON.parse(xhr.responseText);
+                var chatContent = document.getElementById('chat-content');
+                chatContent.innerHTML = ''; // Clear previous chat messages
+                var newMessage = document.createElement('div');
+                newMessage.classList.add('chat-message-box');
+                newMessage.innerHTML = '<strong>질문:</strong> ' + response.question + '<br>' +
+                                       '<strong>답변:</strong><br>' +
+                                       response.answer.replace(/\n/g, "<br>") + '<br>';
+                chatContent.appendChild(newMessage);
+                chatContent.scrollTop = chatContent.scrollHeight;
+
+                document.getElementById('question-input').value = '';
+            } else {
+                alert('오류가 발생했습니다.');
+            }
+        };
+
+        xhr.send('question=' + encodeURIComponent(question));
+    });
+</script>
+
+
 </body>
     
 

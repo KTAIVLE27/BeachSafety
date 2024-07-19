@@ -291,15 +291,6 @@
     align-items: center;
 }
 
-.footer {
-    height: 50px; /* 푸터 높이 설정 */
-    background-color: #f1f1f1; /* 푸터 배경색 */
-    text-align: center; /* 텍스트 중앙 정렬 */
-    line-height: 50px; /* 세로 중앙 정렬을 위한 라인 높이 */
-    background-color: #000; /* 푸터 배경색을 검정으로 설정 */
-    color: #fff; /* 텍스트 색상을 흰색으로 설정 */
-}
-
 
 /* Global styles */
 body {
@@ -397,4 +388,41 @@ body {
 .prediction-info {
     margin-top: 10px; /* Add margin above prediction info */
     display: none; /* Hide initially */
+}
+
+#admin-logo{
+    margin-left: 100px; 
+}
+
+
+
+.sticky-footer {
+    position: fixed;
+    bottom: 0;
+}
+
+
+.white-box {
+    width: 300px;
+    height: 300px;
+    background-color: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+.footer-logos a {
+    margin-right: 10px; /* 로고들 사이의 간격을 20px로 설정 */
+}
+
+
+.footer-logos a:last-child {
+    margin-right: 0; /* 마지막 로고에는 오른쪽 마진을 제거 */
+}
+.footer-logos img {
+    width: 40px;
+    height: 50px;
+    margin: 0 10px; /* 여백을 좁게 설정 */
+    max-width: 50px; /* 최대 너비 설정 */
+    height: auto; /* 높이 자동 조정 */
 }

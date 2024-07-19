@@ -12,8 +12,21 @@
 <span>admin</span>
 {% endblock %}
 
+<style>
+    .text-truncate {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .table td,
+    .table th {
+        vertical-align: middle;
+    }
+</style>
+
+
 {% block content %}
- 
 <div class="container-fluid pt-4 px-4">
     <div class="row g-4">
         <div class="col-lg-12">
@@ -49,11 +62,12 @@
                                     <input type="checkbox" id="selectAll">
                                 </th>
                                 <th scope="col" style="width: 5%;">인덱스</th>
-                                <th scope="col" style="width: 5%;">유형</th>
+                                <th scope="col" style="width: 8%;">유형</th>
                                 <th scope="col" style="width: 5%;">시간</th>
-                                <th scope="col" style="width: 25%;">상황</th>
-                                <th scope="col" style="width: 45%;">절차</th>
-                                <th scope="col" style="width: 15%;">목표</th>
+                                <th scope="col" style="width: 15%;">상황</th>
+                                <th scope="col" style="width: 32%;">절차</th>
+                                <th scope="col" style="width: 10%;">목표</th>
+                                <th scope="col" style="width: 20%;">QA</th>
                             </tr>
                         </thead>
                         <tbody id="noticeTableBody">
@@ -63,13 +77,14 @@
                                 <td>{{ forloop.counter0|add:page_obj.start_index }}</td>
                                 <td>{{ scenario.scenario_code }}</td>
                                 <td>{{ scenario.scenario_time|date:"Y-m-d H:i" }}</td>
-                                <td>{{ scenario.scenario_situation }}</td>
-                                <td>{{ scenario.scenario_process }}</td>
-                                <td>{{ scenario.scenario_goals }}</td>
+                                <td class="text-truncate" style="max-width: 150px;">{{ scenario.scenario_situation }}</td>
+                                <td class="text-truncate" style="max-width: 350px;">{{ scenario.scenario_process }}</td>
+                                <td class="text-truncate" style="max-width: 100px;">{{ scenario.scenario_goals }}</td>
+                                <td class="text-truncate" style="max-width: 200px;">{{ scenario.scenario_qa }}</td>
                             </tr>
                             {% empty %}
                             <tr>
-                                <td colspan="7">No scenarios found.</td>
+                                <td colspan="8">No scenarios found.</td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -100,6 +115,11 @@
                 </div>
             </div>
         </div>
+    </div>
+</div>
+<div class="container-fluid pt-4 px-4" style="height: 500px">
+    <div class="white-box">
+
     </div>
 </div>
 {% endblock %}

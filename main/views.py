@@ -19,6 +19,25 @@ from django.db.models import Q
 import boto3
 from django.conf import settings
 import joblib
+from langchain.chat_models import ChatOpenAI
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.vectorstores import Chroma
+from langchain.chains import ConversationalRetrievalChain
+from langchain.memory import ConversationBufferMemory
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+
+
+embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
+database = Chroma(persist_directory="./database", embedding_function=embeddings)
+memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+
+qa_chain = ConversationalRetrievalChain.from_llm(
+    llm=ChatOpenAI(model="gpt-3.5-turbo"),
+    retriever=database.as_retriever(search_kwargs={"k": 20}),
+    memory=memory
+)
+
 
 def is_admin(user):
     return user.is_authenticated and user.user_id == 'admin' and user.user_name == 'admin' and user.check_password('aivle2024!')
@@ -318,9 +337,9 @@ def delete_freeboard(request, post_id):
     return JsonResponse({'success': True})
 
 
-@login_required
-def chat(request):
-    return render(request, 'chat.html')
+# @login_required
+# def chat(request):
+#     return render(request, 'chat.html')
 
 @login_required
 def cctv(request):
@@ -417,7 +436,20 @@ def signin(request):
     # 로그인 폼 렌더링
     return render(request, 'signin.html', {'form': form})
 
-
+@csrf_exempt
+def auto_admin_login(request):
+    if request.method == 'POST':
+        # 관리자 계정 정보
+        admin_username = 'admin'
+        admin_password = 'aivle202405!'
+        # 관리자 계정 인증 및 로그인
+        user = authenticate(request, username=admin_username, password=admin_password)
+        if user is not None:
+            login(request, user)
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'success': False, 'error': 'Invalid credentials'})
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
 
 def signup(request):
     if request.method == 'POST':
@@ -568,3 +600,107 @@ def control_view(request):
     }
     
     return render(request, 'weather.html', context)
+
+# @csrf_exempt
+# @login_required
+# def chat_message(request):
+#     if request.method == 'POST':
+#         data = json.loads(request.body)
+#         message = data.get('message')
+        
+#         # ChatOpenAI와 연동하여 챗봇 응답 생성
+#         response = qa_chain({"question": message})
+
+#         return JsonResponse({'response': response['answer']})
+#     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+import sqlite3
+import pandas as pd
+from django.shortcuts import render, redirect
+from django.http import JsonResponse, HttpResponse
+from django.utils import timezone
+from langchain.chat_models import ChatOpenAI
+from langchain.vectorstores import Chroma
+from langchain.chains import RetrievalQA
+from langchain.schema import Document
+from langchain.embeddings import OpenAIEmbeddings
+from .models import Chatlog
+import logging
+
+logger = logging.getLogger(__name__)
+
+# SQLite 데이터베이스에서 QA 데이터를 가져오는 함수 (새로 추가된 레코드만 가져오도록 수정)
+def get_new_qa_data(last_id):
+    conn = sqlite3.connect('db.sqlite3')
+    query = f"SELECT scenario_qa FROM Scenario WHERE scenario_id > {last_id}"
+    df = pd.read_sql_query(query, conn)
+    conn.close()
+    return df
+
+# Embeddings 및 Chroma 데이터베이스 설정
+embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
+database = Chroma(persist_directory="./database", embedding_function=embeddings)
+
+# QA 데이터를 Document 객체로 변환하고 Chroma 데이터베이스에 추가
+def add_qa_to_database(last_id):
+    data = get_new_qa_data(last_id)
+    documents = [Document(page_content=text) for text in data['scenario_qa'].tolist()]
+    database.add_documents(documents)
+
+def chat(request):
+    if request.method == 'POST':
+        query = request.POST.get('question')
+
+        chat = ChatOpenAI(model="gpt-3.5-turbo")
+        k = 3
+        retriever = database.as_retriever(search_kwargs={"k": k})
+        qa = RetrievalQA.from_llm(llm=chat, retriever=retriever, return_source_documents=True)
+
+        result = qa(query)
+        answer = result["result"]
+
+        timestamp = timezone.now()
+        chatlog = Chatlog(question=query, answer=answer, created_at=timestamp)
+        chatlog.save()
+
+        logs = request.session.get('logs', [])
+        logs.append({'question': query, 'answer': answer, 'timestamp': timestamp.strftime('%Y-%m-%d %H:%M:%S')})
+        request.session['logs'] = logs
+
+        return JsonResponse({'question': query, 'answer': answer, 'timestamp': timestamp.strftime('%Y-%m-%d %H:%M:%S')})
+    else:
+        logs = request.session.get('logs', [])
+        return render(request, 'chat.html', {'logs': logs})
+
+def chat_clear_logs(request):
+    if request.method == 'POST':
+        request.session['logs'] = []
+        return redirect('chat')
+    else:
+        return HttpResponse(status=405)
+    
+    
+# 시나리오를 가져오는 뷰 함수
+def get_scenarios(request, scenario_type):
+    if request.method == 'GET':
+        scenario_type_map = {
+            'biological_protection': '생물 보호',
+            'water_leisure': '수상레저',
+            'illegality': '불법',
+            'marine_pollution': '해양오염',
+            'safety_vacationers': '피서객안전',
+            'watery_man': '익수자',
+            'medical_aid': '의료지원',
+            'missing': '실종',
+        }
+
+        scenario_code = scenario_type_map.get(scenario_type)
+        if not scenario_code:
+            return JsonResponse({'error': 'Invalid scenario type'}, status=400)
+
+        scenarios = Scenario.objects.filter(scenario_code=scenario_code).values('scenario_code', 'scenario_situation')
+        scenario_list = list(scenarios)
+        return JsonResponse({'scenarios': scenario_list})
+    else:
+        return HttpResponse(status=405)

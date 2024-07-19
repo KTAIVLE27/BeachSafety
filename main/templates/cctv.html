@@ -8,41 +8,38 @@
 {% endblock %}
 
 {% block content %}
-        <!-- CCTV Display Start -->
-        <div class="container-fluid pt-4 px-4">
-            <div class="row g-4">
-                <div class="col-12">
-                    <div class="bg-light text-center rounded p-4">
-                        <div class="d-flex align-items-center justify-content-between mb-4">
-                            <h6 class="mb-0">해당 CCTV 팝업창</h6>
-                        </div>
+<!-- CCTV Display Start -->
+<body class="cctv-page">
+    <div class="container-fluid pt-4 px-4">
+        <div class="row g-4">
+            <div class="col-12">
+                <div class="bg-light text-center rounded p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <h6 class="mb-0">해당 CCTV 팝업창</h6>
+                    </div>
 
-                        <!-- Dropdown menu for beach selection -->
-                        <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                해수욕장 선택
-                            </button>
-                            <ul id="beach-list" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                {% for beach in beaches %}
-                                    {% for cctv in cctvs %}
-                                        {% if cctv.beach_no_id == beach.beach_no %}
-                                            <li><a class="dropdown-item" onclick="loadCCTV('{{ cctv.cctv_url }}')">{{ beach.beach_name }}</li>
-                                        {% endif %}
-                                    {% endfor %}
+                    <!-- Dropdown menu for beach selection -->
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            해수욕장 선택
+                        </button>
+                        <ul id="beach-list" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            {% for beach in beaches %}
+                                {% for cctv in cctvs %}
+                                    {% if cctv.beach_no_id == beach.beach_no %}
+                                        <li><a class="dropdown-item" onclick="loadCCTV('{{ cctv.cctv_url }}')">{{ beach.beach_name }}</li>
+                                    {% endif %}
                                 {% endfor %}
-                            </ul>
-                            <iframe id="cctv-frame" width="1400" height="650" frameborder="0" allowfullscreen></iframe>
-                        </div>
+                            {% endfor %}
+                        </ul>
+                        <iframe id="cctv-frame" width="1400" height="750" frameborder="0" allowfullscreen></iframe>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- CCTV Display End -->
-
     </div>
-    <!-- Content End -->
-
-  
+<!-- CCTV Display End -->
+</body>
  <!-- 추가된 자바스크립트 -->
  <script>
     function toggleSearch() {
@@ -60,6 +57,4 @@
         document.getElementById('cctv-frame').src = url;
     }
 </script>
-</div>
-<!-- Sales Chart End -->
 {% endblock %}

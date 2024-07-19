@@ -17,13 +17,130 @@ from main.forms import *
 from django.db.models import Q
 import csv
 import io
-from datetime import datetime
+# from datetime import datetime,timezone, timedelta
 from main.utils import similarity_function 
 import boto3
 from django.conf import settings
+from collections import Counter
+from django.utils.timezone import localtime
+# from django.utils import timezone
+import time 
+import hmac
+import hashlib
+import uuid
+import requests
+import os
+import datetime
+from main.views import add_qa_to_database
+
+from datetime import datetime, timedelta
+from datetime import timezone as dt_timezone  # Import datetime and rename timezone
+from django.utils import timezone as django_timezone  # Rename the django.utils timezone
+from .utils import mask_user_data
+
+def get_signature(key, msg):
+    return hmac.new(key.encode(), msg.encode(), hashlib.sha256).hexdigest()
+
+def unique_id():
+    return str(uuid.uuid1().hex)
+
+def get_iso_datetime():
+    utc_offset_sec = time.altzone if time.localtime().tm_isdst else time.timezone
+    utc_offset = timedelta(seconds=-utc_offset_sec)
+    return datetime.now().replace(tzinfo=dt_timezone(offset=utc_offset)).isoformat()
+
+def get_headers(apiKey, apiSecret):
+    date = get_iso_datetime()
+    salt = unique_id()
+    data = date + salt
+    signature = get_signature(apiSecret, data)
+    headers = {
+        'Authorization': f'HMAC-SHA256 ApiKey={apiKey}, Date={date}, salt={salt}, signature={signature}',
+        'Content-Type': 'application/json'
+    }
+    return headers
+
+def format_date(date_string):
+    # Convert string to UTC timezone datetime object
+    date_obj = datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%S.%fZ').replace(tzinfo=dt_timezone.utc)
+    # Convert to local timezone (e.g., Korea Standard Time KST)
+    kst = dt_timezone(timedelta(hours=9))
+    local_date_obj = date_obj.astimezone(kst)
+    return local_date_obj.strftime('%Y-%m-%d %H:%M:%S')
+
+def fetch_message_details(message_code):
+    # Environment variables for API key and secret
+    MESSAGE_API_KEY = os.getenv('MESSAGE_API_KEY')
+    MESSAGE_API_SECRET = os.getenv('MESSAGE_API_SECRET')
+
+    # URL for the API request to get message details
+    url = f"http://api.coolsms.co.kr/messages/v4/list?criteria=messageId&value={message_code}&cond=eq"
+    # Generate headers
+    headers = get_headers(MESSAGE_API_KEY, MESSAGE_API_SECRET)
+
+    response = requests.get(url, headers=headers)
+
+    # Print the response status and body
+    response_json = response.json()
+    if 'messageList' in response_json and response_json['messageList']:
+        message_list = response_json.get('messageList', {})
+        extracted_messages = []
+        for message_id, message_data in message_list.items():
+            #message_code = message_data.get('_id')
+            text = message_data.get('text')
+            from_number = message_data.get('from')
+            deliver_date = message_data.get('dateReceived')
+            if text:
+                extracted_messages.append({
+                    #'messageId': message_code,
+                    'text': text,
+                    'from': from_number,
+                    'deliver_date': format_date(deliver_date)
+                })
+            return extracted_messages
+
+    return None
 
 def admin_home(request):
-    return render(request, 'adminpanel/admin_home.html')
+
+    beaches = Beach.objects.all()
+    beach_count = Beach.objects.count()
+    user_count = User.objects.count()
+    board_count = Event_board.objects.count()
+    notice_board_count = Notice_board.objects.count()
+    
+    last_logins = User.objects.values_list('last_login', flat=True)
+
+    login_count = Counter()
+
+    
+    for login_time in last_logins:
+        local_login_time = localtime(login_time)
+        if local_login_time:
+            hour = local_login_time.hour
+            login_count[hour] +=1
+    
+    hours = list(range(24))
+    counts = [login_count[hour] for hour in hours]
+    
+    
+    message_codes = Message.objects.values_list('message_code', flat=True)
+    messages = []
+    for message_code in message_codes:
+        message_details = fetch_message_details(message_code)
+        if isinstance(message_details, list):
+            messages.extend(message_details)
+        else:
+            messages.append(message_details)
+    
+    sorted_messages = sorted(messages, key=lambda x: x['deliver_date'], reverse=True)
+    return render(request, 'adminpanel/admin_home.html',
+                  {'hours':hours, 'counts':counts, 'beaches': beaches, 
+                   'user_count':user_count, 'beach_count':beach_count,
+                   'board_count':board_count, 'notice_board_count':notice_board_count,
+                   'messages':sorted_messages
+                   })
+
 
 
 def senario(request):
@@ -45,27 +162,27 @@ def senario(request):
 
 
 
+# CSV 업로드 핸들러
 def csv_upload(request):
     if request.method == 'POST':
         csv_file = request.FILES['csv_file']
         if not csv_file.name.endswith('.csv'):
-            # 유효하지 않은 파일 유형 처리
             return render(request, 'csv_upload.html', {'error': 'CSV 파일이 아닙니다.'})
         
-        file_data = csv_file.read().decode('utf-8-sig')  # 'utf-8-sig'로 BOM 처리
+        file_data = csv_file.read().decode('utf-8-sig')
         csv_reader = csv.reader(io.StringIO(file_data))
-        
         next(csv_reader)  # 첫 번째 행(헤더) 건너뛰기
         
+        # 현재 마지막 ID 저장
+        last_id = Scenario.objects.latest('scenario_id').scenario_id if Scenario.objects.exists() else 0
+        
         for row in csv_reader:
-            if len(row) < 6:  # 모델의 필드 수에 맞게 조정
+            if len(row) < 6:
                 continue
             
             try:
-                # '시간' 데이터를 적절한 datetime 형식으로 변환
                 scenario_time = datetime.strptime(row[2], '%H:%M')
             except ValueError:
-                # 변환할 수 없는 경우 건너뜀
                 continue
             
             Scenario.objects.create(
@@ -74,8 +191,10 @@ def csv_upload(request):
                 scenario_situation=row[3],
                 scenario_process=row[4],
                 scenario_goals=row[5],
+                scenario_qa=row[6]
             )
         
+        add_qa_to_database(last_id)
         return redirect('adminpanel:senario')
     
     return render(request, 'adminpanel/csv_upload.html')
@@ -143,7 +262,8 @@ def delete_boards(request):
 
 def user_list_view(request):
     users = User.objects.all().order_by('user_no')  # Order by 'user_no' or another appropriate field
-    paginator = Paginator(users, 10)  # Show 10 users per page
+    masked_users = [mask_user_data(user) for user in users]
+    paginator = Paginator(masked_users, 10)  # Show 10 users per page
 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -152,6 +272,10 @@ def user_list_view(request):
         'page_obj': page_obj
     }
     return render(request, 'adminpanel/user_list.html', context)
+
+def user_detail(request, user_no):
+    user_info = User.objects.get(user_no=user_no)
+    return render(request, 'adminpanel/user_detail.html', {'user_info': user_info})
 
 @csrf_exempt
 def delete_users(request):
@@ -211,7 +335,6 @@ def delete_notice_boards(request):
     try:
         data = json.loads(request.body)
         ids_to_delete = data['ids']
-        print(ids_to_delete)
         Notice_board.objects.filter(notice_id__in=ids_to_delete).delete()
         return JsonResponse({"status": "success"}, status=200)
     except Exception as e:
@@ -221,6 +344,18 @@ def delete_notice_boards(request):
 
 @login_required
 def create_notice(request):
+    def handle_uploaded_file(file):
+        allowed_extensions = ['jpg', 'jpeg', 'png', 'gif']
+        max_file_size = 5 * 1024 * 1024  # 5MB
+
+        ext = file.name.split('.')[-1].lower()
+        if ext not in allowed_extensions:
+            raise ValueError("허용되지 않는 파일 형식입니다.")
+        if file.size > max_file_size:
+            raise ValueError("파일 크기가 너무 큽니다.")
+
+        return True
+
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
@@ -234,25 +369,26 @@ def create_notice(request):
             if 'notice_img' in request.FILES:
                 file = request.FILES['notice_img']
                 
-                s3 = boto3.client(
-                    's3',
-                    aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-                    aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-                    region_name=settings.AWS_S3_REGION_NAME
-                )
-                
-                s3_bucket = settings.AWS_STORAGE_BUCKET_NAME
-                s3_key = f'notices/{file.name}'
-                s3.upload_fileobj(file, s3_bucket, s3_key, ExtraArgs={'ContentType': file.content_type})
-                
-                file_url = f'https://{settings.AWS_S3_CUSTOM_DOMAIN}/{s3_key}'
-                notice.notice_img = file_url    
+                if handle_uploaded_file(file):
+                    s3 = boto3.client(
+                        's3',
+                        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                        region_name=settings.AWS_S3_REGION_NAME
+                    )
+                    
+                    s3_bucket = settings.AWS_STORAGE_BUCKET_NAME
+                    s3_key = f'notices/{file.name}'
+                    s3.upload_fileobj(file, s3_bucket, s3_key, ExtraArgs={'ContentType': file.content_type})
+                    
+                    file_url = f'https://{settings.AWS_S3_CUSTOM_DOMAIN}/{s3_key}'
+                    notice.notice_img = file_url    
             notice.save()
             return redirect('adminpanel:notice_manage')
     else:
         form = PostForm()
     beaches = Beach.objects.all()
-    return render(request, 'adminpanel/create_notice.html', {'beaches': beaches})
+    return render(request, 'adminpanel/create_notice.html', {'form': form, 'beaches': beaches})
 
 
 @login_required

@@ -232,7 +232,7 @@
 
 .bootstrap-datetimepicker-widget.dropdown-menu {
     padding: 10px;
-    border-radius: 2px;
+    border-radius: 20px;
 }
 
 .bootstrap-datetimepicker-widget table td.active,
@@ -340,12 +340,29 @@
 
 .nav-buttons {
     position: fixed;
-    top: 5%;
+    top: 8%;
     right: 20px;
     transform: translateY(-50%);
     display: flex;
-    flex-direction: row;
-    gap: 10px;
+    flex-direction: column;
+}
+
+.nav-items {
+    display: flex;
+    flex-direction: row; /* 수평으로 정렬 */
+    gap: 10px; /* 아이템 간의 간격 */
+}
+
+.nav-item {
+    align-items: center; /* 아이콘 중앙 정렬 */
+    overflow: hidden; /* 넘치는 부분 숨기기 */
+    padding: 0; /* 불필요한 여백 제거 */
+    margin: 0; /* 불필요한 여백 제거 */
+}
+
+#current-time {
+    color: rgb(255, 255, 255);
+    font-size : 2rem
 }
 
 .logo{
@@ -441,17 +458,7 @@
 }
 
 
-.footer {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    font-weight: 3;
-    background-color: #ffffff; 
-    color: #9c9c9cc2;
-    padding-top: 40px; /* Adjust the value as needed */
-    padding-bottom: 10px; /* This ensures the bottom padding remains the same */
-}
-
-.footer .footer-logos img {
+.footer-logos img {
     width: 40px;
     height: 50px;
     margin: 0 10px; /* 여백을 좁게 설정 */
@@ -939,3 +946,12 @@
         font-size: 1em; /* 정보 텍스트 폰트 크기 조정 */
     }
 }
+/* CCTV 페이지에서 푸터 숨기기 */
+.cctv-page #main-footer {
+    display: none;
+}
+
+#main-logo {
+    margin-left: 20px; /* 필요한 만큼 값을 조정하여 로고를 오른쪽으로 이동 */
+}
+

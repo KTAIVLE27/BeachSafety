@@ -128,6 +128,7 @@ class Scenario(models.Model):
     scenario_situation = models.TextField(blank=False, null=False) # 시나리오 상황
     scenario_process = models.TextField(blank=False, null=False)  # 시나리오 절차
     scenario_goals = models.TextField(blank=False, null=False) # 시나리오 목표
+    scenario_qa = models.TextField(blank=False, null=False) # 시나리오 QA
 
 
     class Meta:
@@ -143,3 +144,35 @@ class Scenario(models.Model):
 
 #     class Meta:
 #         db_table = 'scenario_eval'
+
+
+
+class Message(models.Model):
+    message_id = models.AutoField(primary_key=True)
+    message_code = models.CharField(max_length=100, null=False, blank=False)
+
+    class Meta:
+        db_table = 'message'
+        
+from datetime import datetime    
+class Database(models.Model):
+    division = models.TextField('division')
+    answer = models.TextField('answer')
+
+    def __str__(self):
+        return self.answer
+    
+class Chatlog(models.Model): #사용기록 DB
+    question = models.TextField('Question')
+    answer = models.TextField('Answer')
+    created_at = models.DateTimeField('Created At', default=datetime.now)
+
+    def __str__(self):
+        return self.question
+    
+class FileUpload(models.Model): # csv파일 업로드 
+    file = models.FileField(upload_to='uploads/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"File uploaded at {self.uploaded_at}"

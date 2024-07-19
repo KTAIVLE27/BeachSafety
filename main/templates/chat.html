@@ -1,4 +1,6 @@
 {% extends "base/base.html" %}
+{% load static %}
+
 {% block title %}모의훈련{% endblock %}
 
 {% block sidebar_brand %}
@@ -8,77 +10,294 @@
 {% endblock %}
 
 {% block content %}
-        <!-- Main Content Start -->
-        <div class="container-fluid pt-4 px-4">
-            <div class="row">
-                <!-- Chat Box Start -->
-                <div class="col-sm-12 col-md-6 mb-4">
-                    <div class="bg-light text-center rounded p-4 h-100">
-                        <h6 class="mb-4">해양안전 시나리오 챗봇</h6>
-                        <div class="chat-box">
-                            <div class="chat-content" style="height: 400px; overflow-y: scroll;">
-                                <!-- 채팅 메시지 -->
-                            </div>
-                            <div class="input-group mt-3">
-                                <input type="text" class="form-control" placeholder="메시지 입력">
-                                <button class="btn btn-primary">전송</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Chat Box End -->
+<style>
+    .chat-box {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 15px;
+        height: 600px;
+        overflow-y: scroll;
+    }
 
-                <!-- Evaluation Box Start -->
-                <div class="col-sm-12 col-md-6 mb-4">
-                    <div class="bg-light text-center rounded p-4 h-100">
-                        <h6 class="mb-4">평가 항목</h6>
-                        <div class="evaluation-box">
-                            <div class="form-group mb-3">
-                                <label for="timeTaken">걸린 시간</label>
-                                <input type="text" id="timeTaken" class="form-control">
-                            </div>
-                            <div class="form-group mb-3">
-                                <label for="accuracy">정확도</label>
-                                <input type="text" id="accuracy" class="form-control">
-                            </div>
-                            <!-- 추가 평가 항목 -->
+    .chat-message-box {
+        margin-bottom: 10px;
+        padding: 10px;
+        border: 1px solid #e9ecef;
+        border-radius: 5px;
+        background-color: #f8f9fa;
+    }
+
+    .evaluation-box {
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        height: 600px;
+        overflow-y: auto;
+    }
+
+    .stopwatch {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .record {
+        font-size: 14px;
+        color: #6c757d;
+    }
+
+    .display-4 {
+        font-size: 36px;
+        font-weight: bold;
+    }
+
+    #question-input, #send-button {
+        display: none;
+    }
+
+    .loading-spinner {
+        display: none;
+        width: 3rem;
+        height: 3rem;
+        border: 0.5rem solid #f3f3f3;
+        border-top: 0.5rem solid #3498db;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: auto;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
+
+<!-- Main Content Start -->
+<div class="container-fluid pt-4 px-4">
+    <div class="row">
+        <!-- Chat Box Start -->
+        <div class="col-sm-12 col-md-6 mb-4">
+            <div class="bg-light text-center rounded p-4 h-100">
+                <h6 class="mb-4">해양안전 시나리오 챗봇</h6>
+                <div class="chat-box">
+                    <div id="chat-content">
+                        <!-- 채팅 메시지 -->
+                        <!-- {% for log in logs %}
+                        <div class="chat-message-box">
+                            <strong>질문:</strong> {{ log.question|safe }}<br>
+                            <strong>답변:</strong><br>
+                            {{ log.answer|safe|linebreaksbr }}
                         </div>
+                        {% endfor %} -->
+                    </div>
+                    <div class="loading-spinner" id="loading-spinner"></div>
+                    <div class="button-group mt-3">
+                        <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion('생물 보호')">생물보호</button>
+                        <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion('수상레저')">수상레저</button>
+                        <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion('불법')">불법</button>
+                        <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion('해양오염')">해양오염</button>
+                        <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion('피서객 안전')">피서객 안전</button>
+                        <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion('익수자')">익수자</button>
+                        <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion('의료지원')">의료지원</button>
+                        <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion('실종')">실종</button>
+                    </div>
+                    <div class="input-group mt-3">
+                        <input type="text" class="form-control" id="question-input" placeholder="메시지 입력">
+                        <button class="btn btn-primary" id="send-button">전송</button>
                     </div>
                 </div>
-                <!-- Evaluation Box End -->
+                <div class="loading-spinner" id="loading-spinner"></div>
             </div>
         </div>
-        <!-- Main Content End -->
+        <!-- Chat Box End -->
 
-        <!-- Footer Start -->
-        <!-- Footer Content -->
-        <!-- Footer End -->
+        <!-- Evaluation Box Start -->
+        <div class="col-sm-12 col-md-6 mb-4">
+            <div class="bg-light text-center rounded p-4 h-100">
+                <h6 class="mb-4">평가 항목</h6>
+                <div class="evaluation-box">
+                    <div class="form-group mb-3">
+                        <label for="stopwatch1">상황 전파 및 출동 준비</label>
+                        <div id="stopwatch1" class="stopwatch">00:00:00.000</div>
+                        <button class="btn btn-success mt-2" onclick="startStopwatch(0)">Start</button>
+                        <button class="btn btn-primary mt-2" onclick="stopStopwatch(0)">Stop</button>
+                        <div id="record1" class="record mt-2"></div>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="stopwatch2">구조 활동 시간</label>
+                        <div id="stopwatch2" class="stopwatch">00:00:00.000</div>
+                        <button class="btn btn-success mt-2" onclick="startStopwatch(1)">Start</button>
+                        <button class="btn btn-primary mt-2" onclick="stopStopwatch(1)">Stop</button>
+                        <div id="record2" class="record mt-2"></div>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="stopwatch3">상황 마무리 및 인수 인계</label>
+                        <div id="stopwatch3" class="stopwatch">00:00:00.000</div>
+                        <button class="btn btn-success mt-2" onclick="startStopwatch(2)">Start</button>
+                        <button class="btn btn-primary mt-2" onclick="stopStopwatch(2)">Stop</button>
+                        <div id="record3" class="record mt-2"></div>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="finalStopwatch">총 훈련 소요 시간</label>
+                        <div id="finalStopwatch" class="stopwatch">00:00:00.000</div>
+                        <button class="btn btn-success mt-2" onclick="showFinalTime()">최종 시간 보기</button>
+                        <button class="btn btn-danger mt-2" onclick="resetAllStopwatches()">초기화</button>
+                    </div>
+                    {% comment %} <div class="form-group mb-3">
+                        <label for="largeFinalTime">최종 시간</label>
+                        <div id="largeFinalTime" class="display-4">00:00:00.000</div>
+                    </div> {% endcomment %}
+                </div>
+            </div>
+        </div>
+        <!-- Evaluation Box End -->
     </div>
-    <!-- Content End -->
-   </div>
+</div>
+<!-- Main Content End -->
+<div class="container-fluid pt-4 px-4" style="height: 320px">
+    <div class="white-box">
+
+    </div>
+</div>
+<script>
+    var stopwatches = [0, 0, 0];
+    var intervals = [null, null, null];
+    var finalTime = 0;
+
+    function startStopwatch(index) {
+        if (intervals[index] === null) {
+            intervals[index] = setInterval(function() {
+                stopwatches[index] += 10;
+                document.getElementById('stopwatch' + (index + 1)).innerText = formatTime(stopwatches[index]);
+            }, 10);
+        }
+    }
+
+    function stopStopwatch(index) {
+        if (intervals[index] !== null) {
+            clearInterval(intervals[index]);
+            intervals[index] = null;
+            document.getElementById('record' + (index + 1)).innerText = "기록: " + formatTime(stopwatches[index]);
+            finalTime += stopwatches[index];
+        }
+    }
+
+    function resetStopwatch(index) {
+        if (intervals[index] !== null) {
+            clearInterval(intervals[index]);
+            intervals[index] = null;
+        }
+        stopwatches[index] = 0;
+        document.getElementById('stopwatch' + (index + 1)).innerText = "00:00:00.000";
+        document.getElementById('record' + (index + 1)).innerText = "";
+    }
+
+    function resetAllStopwatches() {
+        for (var i = 0; i < 3; i++) {
+            resetStopwatch(i);
+        }
+        finalTime = 0;
+        document.getElementById('finalStopwatch').innerText = "00:00:00.000";
+        document.getElementById('largeFinalTime').innerText = "00:00:00.000";
+    }
+
+    function showFinalTime() {
+        var formattedTime = formatTime(finalTime);
+        document.getElementById('finalStopwatch').innerText = "최종 시간: " + formattedTime;
+        document.getElementById('largeFinalTime').innerText = formattedTime;
+    }
+
+    function formatTime(milliseconds) {
+        var hours = Math.floor(milliseconds / 3600000);
+        var minutes = Math.floor((milliseconds % 3600000) / 60000);
+        var seconds = Math.floor((milliseconds % 60000) / 1000);
+        var ms = milliseconds % 1000;
+        return (hours < 10 ? "0" + hours : hours) + ":" +
+               (minutes < 10 ? "0" + minutes : minutes) + ":" +
+               (seconds < 10 ? "0" + seconds : seconds) + "." +
+               (ms < 100 ? (ms < 10 ? "00" + ms : "0" + ms) : ms);
+    }
+
+    function sendPredefinedQuestion(question) {
+        document.getElementById('question-input').value = question;
+        document.getElementById('send-button').click();
+    }
+
+    function sendRandomPredefinedQuestion(type) {
+        var urlMap = {
+            '생물 보호': 'biological_protection',
+            '수상레저': 'water_leisure',
+            '불법': 'illegality',
+            '해양오염': 'marine_pollution',
+            '피서객 안전': 'safety_vacationers',
+            '익수자': 'watery_man',
+            '의료지원': 'medical_aid',
+            '실종': 'missing',
+        };
+
+        var scenarioType = urlMap[type];
+        if (!scenarioType) {
+            alert('Invalid scenario type');
+            return;
+        }
+
+        fetch(`/get_scenarios/${scenarioType}/`)
+            .then(response => response.json())
+            .then(data => {
+                var scenarios = data.scenarios;
+                if (scenarios.length > 0) {
+                    var randomIndex = Math.floor(Math.random() * scenarios.length);
+                    var selectedScenario = scenarios[randomIndex];
+                    var question = '유형: ' + selectedScenario.scenario_code + ', 상황: ' + selectedScenario.scenario_situation + '시나리오 생성';
+                    sendPredefinedQuestion(question);
+                } else {
+                    alert(type + ' 시나리오가 없습니다.');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching scenarios:', error);
+            });
+    }
+
+    document.getElementById('send-button').addEventListener('click', function() {
+        var question = document.getElementById('question-input').value;
+        if (question.trim() === '') {
+            alert('질문을 입력하세요.');
+            return;
+        }
+
+        // 로딩 스피너 표시
+        document.getElementById('loading-spinner').style.display = 'block';
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '{% url "chat" %}', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
+
+        xhr.onload = function() {
+            // 로딩 스피너 숨기기
+            document.getElementById('loading-spinner').style.display = 'none';
+
+            if (xhr.status === 200) {
+                var response = JSON.parse(xhr.responseText);
+                var chatContent = document.getElementById('chat-content');
+                chatContent.innerHTML = ''; // Clear previous chat messages
+                var newMessage = document.createElement('div');
+                newMessage.classList.add('chat-message-box');
+                newMessage.innerHTML = '<strong>질문:</strong> ' + response.question + '<br>' +
+                                       '<strong>답변:</strong><br>' +
+                                       response.answer.replace(/\n/g, "<br>") + '<br>';
+                chatContent.appendChild(newMessage);
+                chatContent.scrollTop = chatContent.scrollHeight;
+
+                document.getElementById('question-input').value = '';
+            } else {
+                alert('오류가 발생했습니다.');
+            }
+        };
+
+        xhr.send('question=' + encodeURIComponent(question));
+    });
+</script>
 
 {% endblock %}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
