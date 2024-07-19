@@ -13,7 +13,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container" style="height: 80%;">
     <h2 class="mt-4">CSV 파일 업로드</h2>
     <form id="csvUploadForm" method="post" enctype="multipart/form-data" action="{% url 'adminpanel:csv_upload' %}">
         {% csrf_token %}
@@ -29,11 +29,7 @@
         </div>
     </form>
 </div>
-<div class="container-fluid pt-4 px-4" style="height: 500px">
-    <div class="white-box">
 
-    </div>
-</div>
 <script>
 document.getElementById('csvUploadForm').addEventListener('submit', function() {
     document.getElementById('loadingSpinner').style.display = 'block';
