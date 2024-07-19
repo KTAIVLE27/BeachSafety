@@ -56,7 +56,7 @@ def control_view(request):
         
         'RIP_api_time': get_beach_obs_time('HAE'),
 
-        
+        'current_time': datetime.now().strftime('%Y-%m-%d %H:%M:%S')       
     }
     beaches = Beach.objects.all()
     cctvs = CCTV.objects.select_related('beach_no')
