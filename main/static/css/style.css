@@ -354,7 +354,6 @@
 }
 
 .nav-item {
-    display: flex; /* 플렉스 컨테이너 설정 */
     align-items: center; /* 아이콘 중앙 정렬 */
     overflow: hidden; /* 넘치는 부분 숨기기 */
     padding: 0; /* 불필요한 여백 제거 */
