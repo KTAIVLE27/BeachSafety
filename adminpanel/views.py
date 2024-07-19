@@ -33,7 +33,8 @@ import os
 import datetime
 from main.views import add_qa_to_database
 
-from datetime import datetime, timedelta, timezone as dt_timezone  # Import datetime and rename timezone
+from datetime import datetime, timedelta
+from datetime import timezone as dt_timezone  # Import datetime and rename timezone
 from django.utils import timezone as django_timezone  # Rename the django.utils timezone
 
 def get_signature(key, msg):
@@ -179,7 +180,7 @@ def csv_upload(request):
                 continue
             
             try:
-                scenario_time = datetime.datetime.strptime(row[2], '%H:%M')
+                scenario_time = datetime.strptime(row[2], '%H:%M')
             except ValueError:
                 continue
             
