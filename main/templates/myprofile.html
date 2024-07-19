@@ -25,16 +25,6 @@
                 <div class="profile-box">
                     <form id="profile-form" method="post" action="{% url 'myprofile' %}" enctype="multipart/form-data">
                         {% csrf_token %}
-                        <!-- 프로필 이미지 -->
-                        <div class="mb-3 text-center">
-                            <label for="profile-img-upload" class="profile-img-label">
-                                <img src="/static/img/face_24dp.png" id="profile-img" class="rounded-circle mb-3" alt="Profile Picture" style="width: 100px; height: 100px;">
-                                <div class="overlay">
-                                    <div class="text">편집</div>
-                                </div>
-                            </label>
-                            <input type="file" id="profile-img-upload" name="profile-img-upload" class="d-none" accept="image/*" onchange="previewImage(event)">
-                        </div>
 
                         <!-- ID -->
                         <div class="row mb-3">
