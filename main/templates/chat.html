@@ -82,13 +82,13 @@
                 <div class="chat-box">
                     <div id="chat-content">
                         <!-- 채팅 메시지 -->
-                        {% for log in logs %}
+                        <!-- {% for log in logs %}
                         <div class="chat-message-box">
                             <strong>질문:</strong> {{ log.question|safe }}<br>
                             <strong>답변:</strong><br>
                             {{ log.answer|safe|linebreaksbr }}
                         </div>
-                        {% endfor %}
+                        {% endfor %} -->
                     </div>
                     <div class="loading-spinner" id="loading-spinner"></div>
                     <div class="button-group mt-3">
@@ -96,7 +96,7 @@
                         <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion('수상레저')">수상레저</button>
                         <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion('불법')">불법</button>
                         <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion('해양오염')">해양오염</button>
-                        <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion('피서객 안전')">피서객안전</button>
+                        <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion('피서객 안전')">피서객 안전</button>
                         <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion('익수자')">익수자</button>
                         <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion('의료지원')">의료지원</button>
                         <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion('실종')">실종</button>
@@ -229,7 +229,7 @@
             '수상레저': 'water_leisure',
             '불법': 'illegality',
             '해양오염': 'marine_pollution',
-            '피서객안전': 'safety_vacationers',
+            '피서객 안전': 'safety_vacationers',
             '익수자': 'watery_man',
             '의료지원': 'medical_aid',
             '실종': 'missing',
