@@ -75,10 +75,9 @@ jobs:
 
         ssh -o StrictHostKeyChecking=no $USER@$HOST <<EOF
           cd /home/ubuntu/deploy/BeachSafety
-          if [ ! -d "BeachSafety" ]; then
-            git clone git@github.com:KTAIVLE27/BeachSafety.git
+          if [ ! -d ".git" ]; then
+            git clone git@github.com:KTAIVLE27/BeachSafety.git .
           else
-            cd BeachSafety
             git pull origin main
           fi
           source /home/ubuntu/miniforge3/bin/activate mini7
@@ -105,7 +104,7 @@ jobs:
           [Service]
           User=ubuntu
           Group=www-data
-          WorkingDirectory=/home/ubuntu/deploy/BeachSafety/BeachSafety
+          WorkingDirectory=/home/ubuntu/deploy/BeachSafety
           ExecStart=/home/ubuntu/miniforge3/envs/mini7/bin/gunicorn --workers 3 --bind unix:/home/ubuntu/deploy/BeachSafety/BeachSafety.sock BeachSafety.wsgi:application
 
           [Install]
