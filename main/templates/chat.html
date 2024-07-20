@@ -73,13 +73,13 @@
 </style>
 
 <!-- Main Content Start -->
-<div class="container-fluid pt-4 px-4">
-    <div class="row">
+<div class="container-fluid pt-4 px-4" id='contentbox-1'>
+    <div class="row"  id='contentbox-2'>
         <!-- Chat Box Start -->
         <div class="col-sm-12 col-md-6 mb-4">
             <div class="bg-light text-center rounded p-4 h-100">
                 <h6 class="mb-4">해양안전 시나리오 챗봇</h6>
-                <div class="chat-box">
+                <div class="chat-box"  id='contentbox-3' >
                     <div id="chat-content">
                         <!-- 채팅 메시지 -->
                         <!-- {% for log in logs %}
@@ -115,7 +115,7 @@
         <div class="col-sm-12 col-md-6 mb-4">
             <div class="bg-light text-center rounded p-4 h-100">
                 <h6 class="mb-4">평가 항목</h6>
-                <div class="evaluation-box">
+                <div class="evaluation-box"  id='contentbox-3'>
                     <div class="form-group mb-3">
                         <label for="stopwatch1">상황 전파 및 출동 준비</label>
                         <div id="stopwatch1" class="stopwatch">00:00:00.000</div>
@@ -143,10 +143,10 @@
                         <button class="btn btn-success mt-2" onclick="showFinalTime()">최종 시간 보기</button>
                         <button class="btn btn-danger mt-2" onclick="resetAllStopwatches()">초기화</button>
                     </div>
-                    <div class="form-group mb-3">
+                    {% comment %} <div class="form-group mb-3">
                         <label for="largeFinalTime">최종 시간</label>
                         <div id="largeFinalTime" class="display-4">00:00:00.000</div>
-                    </div>
+                    </div> {% endcomment %}
                 </div>
             </div>
         </div>
@@ -154,11 +154,7 @@
     </div>
 </div>
 <!-- Main Content End -->
-<div class="container-fluid pt-4 px-4" style="height: 320px">
-    <div class="white-box">
 
-    </div>
-</div>
 <script>
     var stopwatches = [0, 0, 0];
     var intervals = [null, null, null];

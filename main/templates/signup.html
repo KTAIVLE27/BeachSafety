@@ -57,17 +57,17 @@
                                 <div class="text-danger" id="id_username_error">{{ form.user_name.errors }}</div>
                             </div>
                             <div class="form-floating mb-3">
-                                <input type="text" class="form-control" name="user_phone" id="id_PhoneNumber" placeholder="핸드폰번호" required maxlength="150" onfocus="startPASSAuth()">
-                                <label for="id_PhoneNumber">전화번호</label>
-                            <div class="text-danger" id="id_PhoneNumber_error">{{ form.user_phone.errors }}</div>
+                                <input type="text" id="profile-phone" name="user_phone" class="form-control" value="{{ user.user_phone }}" oninput="validateField(this)">
+                                <label for="profile-phone" class="form-label">휴대폰번호</label>
+                                <div class="text-danger" id="profile-phone_error">{{ form.user_phone.errors }}</div>
                             </div>
                             <div class="form-floating mb-3">
-                                <input type="text" class="form-control" name="user_address" id="id_address" placeholder="주소" required maxlength="150" onclick="execDaumPostcode()">
+                                <input type="text" class="form-control" name="user_address" id="id_address" placeholder="주소" required maxlength="150" onclick="execDaumPostcode()" oninput="validateField(this)">
                                 <label for="id_address">주소</label>
                                 <div class="text-danger" id="id_address_error">{{ form.user_address.errors }}</div>
                             </div>
                             <div class="form-floating mb-3">
-                                <input type="text" class="form-control" name="user_detail_address" id="id_detail_address" placeholder="주소" required maxlength="150" oninput="validationField(this)">
+                                <input type="text" class="form-control" name="user_detail_address" id="id_detail_address" placeholder="상세주소" required maxlength="150" oninput="validateField(this)">
                                 <label for="id_detail_address">상세주소</label>
                                 <div class="text-danger" id="id_detail_address_error">{{ form.user_detail_address.errors }}</div>
                             </div>
@@ -199,7 +199,13 @@
         // Validate Fields
         function validateField(field) {
         let errorDiv = document.getElementById(field.id + "_error");
-        
+        if (field.name === "user_id") {
+            if (field.value.length < 4) {
+                errorDiv.textContent = "ID의 길이는 4자 이상이어야 합니다.";
+            } else {
+                    errorDiv.textContent = "";
+                }
+            }
         if (field.name === "password1") {
             let errors = [];
             if (field.value.length < 6) {
@@ -241,21 +247,35 @@
                 errorDiv.textContent = "";
             }
         }
-        if (field.name === "id_address_error") {
+
+        if (field.name === "user_address") {
+            console.log("Validating user_address:", field.value);
             if (field.value.length < 1) {
                 errorDiv.textContent = "주소를 입력하십시오.";
             } else {
                 errorDiv.textContent = "";
             }
         }
-        if (field.name === "id_detail_address") {
+    
+        if (field.name === "user_detail_address") {
             if (field.value.length < 1) {
                 errorDiv.textContent = "상세 주소를 입력하십시오.";
             } else {
                 errorDiv.textContent = "";
             }
         }
+
+        if (field.name === "user_birth") {
+            let birthPattern = /^\d{4}-\d{2}-\d{2}$/;
+            if (!birthPattern.test(field.value)) {
+                errorDiv.textContent = "생년월일은 yyyy-mm-dd 형식이어야 합니다.";
+            } else {
+                errorDiv.textContent = "";
+            }
         }
+
+        
+    }
 
         function startPASSAuth() {
             // PASS 인증 API 호출

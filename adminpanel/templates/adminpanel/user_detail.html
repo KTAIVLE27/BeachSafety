@@ -1,0 +1,160 @@
+
+{% extends "base/admin_base.html" %}
+{% block title %}사용자 정보 관리{% endblock %}
+
+{% block sidebar_brand %}
+<a class="navbar-brand mx-4 mb-3">
+    <h3 class="text-primary">사용자 정보 관리</h3>
+</a>
+{% endblock %}
+
+{% block user_info %}
+<h6 class="mb-0">27조</h6>
+<span>admin</span>
+{% endblock %}
+
+{% block content %}
+<!-- Profile Section Start -->
+<div class="container-fluid pt-4 px-4" style="height: 80%">
+    <div class="row g-4 justify-content-center">
+        <div class="col-lg-8">
+            <div class="bg-light text-center rounded p-4">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h3 class="mb-0">사용자 정보</h3>
+                </div>
+                <div class="profile-box">
+                    <form id="profile-form" method="post" action="{% url 'adminpanel:user_list_view' %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <!-- 프로필 이미지 -->
+                        <div class="mb-3 text-center">
+                            <label for="profile-img-upload" class="profile-img-label">
+                                <img src="/static/img/face_24dp.png" id="profile-img" class="rounded-circle mb-3" alt="Profile Picture" style="width: 100px; height: 100px;">
+                            </label>
+                            <input type="file" id="profile-img-upload" name="profile-img-upload" class="d-none" accept="image/*" onchange="previewImage(event)">
+                        </div>
+
+                        <!-- ID -->
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for="profile-id" class="form-label">ID</label>
+                            </div>
+                            <div class="col-md-8">
+                                <span> {{ user_info.user_id}}</span>
+                            </div>
+                        </div>
+                        
+                        <!-- 이메일 -->
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for="profile-email" class="form-label">이메일</label>
+                            </div>
+                            <div class="col-md-8">
+                                <span> {{ user_info.user_email}}</span>
+                            </div>
+                        </div>
+                        
+                        <!-- 이름 -->
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for="profile-name" class="form-label">이름</label>
+                            </div>
+                            <div class="col-md-8">
+                                <span> {{ user_info.user_name}}</span>
+                            </div>
+                        </div>
+                        
+                        <!-- 휴대폰번호 -->
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for="profile-phone" class="form-label">휴대폰번호</label>
+                            </div>
+                            <div class="col-md-8">
+                                <span> {{ user_info.user_phone}}</span>
+                            </div>
+                        </div>
+                        
+                        <!-- 주소 -->
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for="profile-address" class="form-label">주소</label>
+                            </div>
+                            <div class="col-md-8">
+                                <span> {{ user_info.user_address}}</span>
+                            </div>
+                        </div>
+
+                        <!-- 상세 주소 -->
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for="profile_detail_address" class="form-label">상세 주소</label>
+                            </div>
+                            <div class="col-md-8">
+                                <span> {{ user_info.user_detail_address}}</span>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <a href="{% url 'adminpanel:user_list_view' %}" class="btn btn-primary">목록으로</a>
+                        </div> 
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Profile Section End -->
+
+{% block end-script %}
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<!-- Custom Javascript -->
+<script src="/static/js/myprofile.js"></script>
+<!-- Daum Postcode Script -->
+<script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>
+{% endblock %}
+
+
+<!-- Custom JavaScript for alert messages -->
+<script>
+// Display alert message
+function showAlert(message, alertType) {
+const alertBox = document.createElement('div');
+alertBox.className = `alert alert-${alertType} alert-message`;
+alertBox.textContent = message;
+
+document.body.appendChild(alertBox);
+
+alertBox.style.display = 'block';
+
+setTimeout(() => {
+    alertBox.style.display = 'none';
+    alertBox.remove();
+}, 3000);
+}
+
+// Handle messages from Django
+{% if messages %}
+{% for message in messages %}
+    showAlert("{{ message }}", "{% if message.tags %}{{ message.tags }}{% else %}info{% endif %}");
+{% endfor %}
+{% endif %}
+
+// Daum Postcode
+function execDaumPostcode() {
+new daum.Postcode({
+    oncomplete: function(data) {
+        // 주소 정보를 해당 필드에 넣는다.
+        document.getElementById("profile-address").value = data.address;
+    }
+}).open();
+}
+
+// Preview Image
+function previewImage(event) {
+var reader = new FileReader();
+reader.onload = function(){
+    var output = document.getElementById('profile-img');
+    output.src = reader.result;
+};
+reader.readAsDataURL(event.target.files[0]);
+}
+</script>
+{% endblock %}
