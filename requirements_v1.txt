@@ -17,4 +17,4 @@ yt-dlp==2024.5.27
 ultralytics==8.2.42
 scikit-learn==1.2.2
 joblib
-guricorn
+gunicorn
