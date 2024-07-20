@@ -25,6 +25,19 @@ jobs:
         pip install -r requirements_v1.txt
 
     - name: Run migrations
+      env: |
+        DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_S3_CUSTOM_DOMAIN: ${{ secrets.AWS_S3_CUSTOM_DOMAIN }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_STORAGE_BUCKET_NAME: ${{ secrets.AWS_STORAGE_BUCKET_NAME }}
+        MESSAGE_API_KEY: ${{ secrets.MESSAGE_API_KEY }}
+        MESSAGE_API_SECRET: ${{ secrets.MESSAGE_API_SECRET }}
+        RIP_API_KEY: ${{ secrets.RIP_API_KEY }}
+        WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
+        WEATHER_API_2: ${{ secrets.WEATHER_API_2 }}
+
       run: |
         source venv/bin/activate
         python manage.py makemigrations
@@ -37,9 +50,9 @@ jobs:
                 chmod 600 ~/.ssh/id_rsa
                 echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
 
-                scp -r . $USER@$HOST:/path/to/your/project
+                scp -r . $USER@$HOST:/home/ubuntu/deploy/BeachSafety
                 ssh $USER@$HOST <<EOF
-                  cd /path/to/your/project
+                  cd /home/ubuntu/deploy/BeachSafety
                   python3 -m venv venv
                   source venv/bin/activate
                   pip install -r requirements_v1.txt
@@ -48,6 +61,17 @@ jobs:
                   sudo systemctl restart gunicorn
                 EOF
       env:
+        DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_S3_CUSTOM_DOMAIN: ${{ secrets.AWS_S3_CUSTOM_DOMAIN }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_STORAGE_BUCKET_NAME: ${{ secrets.AWS_STORAGE_BUCKET_NAME }}
+        MESSAGE_API_KEY: ${{ secrets.MESSAGE_API_KEY }}
+        MESSAGE_API_SECRET: ${{ secrets.MESSAGE_API_SECRET }}
+        RIP_API_KEY: ${{ secrets.RIP_API_KEY }}
+        WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
+        WEATHER_API_2: ${{ secrets.WEATHER_API_2 }}
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
         HOST: ${{ secrets.HOST }}
