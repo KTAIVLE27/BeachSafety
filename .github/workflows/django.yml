@@ -69,8 +69,24 @@ jobs:
 
         ssh -o StrictHostKeyChecking=no $USER@$HOST <<EOF
           cd /home/ubuntu/deploy/BeachSafety
-          git pull origin main
+          if [ ! -d "BeachSafety" ]; then
+            git clone git@github.com:KTAIVLE27/BeachSafety.git
+          else
+            cd BeachSafety
+            git pull origin main
+          fi
           source /home/ubuntu/miniforge3/bin/activate mini7
+          export DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY
+          export OPENAI_API_KEY=$OPENAI_API_KEY
+          export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+          export AWS_S3_CUSTOM_DOMAIN=$AWS_S3_CUSTOM_DOMAIN
+          export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+          export AWS_STORAGE_BUCKET_NAME=$AWS_STORAGE_BUCKET_NAME
+          export MESSAGE_API_KEY=$MESSAGE_API_KEY
+          export MESSAGE_API_SECRET=$MESSAGE_API_SECRET
+          export RIP_API_KEY=$RIP_API_KEY
+          export WEATHER_API_KEY=$WEATHER_API_KEY
+          export WEATHER_API_2=$WEATHER_API_2
           pip install -r requirements_v1.txt
           yes | python manage.py makemigrations --merge
           python manage.py migrate
