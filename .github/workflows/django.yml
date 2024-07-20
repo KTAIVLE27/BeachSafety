@@ -64,10 +64,9 @@ jobs:
         chmod 600 ~/.ssh/id_rsa
         echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
 
-        scp -o StrictHostKeyChecking=no -r ./ $USER@$HOST:/home/ubuntu/deploy/BeachSafety/
         ssh -o StrictHostKeyChecking=no $USER@$HOST <<EOF
           cd /home/ubuntu/deploy/BeachSafety
-          python3 -m venv venv
+          git pull origin main
           source venv/bin/activate
           pip install -r requirements_v1.txt
           yes | python manage.py makemigrations --merge
