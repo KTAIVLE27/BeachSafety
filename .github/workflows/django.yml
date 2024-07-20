@@ -73,7 +73,7 @@ jobs:
         eval "$(ssh-agent -s)"
         ssh-add ~/.ssh/id_rsa
 
-        ssh -o StrictHostKeyChecking=no $USER@$HOST <<EOF
+        ssh -o StrictHostKeyChecking=no $USER@$HOST << 'EOF'
           cd /home/ubuntu/deploy/BeachSafety
           if [ ! -d ".git" ]; then
             git clone git@github.com:KTAIVLE27/BeachSafety.git .
@@ -96,7 +96,7 @@ jobs:
           yes | python manage.py makemigrations --merge
           python manage.py migrate
           
-          sudo tee /etc/systemd/system/gunicorn.service > /dev/null <<EOL
+          sudo tee /etc/systemd/system/gunicorn.service > /dev/null << EOL
           [Unit]
           Description=gunicorn daemon
           After=network.target
