@@ -955,3 +955,28 @@
     margin-left: 20px; /* 필요한 만큼 값을 조정하여 로고를 오른쪽으로 이동 */
 }
 
+/* chat,free_board, board 박스 css */
+#contentbox-1{
+    height: 80%;
+}
+
+#contentbox-2{
+    height: 100%;
+}
+
+#contentbox-3{
+    height: 90%;
+}
+
+/* adminpanel 박스 css */
+#admin_contentbox-1{
+    height: 80%;
+}
+
+#admin_contentbox-2{
+    height: 100%;
+}
+
+#admin_contentbox-3{
+    height: 90%;
+}
