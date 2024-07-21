@@ -95,4 +95,21 @@ jobs:
           pip install -r requirements_v1.txt
           yes | python manage.py makemigrations --merge
           python manage.py migrate
+
+          echo "[Unit]
+          Description=gunicorn daemon
+          After=network.target
+
+          [Service]
+          User=ubuntu
+          Group=www-data
+          WorkingDirectory=/home/ubuntu/deploy/BeachSafety
+          ExecStart=/home/ubuntu/miniforge3/envs/mini7/bin/gunicorn --workers 3 --bind unix:/home/ubuntu/deploy/BeachSafety/BeachSafety.sock myapp.wsgi:application
+
+          [Install]
+          WantedBy=multi-user.target" | sudo tee /etc/systemd/system/gunicorn.service > /dev/null
+
+          sudo systemctl daemon-reload
+          sudo systemctl start gunicorn
+          sudo systemctl enable gunicorn
         EOF
