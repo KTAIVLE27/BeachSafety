@@ -81,17 +81,6 @@ jobs:
             git pull origin main
           fi
           source /home/ubuntu/miniforge3/bin/activate mini7
-          echo "DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY" > .env
-          echo "OPENAI_API_KEY=$OPENAI_API_KEY" >> .env
-          echo "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" >> .env
-          echo "AWS_S3_CUSTOM_DOMAIN=$AWS_S3_CUSTOM_DOMAIN" >> .env
-          echo "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" >> .env
-          echo "AWS_STORAGE_BUCKET_NAME=$AWS_STORAGE_BUCKET_NAME" >> .env
-          echo "MESSAGE_API_KEY=$MESSAGE_API_KEY" >> .env
-          echo "MESSAGE_API_SECRET=$MESSAGE_API_SECRET" >> .env
-          echo "RIP_API_KEY=$RIP_API_KEY" >> .env
-          echo "WEATHER_API_KEY=$WEATHER_API_KEY" >> .env
-          echo "WEATHER_API_2=$WEATHER_API_2" >> .env
           pip install -r requirements_v1.txt
           yes | python manage.py makemigrations --merge
           python manage.py migrate
