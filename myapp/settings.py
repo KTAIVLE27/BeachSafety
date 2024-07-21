@@ -27,7 +27,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '15.165.7.128']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '43.203.132.148']
 
 # Application definition
 
@@ -123,11 +123,22 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = "static/"
-STATICFILES_DIRS = [BASE_DIR / 'main' / 'static']
+# STATIC_URL = "static/"
+# STATICFILES_DIRS = [BASE_DIR / 'main' / 'static']
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
+# 정적 파일 URL
+STATIC_URL = 'static/'
+
+# 정적 파일 디렉토리 설정
+STATICFILES_DIRS = []
+
+# collectstatic 명령으로 모을 정적 파일의 루트 디렉토리
+STATIC_ROOT = BASE_DIR / 'staticfiles' # Default primary key field type
+
+
+
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = 'main.User'
