@@ -419,11 +419,9 @@ def edit_notice(request, pk):
                 notice.beach_no = None
 
             if 'delete_notice_img' in request.POST and request.POST['delete_notice_img'] == 'on':
-                #s3 에서 삭제 후 DB 에 None 처리
                 if post.notice_img:
                     s3_key = post.notice_img.split(f'https://{settings.AWS_S3_CUSTOM_DOMAIN}/')[1]
                     s3.delete_object(Bucket=s3_bucket, Key=s3_key)
-                    # 현재 삭제가 안되는 것 같음.. s3 에 남아있다..
                 notice.notice_img = None
                 
             elif 'notice_img' in request.FILES:
