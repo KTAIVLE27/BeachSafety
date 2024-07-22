@@ -135,13 +135,18 @@
 /* 채팅 메시지 박스 스타일 */
 .chat-message {
     display: flex;
-    align-items: flex-start; /* 메시지 박스가 위쪽에 정렬되도록 설정 */
+    flex-direction: column;
     margin-bottom: 10px;
     padding: 8px 12px;
     border-radius: 5px;
     color: #003366;
-    max-width: 60%; /* 메시지 박스의 최대 너비 설정 */
+    max-width: 100%; /* 메시지 박스의 최대 너비 설정 */
     word-break: break-word; /* 긴 단어를 줄 바꿈 */
+}
+
+.chat-message strong {
+    display: block;
+    margin-bottom: 5px;
 }
 
 /* 사용자 메시지 스타일 (오른쪽 정렬) */
@@ -522,7 +527,7 @@
                 if (scenarios.length > 0) {
                     var randomIndex = Math.floor(Math.random() * scenarios.length);
                     var selectedScenario = scenarios[randomIndex];
-                    var question = '유형: ' + selectedScenario.scenario_code + ', 상황: ' + selectedScenario.scenario_situation + '시나리오 생성';
+                    var question = '유형: ' + selectedScenario.scenario_code + ', 상황: ' + selectedScenario.scenario_situation + ' 관련 시나리오 생성';
                     sendPredefinedQuestion(question);
                 } else {
                     alert(type + ' 시나리오가 없습니다.');
@@ -563,8 +568,8 @@
         chatContent.innerHTML = ''; // Clear previous chat messages
         var newMessage = document.createElement('div');
         newMessage.classList.add('chat-message');
-        newMessage.innerHTML = '<strong>질문:</strong> ' + response.question + '<br>' +
-                               '<strong>답변:</strong><br>' +
+        newMessage.innerHTML = '<strong>질문:</strong> ' + response.question + '<br>' + '<br>' +
+                               '<strong>답변:</strong>' +
                                response.answer.replace(/\n/g, "<br>") + '<br>';
         chatContent.appendChild(newMessage);
         chatContent.scrollTop = chatContent.scrollHeight;
