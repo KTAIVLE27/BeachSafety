@@ -120,7 +120,7 @@ var beaches = [
 function insertData() {
     var alarmContainer = document.getElementById('alarm-container');
     var RIP_api_time_html = document.getElementById('api-time-html');
-    RIP_api_time_html.textContent = '경고알람 ' + RIP_api_time;
+    RIP_api_time_html.textContent = '' + RIP_api_time;
 
     beaches.forEach(function(beach, index) {
         if (beach.status === '경계' || beach.status === '위험') {
@@ -306,33 +306,30 @@ $(document).ready(function() {
 <a href="{% url 'home' %}"><img src="{% static 'img/logo_new1.png' %}" style="width:90px; height:100px; top: 10%" ></i></a>      
 </div> 
 
-<div class="nav-buttons">
-    <div class="nav-items">
-        {% if user.user_role == 'admin' %}
-            <div class="nav-item dropdown">
-                <a href="{% url 'adminpanel:admin_home' %}">
-                    <img class="rounded-circle me-lg-2" src="{% static 'img/wysiwyg_24dp.png' %}" alt="" style="width: 50px; height: 50px;">
-                </a>
-            </div>
-        {% endif %}     
-            <div class="nav-item dropdown">
-                <a href="{% url 'home' %}">
-                    <img class="rounded-circle me-lg-2" src="{% static 'img/home_24dp.png' %}" alt="" style="width: 50px; height: 50px;">
-                </a>
-            </div>
-
-            <div class="nav-item dropdown">
-                <form method="post" action="{% url 'logout' %}">
-                    {% csrf_token %}
-                    <button type="submit" style="border:none; background:none;">
-                        <img src="{% static 'img/logout_24dp.png' %}" width="50" height="50" alt="Logout">
-                    </button>
-                </form>
-            </div>
-    </div>
-    
-    <div id="current-time"></div>
+<div class="nav-buttons" id="current-time">
+    <div id="current-time" style="top: 5%"></div>
 </div>
+
+<div class="side-right-buttons">
+        {% if user.user_role == 'admin' %}
+        <a href="{% url 'adminpanel:admin_home' %}">
+            <p>관리자</p>
+        </a>
+        {% endif %}     
+        <a href="{% url 'home' %}">
+            <p>메인홈</p>
+        </a>
+        <a>
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" style="border:none; background:none;">
+                    <p>로그아웃</p>
+                </button>
+            </form>
+        </a>
+</div>
+
+
 <script>
     function updateTime() {
         var now = new Date();
@@ -352,7 +349,7 @@ $(document).ready(function() {
     <a href="#"class="btn btn-primary"title="119"data-toggle="modal"data-target="#myModal"><i class="fa fa-phone"></i></a>  
     <a href="#"class="btn btn-primary"title="해군"data-toggle="modal"data-target="#myModal"><i class="fa fa-anchor"></i></a>
     <a href="#" class="btn btn-primary" title="모의훈련" data-toggle="modal" data-target="#myModal2"><i class="fa fa-file-alt"></i></a>
-    <a href="#" class="btn btn-secondary" title="기상예보" data-toggle="modal" data-target="#myModal3"><i class="fa fa-cloud-sun"></i></a>
+    <a href="#" class="btn btn-primary" title="기상예보" data-toggle="modal" data-target="#myModal3"><i class="fa fa-cloud-sun"></i></a>
     <a href="#" class="btn btn-secondary" title="CCTV" data-toggle="modal" data-target="#CCTV_modal"><i class="fa fa-video"></i></a>
 </div>
 
@@ -360,14 +357,20 @@ $(document).ready(function() {
 <div class="modal" id="CCTV_modal" tabindex="-1">
     <div class="modal-dialog modal-lg" style="max-width: 80%">
         <div class="modal-content">
-            <div class="bg-light text-center rounded p-4">
+            <div class="bg-light text-center rounded p-4 custom-modal-content">
+                
+                <!-- 모달의 나머지 부분 -->
                 <div class="d-flex align-items-center justify-content-between mb-4">
-                    <h5 class="mb-0">Yolov8 CCTV 팝업창</h5>
-                    <h6 class="mb-0">해수욕장 선택후 CCTV에 Yolov8을 적용하는 데 약 5초가 소요됩니다.</h6>
+                    <div class="text-left">
+                        <h5 class="mb-0">Yolov8 CCTV 팝업창</h5>
+                        <h6 class="mb-0">해수욕장 선택후 CCTV에 Yolov8을 적용하는 데 약 5초가 소요됩니다.</h6>
+                    </div>
                     <div class="dropdown">
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                             해수욕장 선택
                         </button>
+                        <button type="button" id="close-modal" class="btn btn-danger custom-close-btn" data-dismiss="modal">닫기</button>
+                        
                         <ul id="beach-list" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             {% for beach in beaches %}
                                 {% for cctv in cctvs %}
@@ -379,16 +382,54 @@ $(document).ready(function() {
                         </ul>
                     </div>
                 </div>
-                <div id="cctv-container" class="d-flex justify-content-between">
-                    <img id="cctv-frame" width="1822" height="900" />
+                <!-- CCTV와 상태 표시 영역을 가로로 배치 -->
+                <div class="cctv-status-container">
+                    <!-- CCTV 비디오 영역 -->
+                    <div class="cctv-box">
+                        <div id="cctv-container" class="d-flex justify-content-center">
+                            <img id="cctv-frame" class="custom-cctv-frame" />
+                        </div>
+                    </div><!-- 상태 설명을 테이블 형식으로 배치 -->
+                    <div class="status-description-container">
+                        <div class="status-description-box">
+                            <h5>상태 설명</h5>
+                            <table class="status-description-table">
+                                <thead>
+                                    <tr>
+                                        <th>상태</th>
+                                        <th>설명</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="status-safe">안전</span></td>
+                                        <td>현재 지역은 안전하며 주의가 필요한 인원이 없습니다.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="status-warning">경고</span></td>
+                                        <td>주의가 필요한 인원이 발견되었습니다. 즉각적인 조치가 필요합니다.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    <!-- 상태 표시 영역 -->
+                    <div class="status-box-container">
+                        <div class="status-box">
+                            <p id="generalCount-status" class="status-text">안전 지역 인원 수: 0</p>
+                        </div>
+                        <div class="status-box">
+                            <p id="human-status" class="status-text">안전: 주의가 필요한 인원 없음</p>
+                        </div>
+                        <div class="status-box">
+                            <p id="cacutionCount-status" class="status-text">주의 지역 인원 수: 0</p>
+                        </div>
+                    </div>
                 </div>
-                    <p id="generalCount-status" style="margin-top: 10px; font-size: 18px; font-weight: bold;"></p>
-                    <p id="human-status" style="margin-top: 10px; font-size: 18px; font-weight: bold;"></p>
-                    <p id="cacutionCount-status" style="margin-top: 10px; font-size: 18px; font-weight: bold;"></p>
-                <button type="button" id="close-modal" class="btn btn-danger" data-dismiss="modal">닫기</button>
             </div>
         </div>
     </div>
+</div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -396,6 +437,19 @@ $(document).ready(function() {
     $(document).ready(function() {
         let cctvCode;
         let statusCheckInterval;
+
+        // 상태 메시지 정의
+        const STATUS = {
+            SAFE: '안전',
+            WARNING: '경고'
+        };
+
+        // 상태 업데이트 함수
+        function updateStatus(humanDetected, generalCount, cacutionCount) {
+            $('#human-status').text(humanDetected ? STATUS.WARNING : STATUS.SAFE);
+            $('#generalCount-status').text('안전 지역 인원 수: ' + (generalCount || 0));
+            $('#cacutionCount-status').text('주의 지역 인원 수: ' + (cacutionCount || 0));
+        }
 
         $('#beach-list a.dropdown-item').click(function(e) {
             e.preventDefault();
@@ -413,25 +467,19 @@ $(document).ready(function() {
     
         $('#close-modal').click(function() {
             $('#cctv-frame').attr('src', '');
-            $('#human-status').text('');
-            $('#generalCount-status').text('');
-            $('#cacutionCount-status').text('');
+            updateStatus(false, null, null); // 모든 상태 텍스트 지우기
             clearInterval(statusCheckInterval);
             $.get('/control/stop_stream/', function(data) {
                 console.log("Stream stopped");
             });
         });
 
-        // 모달이 완전히 숨겨졌을 때 실행
         $('#CCTV_modal').on('hidden.bs.modal', function () {
-            $('#cctv-frame').attr('src', '');  // Reset the video source
-            $('#human-status').text('');
-            $('#generalCount-status').text('');
-            $('#cacutionCount-status').text('');
+            $('#cctv-frame').attr('src', '');  
+            updateStatus(false, null, null); // 모든 상태 텍스트 지우기
             clearInterval(statusCheckInterval);     
         });
 
-    
         function checkHumanStatus() {
             if (!cctvCode) return;
     
@@ -442,11 +490,9 @@ $(document).ready(function() {
                 success: function(data) {
                     const humanDetected = data.human_detected;
                     const generalCount = data.general_count; 
-                    const cacutionCount  =data.cacution_count;
+                    const cacutionCount  = data.cacution_count;
                     
-                    $('#human-status').text(humanDetected ? '경고: 주의가 필요한 인원 발생' : '안전: 주의가 필요한 인원 없음');
-                    $('#generalCount-status').text(generalCount? '안전 지역 인원 수'+generalCount : '안전 지역 인원 수'+generalCount);
-                    $('#cacutionCount-status').text(cacutionCount? '주의 지역 인원 수'+cacutionCount : '주의 지역 인원 수'+cacutionCount);
+                    updateStatus(humanDetected, generalCount, cacutionCount);
                 },
                 error: function(error) {
                     console.log('Error:', error);
@@ -455,6 +501,7 @@ $(document).ready(function() {
         }
     });
 </script>
+
 
 <!-- 119/해군 모달버튼 시작 -->
 <div class="modal" id="myModal">
@@ -578,11 +625,11 @@ $(document).ready(function() {
     }
 
 </style>
+
     <!-- 모의훈련 모달 -->
     <div class="modal" id="myModal2">
         <div class="modal-dialog">
             <div class="modal-content">
-                
                 <div class="container-fluid pt-4 px-4">
                     <div class="row">
                         <!-- Chat Box Start -->
@@ -653,10 +700,7 @@ $(document).ready(function() {
                                         <button class="btn btn-success mt-2" onclick="showFinalTime()">최종 시간 보기</button>
                                         <button class="btn btn-danger mt-2" onclick="resetAllStopwatches()">초기화</button>
                                     </div>
-                                    <div class="form-group mb-3">
-                                        <label for="largeFinalTime">최종 시간</label>
-                                        <div id="largeFinalTime" class="display-4">00:00:00.000</div>
-                                    </div>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -673,7 +717,9 @@ $(document).ready(function() {
     <!-- 경고알림 창 이안류 3,4(경계, 위험) 단계에 해당할 경우에만 뜸 -->
     <body>
         <div class="warn-alarm" style="overflow-y: scroll;">
-            <h5 id="api-time-html">경고알람</h5>
+            <div class="h5-container">
+                <h5>경고알람</h5><h5 id="api-time-html"></h5>
+            </div>
             <div id="alarm-container"></div>
         </div>
     </body>
