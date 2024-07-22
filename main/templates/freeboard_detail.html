@@ -25,7 +25,7 @@
                             <div class="text-start">
                                 <div id="viewContent">
                                     <p>{{ post.event_contents }}</p>
-                                    {% if post.event_img %}
+                                    {% if post.event_img and post.event_img != "None" %}
                                     <div>
                                         <img src="{{ post.event_img }}" alt="첨부 이미지" style="max-width: 100%; height: auto;">
                                         <div>
@@ -58,6 +58,13 @@
                                         <label for="event_img" class="form-label">첨부파일</label>
                                         <input type="file" class="form-control" id="event_img" name="event_img">
                                         <input type="hidden" name="existing_event_img" value="{{ post.event_img }}">
+                                        {% if post.event_img and post.event_img != "None" %}
+                                        <div class="form-check mt-2">
+                                            <img src="{{ post.event_img }}" alt="첨부 이미지" style="max-width: 100%; height: auto;">
+                                            <input class="form-check-input" type="checkbox" id="delete_event_img" name="delete_event_img">
+                                            <label class="form-check-label" for="delete_event_img">첨부파일 삭제</label>
+                                        </div>
+                                        {% endif %}                                        
                                     </div>
                                     <button type="submit" class="btn btn-primary">저장</button>
                                     <button type="button" id="cancelEditButton" class="btn btn-secondary">취소</button>
