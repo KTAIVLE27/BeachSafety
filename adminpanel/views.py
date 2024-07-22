@@ -401,7 +401,8 @@ def notice_detail(request, pk):
         return redirect('adminpanel:notice_manage')
     
     beaches = Beach.objects.all()
-    return render(request, 'adminpanel/notice_detail.html', {'post': post, 'beaches':beaches})
+    notice_img_filename = os.path.basename(post.notice_img) if post.notice_img else None
+    return render(request, 'adminpanel/notice_detail.html', {'post': post, 'beaches':beaches, 'notice_img_filename': notice_img_filename})
 
 @login_required
 def edit_notice(request, pk):

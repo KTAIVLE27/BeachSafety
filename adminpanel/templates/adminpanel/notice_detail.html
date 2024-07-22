@@ -28,7 +28,7 @@
                                     <div>
                                         <img src="{{ post.notice_img }}" alt="첨부 이미지" style="max-width: 100%; height: auto;">
                                         <div>
-                                            <a href="{{ post.notice_img }}" target="_blank">첨부파일 다운로드</a>
+                                            <a href="{{ post.notice_img }}" target="_blank">첨부파일 다운로드 ({{notice_img_filename}})</a>
                                         </div>
                                     </div>
                                     {% endif %}
@@ -61,7 +61,7 @@
                                         <div class="mt-2">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" id="delete_notice_img" name="delete_notice_img">
-                                                <label class="form-check-label" for="delete_event_img">첨부파일 삭제</label>
+                                                <label class="form-check-label" for="delete_event_img">첨부파일 삭제 ({{notice_img_filename}})</label>
                                                 <img src="{{ post.notice_img }}" alt="첨부 이미지" style="max-width: 100px; height: 100px;  display:block; margin-top: 10px;">
                                             </div>
                                         </div>

@@ -251,7 +251,8 @@ def freeboard_detail(request, pk):
         messages.error(request, "해당 게시글을 찾을 수 없습니다.")
         return redirect('free_board')
     beaches = Beach.objects.all()
-    return render(request, 'freeboard_detail.html', {'post': post, 'beaches':beaches})
+    event_img_filename = os.path.basename(post.event_img) if post.event_img else None
+    return render(request, 'freeboard_detail.html', {'post': post, 'beaches':beaches, 'event_img_filename': event_img_filename})
 
 #자유게시판 생성
 @login_required
