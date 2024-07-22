@@ -5,6 +5,65 @@
     --dark: #191C24;
 }
 
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+.container-fluid {
+    display: flex;
+    flex-direction: column;
+    /* min-height: 100vh; */
+}
+.footer {
+    background-color: var(--light);
+    padding: 20px;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+}
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.footer-text {
+    text-align: left;
+    padding-left: 20px;
+}
+.footer-info {
+    line-height: 1.5;
+}
+.footer-logos {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    column-gap: 20px;
+    padding-right: 20px;
+}
+.footer-logos a img {
+    width: 40px;
+    height: auto;
+}
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    .footer-text, .footer-logos {
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .footer-logos {
+        justify-content: center;
+        margin-top: 10px;
+    }
+}
+
+/********** Template CSS **********/
 .back-to-top {
     position: fixed;
     display: none;
@@ -12,7 +71,6 @@
     bottom: 45px;
     z-index: 99;
 }
-
 
 /*** Spinner ***/
 #spinner {
@@ -27,7 +85,6 @@
     visibility: visible;
     opacity: 1;
 }
-
 
 /*** Button ***/
 .btn {
@@ -63,7 +120,6 @@
     font-weight: normal;
     border-radius: 50px;
 }
-
 
 /*** Layout ***/
 .sidebar {
@@ -119,7 +175,6 @@
         margin-left: 0;
     }
 }
-
 
 /*** Navbar ***/
 .sidebar .navbar .navbar-nav .nav-link {
@@ -216,7 +271,6 @@
     }
 }
 
-
 /*** Date Picker ***/
 .bootstrap-datetimepicker-widget.bottom {
     top: auto !important;
@@ -244,13 +298,11 @@
     border-bottom-color: var(--primary);
 }
 
-
 /*** Testimonial ***/
 .progress .progress-bar {
     width: 0px;
     transition: 2s;
 }
-
 
 /*** Testimonial ***/
 .testimonial-carousel .owl-dots {
@@ -276,29 +328,30 @@
     border-color: var(--primary);
 }
 
-.hanbando-img{
-    text-align:center;
-    display:table;
-    border:1px solid #cecece;
-    width:280px;
-    height:250px;
+.hanbando-img {
+    text-align: center;
+    display: table;
+    border: 1px solid #cecece;
+    width: 280px;
+    height: 250px;
 }
 
-
-
-#map-box{
+#map-box {
     width: 100vw;
     height: 100vh;
 }
-#vmap{
+
+#vmap {
     background-size: cover;
     width: 100vw;
     height: 100vh;
 }
-#control-nav{
+
+#control-nav {
     opacity: 1;
 }
-/* //////////////왼쪽 사이드 버튼 ///////////// */
+
+/* 왼쪽 사이드 버튼 */
 .side-buttons {
     position: fixed;
     top: 50%;
@@ -306,29 +359,29 @@
     transform: translateY(-50%);
     display: flex;
     flex-direction: column;
-    gap: 15px; /* 버튼 간격을 조정합니다 */
+    gap: 15px;
 }
 
 .side-buttons a {
     width: 70px;
     height: 70px;
-    background-color: #87ceeb; /* 연한 하늘색 */
+    background-color: #87ceeb;
     color: white;
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
     text-decoration: none;
-    position: relative; /* 추가 */
-    font-size: 16px; /* 버튼 내 텍스트 크기 */
-    padding-top: 4px; /* 텍스트 위치 조정 */
+    position: relative;
+    font-size: 16px;
+    padding-top: 4px;
 }
 
 .side-buttons a:hover {
-    background-color: #4682b4; /* 더 짙은 연한 하늘색 */
+    background-color: #4682b4;
 }
-/* ///////////////////오른쪽 사이드 버튼 */
 
+/* 오른쪽 사이드 버튼 */
 .side-right-buttons {
     position: fixed;
     top: 50%;
@@ -336,33 +389,35 @@
     transform: translateY(-50%);
     display: flex;
     flex-direction: column;
-    gap: 15px; /* 버튼 간격을 조정합니다 */
+    gap: 15px;
 }
 
 .side-right-buttons a {
     width: 70px;
     height: 70px;
-    background-color: #87ceeb; /* 연한 하늘색 */
+    background-color: #87ceeb;
     color: white;
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
     text-decoration: none;
-    position: relative; /* 추가 */
-    font-size: 16px; /* 버튼 내 텍스트 크기 */
-    padding-top: 4px; /* 텍스트 위치 조정 */
+    position: relative;
+    font-size: 16px;
+    padding-top: 4px;
 }
 
 .side-right-buttons a:hover {
-    background-color: #4682b4; /* 더 짙은 연한 하늘색 */
+    background-color: #4682b4;
 }
-.side-right-buttons p{
-    font-size: 14px; /* 버튼 내 텍스트 크기 */
-    padding-top: 4px; /* 텍스트 위치 조정 */
+
+.side-right-buttons p {
+    font-size: 14px;
+    padding-top: 4px;
     color: white;
     margin-top: 6px;
 }
+
 /* 툴팁 스타일 */
 .tooltip-inner {
     background-color: #007bff;
@@ -384,25 +439,25 @@
 
 .nav-items {
     display: flex;
-    flex-direction: row; /* 수평으로 정렬 */
-    gap: 10px; /* 아이템 간의 간격 */
+    flex-direction: row;
+    gap: 10px;
 }
 
 .nav-item {
-    align-items: center; /* 아이콘 중앙 정렬 */
-    overflow: hidden; /* 넘치는 부분 숨기기 */
-    padding: 0; /* 불필요한 여백 제거 */
-    margin: 0; /* 불필요한 여백 제거 */
+    align-items: center;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
 }
 
 #current-time {
     color: rgb(255, 255, 255);
-    font-size : 2rem;
+    font-size: 2rem;
     top: 3%;
     right: 20px;
 }
 
-.logo{
+.logo {
     position: absolute;
     top: 7%;
     left: 20px;
@@ -411,25 +466,27 @@
     flex-direction: row;
     gap: 10px;
 }
-.nav-buttons .control-search{
-    width: 300px; /* 검색창의 너비 */
-    padding: 10px 20px; /* 내부 여백 */
-    border: 2px solid #ccc; /* 테두리 */
-    border-radius: 25px; /* 모서리를 둥글게 설정 */
-    font-size: 16px; /* 폰트 크기 */
+
+.nav-buttons .control-search {
+    width: 300px;
+    padding: 10px 20px;
+    border: 2px solid #ccc;
+    border-radius: 25px;
+    font-size: 16px;
 }
+
 .search-wrapper {
     position: relative;
     width: 300px;
 }
 
 .control-search {
-    width: 100%; /* 검색창의 너비를 부모의 너비에 맞춤 */
-    padding: 10px 20px; /* 내부 여백 */
-    padding-right: 40px; /* 아이콘을 위한 오른쪽 여백 추가 */
-    border: 2px solid #ccc; /* 테두리 */
-    border-radius: 25px; /* 모서리를 둥글게 설정 */
-    font-size: 16px; /* 폰트 크기 */
+    width: 100%;
+    padding: 10px 20px;
+    padding-right: 40px;
+    border: 2px solid #ccc;
+    border-radius: 25px;
+    font-size: 16px;
 }
 
 .search-button {
@@ -449,46 +506,44 @@
     border: 1px solid black;
     border-radius: 5px;
     display: none;
-    z-index: 1000; /* 팝업이 다른 요소 위에 나타나도록 설정 */
+    z-index: 1000;
 }
 
 .warn-alarm {
     position: fixed;
-    bottom: 10px; /* 하단에 고정 */
+    bottom: 10px;
     right: 10px;
-    width: calc(100% - 20px); /* 좌우 여백을 고려한 너비 */
-    min-width: 300px; /* 최소 너비 설정 */
-    max-width: 430px; /* 최대 너비 설정 */
+    width: calc(100% - 20px);
+    min-width: 300px;
+    max-width: 430px;
     height: auto;
-    max-height: 30vh; /* 기본 최대 높이 설정 */
+    max-height: 30vh;
     margin: auto;
     border: 1px solid #000000;
     padding: 10px;
-    background-color: rgba(255, 255, 255, 0.8); /* 투명한 배경 */
-    gap: 10px; /* 박스들 사이의 간격 */
-    overflow-y: auto; /* 스크롤 허용 */
+    background-color: rgba(255, 255, 255, 0.8);
+    gap: 10px;
+    overflow-y: auto;
     border-radius: 10px;
-    
 }
+
 .h5-container {
     display: flex;
-    flex-direction: row; /* 가로로 정렬 */
-    justify-content: space-between; /* 필요에 따라 요소 간의 간격 조절 */
-    align-items: center; /* 세로 정렬 (필요에 따라 조절) */
-    gap: 10px; /* 요소들 간의 간격 설정 (선택 사항) */
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
 }
-
-
 
 .warn-alarm .textbox {
     padding: 10px;
     border: 1px solid #ddd;
-    background-color: #fff; /* 진한 배경 */
+    background-color: #fff;
 }
 
-   /* 모의훈련 모달의 크기 조절 */
+/* 모의훈련 모달의 크기 조절 */
 #myModal2 .modal-dialog {
-    max-width: 1200px; /* 원하는 너비를 설정 */
+    max-width: 1200px;
     margin: auto;
     top: 50%;
     transform: translateY(-50%);
@@ -496,27 +551,25 @@
 
 /* 기상예보 모달의 크기 조절 */
 #myModal3 .modal-dialog {
-    max-width: 1200px; /* 원하는 너비를 설정 */
+    max-width: 1200px;
     margin: auto;
     top: 50%;
     transform: translateY(-30%);
     height: 100%;
 }
 
-
 .footer-logos img {
     width: 40px;
-    height: 50px;
-    margin: 0 10px; /* 여백을 좁게 설정 */
-    max-width: 50px; /* 최대 너비 설정 */
-    height: auto; /* 높이 자동 조정 */
+    height: auto;
+    margin: 0 10px;
+    max-width: 50px;
 }
 
 .footer .footer-info {
-    padding-top: 20px; /* Adjust the value as needed */
-    margin-top: 2px; /* 위 마진 줄이기 */
-    line-height: 0.5; /* 행간  */
-    margin: 2px 0; /* 상하 마진 줄이기 */
+    padding-top: 20px;
+    margin-top: 2px;
+    line-height: 0.5;
+    margin: 2px 0;
 }
 
 .toggle-container button {
@@ -527,32 +580,32 @@
 #toggle-button {
     cursor: pointer;
 }
-#signup-logo{
+
+#signup-logo {
     display: flex;
-    justify-content: center; /* 수평 중앙 정렬 */
-    gap: 10px; /* 요소 간 간격 */
-    padding: 20px; /* 내부 여백 */
-}
-#signin-logo{
-    display: flex;
-    justify-content: center; /* 수평 중앙 정렬 */
-    gap: 10px; /* 요소 간 간격 */
-    padding: 20px; /* 내부 여백 */
+    justify-content: center;
+    gap: 10px;
+    padding: 20px;
 }
 
-
+#signin-logo {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding: 20px;
+}
 
 .custom-box-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px; /* 박스 사이의 간격 */
+    gap: 10px;
 }
 
 .custom-box {
-    flex: 1 1 calc(20% - 10px); /* 박스가 가로 방향으로 20% 차지하도록 설정 */
-    height: 400px; /* 세로 길이를 고정값으로 설정 */
+    flex: 1 1 calc(20% - 10px);
+    height: 400px;
     display: flex;
-    flex-direction: column; /* 세로로 정렬 */
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     border: 1px solid #ccc;
@@ -587,24 +640,21 @@
 
 @media (max-width: 1200px) {
     .custom-box {
-        flex: 1 1 calc(33.33% - 10px); /* 화면 작을 때는 3개씩 나열되도록 설정 */
+        flex: 1 1 calc(33.33% - 10px);
     }
 }
 
 @media (max-width: 768px) {
     .custom-box {
-        flex: 1 1 calc(50% - 10px); /* 화면 더 작을 때는 2개씩 나열되도록 설정 */
+        flex: 1 1 calc(50% - 10px);
     }
 }
 
 @media (max-width: 480px) {
     .custom-box {
-        flex: 1 1 calc(100% - 10px); /* 화면 더 더 작을 때는 1개씩 나열되도록 설정 */
+        flex: 1 1 calc(100% - 10px);
     }
 }
-
-
-
 
 /* cctv css */
 .toggle-key {
@@ -617,8 +667,9 @@
     border-radius: 5px;
     transition: background-color 0.3s ease;
 }
+
 .toggle-key::after {
-    content: "\f078"; /* Font Awesome down arrow */
+    content: "\f078";
     font-family: "Font Awesome 5 Free";
     font-weight: 900;
     position: absolute;
@@ -626,9 +677,11 @@
     left: 50%;
     transform: translate(-50%, -50%);
 }
+
 .toggle-key.active::after {
-    content: "\f077"; /* Font Awesome up arrow */
+    content: "\f077";
 }
+
 .beach-list {
     display: none;
     list-style: none;
@@ -639,36 +692,37 @@
     max-height: 200px;
     overflow-y: auto;
 }
+
 .beach-list li {
     padding: 10px;
     cursor: pointer;
 }
+
 .beach-list li:hover {
     background: #ddd;
 }
-/* ////////////////// */
 
 .btn-h img {
-    width: 150px; /* 이미지 원하는 너비 설정 */
-    height: auto; /* 이미지 높이 자동 조정 */
-}
-.btn-h {
-    background-color: #ffffff; /* 버튼 배경색을 흰색으로 설정 */
-    border: none; /* 테두리 제거 */
-    padding: 25px; /* 내부 여백 설정 */
-    border-radius: 15px; /* 배경을 15px 정도로 둥글게 설정 */
-    display: block; /* 블록 레벨 요소로 설정 */
-}
-.btn-h .btn-label {
-    text-align: left; /* 텍스트 왼쪽 정렬 */
-    font-size: 24px; /* 텍스트 크기 설정 */
-    margin-top: 10px; /* 텍스트와 이미지 사이 간격 설정 */
+    width: 150px;
+    height: auto;
 }
 
+.btn-h {
+    background-color: #ffffff;
+    border: none;
+    padding: 25px;
+    border-radius: 15px;
+    display: block;
+    border: 4px solid #003366;
+}
+
+.btn-h .btn-label {
+    text-align: left;
+    font-size: 24px;
+    margin-top: 10px;
+}
 
 /* team_info.css */
-
-/* 버튼 스타일 */
 .team-section-button {
     color: #007bff;
     background-color: transparent;
@@ -685,26 +739,23 @@
     border-color: #007bff;
 }
 
-/* 팀원 소개 섹션의 배경 색상 */
 #team {
-    background-color: #f8f9fa; /* 예시로 회색 배경 사용 */
+    background-color: #f8f9fa;
     padding: 20px;
 }
 
-/* 팀원 프로필 사진 스타일링 */
 .card-img-top {
     object-fit: cover;
     height: 150px;
-    width: 150px; /* 이미지 크기를 정사각형으로 맞춤 */
-    border-radius: 50%; /* 동그랗게 만듦 */
-    margin: 0 auto; /* 가운데 정렬 */
-    display: block; /* 인라인 요소를 블록 요소로 변경하여 가운데 정렬 적용 */
+    width: 150px;
+    border-radius: 50%;
+    margin: 0 auto;
+    display: block;
 }
 
 .card {
     min-height: 300px;
 }
-
 
 .card-title {
     margin-bottom: 0;
@@ -717,8 +768,8 @@
 }
 
 #CCTV_modal .modal-dialog {
-    max-width: 90%; /* 모달 창의 최대 너비를 화면의 90%로 설정 */
-    max-height: 90%; /* 모달 창의 최대 높이를 화면의 90%로 설정 */
+    max-width: 90%;
+    max-height: 90%;
 }
 
 #CCTV_modal .modal-content {
@@ -727,57 +778,53 @@
 }
 
 #CCTV_modal .modal-body {
-    padding: 0; /* 모달 본문의 패딩을 제거 */
+    padding: 0;
 }
 
 #CCTV_modal iframe {
-    width: 100%; /* iframe의 너비를 모달 창의 너비에 맞게 설정 */
-    height: 80vh; /* iframe의 높이를 뷰포트 높이의 80%로 설정 */
-    border: none; /* iframe의 테두리를 제거 */
+    width: 100%;
+    height: 80vh;
+    border: none;
 }
-
-
 
 .modal-body {
     display: flex;
-    /* flex-wrap: wrap; */
     justify-content: center;
-    gap: 10px; /* 버튼들 사이의 간격 */
+    gap: 10px;
 }
 
 .modal-body button {
     flex: 1 1 auto;
-    width: 100px; /* 모든 버튼의 너비를 150px로 설정 */
-    height: 40px; /* 모든 버튼의 높이를 40px로 설정 */
-    margin: 5px; /* 버튼들 사이의 여유 공간 */
+    width: 100px;
+    height: 40px;
+    margin: 5px;
 }
 
 .dropdown-menu {
-    left: 0; /* 드롭다운 메뉴를 왼쪽 정렬 */
-    right: auto; /* 오른쪽 정렬 해제 */
-    width: 200px; /* 모든 버튼의 너비를 150px로 설정 */
-    
+    left: 0;
+    right: auto;
+    width: 200px;
 }
 
 .dropdown-menu .beach-btn {
-    width: 95%; /* 드롭다운 메뉴 안의 버튼 너비를 계산하여 설정 */
-    margin: 5px; /* 버튼들 사이의 여유 공간 */
+    width: 95%;
+    margin: 5px;
 }
 
 .policy-section-button {
     transition: background-color 0.3s, color 0.3s;
 }
 
-.policy-section-button.active, .policy-section-button:hover {
-    background-color: #007bff; /* 호버 및 활성화된 상태의 배경색 */
-    color: white; /* 호버 및 활성화된 상태의 텍스트 색 */
+.policy-section-button.active,
+.policy-section-button:hover {
+    background-color: #007bff;
+    color: white;
 }
 
-/* 위험도 기준 표 스타일 */
 .risk-table-container {
-    width: 50%; /* 너비를 50%로 설정 */
-    margin: 0 auto; /* 가운데 정렬 */
-    margin-bottom: 1.5rem; /* 하단 여백 */
+    width: 50%;
+    margin: 0 auto;
+    margin-bottom: 1.5rem;
 }
 
 .risk-table-container h3 {
@@ -829,7 +876,6 @@
     font-weight: 600;
 }
 
-/* 아코디언 스타일 */
 .risk-accordion .accordion-item {
     border: none;
     border-bottom: 1px solid #dee2e6;
@@ -896,20 +942,16 @@
 }
 
 .beach-region {
-    font-size: 3em; /* 폰트 크기를 1.5배로 설정 (기본값의 1.5배) */
-    font-weight: bold; /* 폰트를 두껍게 설정 */
+    font-size: 3em;
+    font-weight: bold;
 }
 
-/* 스타일 파일: style.css */
-
-/* 예측 레벨 텍스트 크기 */
 .prediction-level {
-    font-size: 1.5em; /* 폰트 크기를 1.5배로 설정 */
-    font-weight: bold; /* 폰트를 두껍게 설정 */
-    color: #000000ba; /* 기본 텍스트 색상 (필요에 따라 조정) */
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #000000ba;
 }
 
-/* weather css */
 .weather-box {
     background-color: #f8f9fa;
     border: 1px solid #dee2e6;
@@ -937,97 +979,88 @@
     font-size: 36px;
     margin-right: 15px;
 }
-/* 해양경찰 로고 스타일 */
+
 .marine-logo {
-    width: 40px; /* 로고의 너비 */
-    height: auto; /* 자동 높이 */
-    margin-left: 10px; /* 로고와 텍스트 간의 여백 */
+    width: 40px;
+    height: auto;
+    margin-left: 10px;
 }
 
-/* 날씨 정보 박스 스타일 */
 .marine-weather-box {
-    border-radius: 12px; /* 둥근 모서리 */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
-    background: linear-gradient(0deg, #013d787c, #003366); /* 그라디언트 배경 */
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(0deg, #013d787c, #003366);
 }
 
-/* 날씨 제목 스타일 */
 .marine-weather-title {
-    font-size: 1.5em; /* 제목 폰트 크기 */
-    color: #ffffffdb; /* 제목 색상 */
+    font-size: 1.5em;
+    color: #ffffffdb;
 }
 
-/* 날씨 정보 텍스트 스타일 */
 .marine-weather-info {
-    font-size: 1.2em; /* 정보 텍스트 폰트 크기 */
-    color: #ffffff; /* 정보 텍스트 색상 */
+    font-size: 1.2em;
+    color: #ffffff;
 }
 
-/* 날씨 아이콘 스타일 */
 .marine-weather-icon {
-    font-size: 2em; /* 아이콘 크기 */
-    vertical-align: middle; /* 수직 정렬 */
+    font-size: 2em;
+    vertical-align: middle;
 }
 
-/* 상단으로 돌아가기 버튼 스타일 */
 .back-to-top {
     position: fixed;
     bottom: 20px;
     right: 20px;
     border-radius: 50%;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* 미디어 쿼리 (반응형 디자인) */
 @media (max-width: 768px) {
     .marine-logo {
-        width: 30px; /* 작은 화면에서 로고 크기 조정 */
+        width: 30px;
     }
 
     .marine-weather-title {
-        font-size: 1.2em; /* 제목 폰트 크기 조정 */
+        font-size: 1.2em;
     }
 
     .marine-weather-info {
-        font-size: 1em; /* 정보 텍스트 폰트 크기 조정 */
+        font-size: 1em;
     }
 }
-/* CCTV 페이지에서 푸터 숨기기 */
+
 .cctv-page #main-footer {
     display: none;
 }
 
 #main-logo {
-    margin-left: 20px; /* 필요한 만큼 값을 조정하여 로고를 오른쪽으로 이동 */
+    margin-left: 20px;
 }
 
-/* chat,free_board, board 박스 css */
-#contentbox-1{
+#contentbox-1 {
     height: 80%;
 }
 
-#contentbox-2{
+#contentbox-2 {
     height: 100%;
 }
 
-#contentbox-3{
-    height: 90%;
+#contentbox-3 {
+    height: 70vh;
 }
 
-/* adminpanel 박스 css */
-#admin_contentbox-1{
+#admin_contentbox-1 {
     height: 80%;
 }
 
-#admin_contentbox-2{
+#admin_contentbox-2 {
     height: 100%;
 }
 
-#admin_contentbox-3{
+#admin_contentbox-3 {
     height: 90%;
 }
 
-/* 관제 cctv css */
 .custom-modal-content {
     background-color: #ffffff;
     border: 2px solid #003366;
@@ -1054,7 +1087,8 @@
     border-collapse: collapse;
 }
 
-.status-description-table th, .status-description-table td {
+.status-description-table th,
+.status-description-table td {
     border: 1px solid #003366;
     padding: 8px;
     text-align: left;
@@ -1070,11 +1104,11 @@
 }
 
 .status-safe {
-    color: #28a745; /* Green color for SAFE status */
+    color: #28a745;
 }
 
 .status-warning {
-    color: #dc3545; /* Red color for WARNING status */
+    color: #dc3545;
 }
 
 .cctv-status-container {
@@ -1118,10 +1152,10 @@
     font-weight: bold;
     color: #003366;
     margin: 0;
-    display: flex; /* Flexbox 사용 */
-    align-items: center; /* 수직 중앙 정렬 */
-    justify-content: center; /* 수평 중앙 정렬 */
-    height: 100%; /* 박스 전체 높이에 맞추기 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
 }
 
 .btn-secondary {
@@ -1142,4 +1176,18 @@
 
 .custom-close-btn:hover {
     background-color: #c9302c;
+}
+
+
+.header-bar {
+    background-color: #004085; /* 원하는 배경 색상으로 변경 */
+    color: white; /* 텍스트 색상 */
+    padding: 10px 20px; /* 패딩 추가 */
+    border-radius: 8px; /* 모서리를 둥글게 */
+}
+
+.header-bar h4 {
+    margin: 0;
+    color: white;
+
 }
