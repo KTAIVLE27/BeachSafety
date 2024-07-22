@@ -365,7 +365,7 @@ body, html {
 .side-buttons a {
     width: 70px;
     height: 70px;
-    background-color: #87ceeb;
+    background-color: #003366;
     color: white;
     border-radius: 50%;
     display: flex;
@@ -395,7 +395,7 @@ body, html {
 .side-right-buttons a {
     width: 70px;
     height: 70px;
-    background-color: #87ceeb;
+    background-color: #003366;
     color: white;
     border-radius: 50%;
     display: flex;
@@ -1046,7 +1046,7 @@ body, html {
 }
 
 #contentbox-3 {
-    height: 70vh;
+    height: 100vh;
 }
 
 #admin_contentbox-1 {
