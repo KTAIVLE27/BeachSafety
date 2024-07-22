@@ -28,7 +28,7 @@
                                     <div>
                                         <img src="{{ post.event_img }}" alt="첨부 이미지" style="max-width: 100%; height: auto;">
                                         <div>
-                                            <a href="{{ post.event_img }}" target="_blank">첨부파일 다운로드 ({{ event_img_filename }})</a>
+                                            <a href = "#" id="downloadButton" >첨부파일 다운로드 ({{ event_img_filename }})</a>
                                         </div>
                                     </div>
                                 {% endif %}
@@ -160,6 +160,22 @@
                     }
                 });
             }
+        }
+        if (downloadButton) {
+            downloadButton.addEventListener('click', function() {
+                fetch("{% url 'generate_presigned_url' post.pk %}")
+                .then(response => response.json())
+                .then(data => {
+                    if (data.url) {
+                        window.location.href = data.url;
+                    } else {
+                        alert('파일 다운로드에 실패했습니다.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
         }
     });
     </script>

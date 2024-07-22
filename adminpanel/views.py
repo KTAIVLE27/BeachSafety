@@ -37,6 +37,7 @@ from datetime import datetime, timedelta
 from datetime import timezone as dt_timezone  # Import datetime and rename timezone
 from django.utils import timezone as django_timezone  # Rename the django.utils timezone
 from .utils import mask_user_data
+from urllib.parse import quote
 
 def get_signature(key, msg):
     return hmac.new(key.encode(), msg.encode(), hashlib.sha256).hexdigest()
@@ -453,7 +454,39 @@ def edit_notice(request, pk):
 
     return JsonResponse({'success': False, 'error': '잘못된 요청 방법입니다.'})
 
+# 공지사항 이미지 다운로드
+@login_required
+def generate_presigned_url(request, pk):
+    post = get_object_or_404(Notice_board, pk=pk)
+    
+    if not post.notice_img:
+        return JsonResponse({'error': 'No image found.'}, status=404)
 
+    s3 = boto3.client(
+        's3',
+        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+        region_name=settings.AWS_S3_REGION_NAME
+    )
+    s3_bucket = settings.AWS_STORAGE_BUCKET_NAME
+    s3_key = post.notice_img.split(f'https://{settings.AWS_S3_CUSTOM_DOMAIN}/')[1]
+    filename = s3_key.split('/')[-1]
+    encoded_filename = quote(filename)
+
+    try:
+        presigned_url = s3.generate_presigned_url(
+            'get_object',
+            Params={
+                'Bucket': s3_bucket,
+                'Key': s3_key,
+                'ResponseContentDisposition': f'attachment; filename="{encoded_filename}"'
+            },
+            ExpiresIn=3600  # URL 유효 기간 (초)
+        )
+        return JsonResponse({'url': presigned_url})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+    
 @login_required
 def board_detail(request, pk):
     try:

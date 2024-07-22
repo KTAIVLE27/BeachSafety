@@ -22,6 +22,7 @@ urlpatterns = [
     path('board/<int:pk>/', views.board_detail, name='board_detail'),
     path("control/", views.control_load,name='control'),
     path("home/", views.main_load,name='home'),
+    path('notice/<int:pk>/download/', views.generate_presigned_url, name='generate_presigned_url'),
 
 
 ]

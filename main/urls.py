@@ -34,5 +34,7 @@ urlpatterns = [
     path("chat/clear_logs/", views.chat_clear_logs, name='chat_clear_logs'),
     path('auto-admin-login', views.auto_admin_login, name='auto-admin-login'),
     path('get_scenarios/<str:scenario_type>/', views.get_scenarios, name='get_scenarios'),
+    path('freeboard/<int:pk>/download/', views.generate_presigned_url, name='generate_presigned_url'),
+    path('board/<int:pk>/download/', views.board_generate_presigned_url, name='board_generate_presigned_url'),
 ]
 

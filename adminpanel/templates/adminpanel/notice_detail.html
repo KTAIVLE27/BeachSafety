@@ -28,7 +28,7 @@
                                     <div>
                                         <img src="{{ post.notice_img }}" alt="첨부 이미지" style="max-width: 100%; height: auto;">
                                         <div>
-                                            <a href="{{ post.notice_img }}" target="_blank">첨부파일 다운로드 ({{notice_img_filename}})</a>
+                                            <a href="#"  id="downloadButton">첨부파일 다운로드 ({{notice_img_filename}})</a>
                                         </div>
                                     </div>
                                     {% endif %}
@@ -135,6 +135,22 @@
                             } else {
                                 console.log(data.error); // 오류 메시지를 콘솔에 출력합니다.
                             }
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                });
+            }
+            if (downloadButton) {
+                downloadButton.addEventListener('click', function() {
+                    fetch("{% url 'adminpanel:generate_presigned_url' post.pk %}")
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.url) {
+                            window.location.href = data.url;
+                        } else {
+                            alert('파일 다운로드에 실패했습니다.');
                         }
                     })
                     .catch(error => {
