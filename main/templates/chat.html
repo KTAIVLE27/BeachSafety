@@ -171,7 +171,7 @@
     box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1); /* 하단 그림자 */
     display: flex;
     align-items: center;
-    display:none;
+    {% comment %} display:none; {% endcomment %}
 }
 
 /* 입력창 스타일 */
@@ -524,7 +524,7 @@
             return;
         }
 
-        fetch(/get_scenarios/${scenarioType}/)
+        fetch(`/get_scenarios/${scenarioType}/`)
             .then(response => response.json())
             .then(data => {
                 var scenarios = data.scenarios;
@@ -587,5 +587,4 @@
         xhr.send('question=' + encodeURIComponent(question));
     }
 </script>
-
 {% endblock %}
