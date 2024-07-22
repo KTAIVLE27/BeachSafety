@@ -120,7 +120,7 @@ var beaches = [
 function insertData() {
     var alarmContainer = document.getElementById('alarm-container');
     var RIP_api_time_html = document.getElementById('api-time-html');
-    RIP_api_time_html.textContent = '경고알람 ' + RIP_api_time;
+    RIP_api_time_html.textContent = '' + RIP_api_time;
 
     beaches.forEach(function(beach, index) {
         if (beach.status === '경계' || beach.status === '위험') {
@@ -306,33 +306,30 @@ $(document).ready(function() {
 <a href="{% url 'home' %}"><img src="{% static 'img/logo_new1.png' %}" style="width:90px; height:100px; top: 10%" ></i></a>      
 </div> 
 
-<div class="nav-buttons">
-    <div class="nav-items">
-        {% if user.user_role == 'admin' %}
-            <div class="nav-item dropdown">
-                <a href="{% url 'adminpanel:admin_home' %}">
-                    <img class="rounded-circle me-lg-2" src="{% static 'img/wysiwyg_24dp.png' %}" alt="" style="width: 50px; height: 50px;">
-                </a>
-            </div>
-        {% endif %}     
-            <div class="nav-item dropdown">
-                <a href="{% url 'home' %}">
-                    <img class="rounded-circle me-lg-2" src="{% static 'img/home_24dp.png' %}" alt="" style="width: 50px; height: 50px;">
-                </a>
-            </div>
-
-            <div class="nav-item dropdown">
-                <form method="post" action="{% url 'logout' %}">
-                    {% csrf_token %}
-                    <button type="submit" style="border:none; background:none;">
-                        <img src="{% static 'img/logout_24dp.png' %}" width="50" height="50" alt="Logout">
-                    </button>
-                </form>
-            </div>
-    </div>
-    
-    <div id="current-time"></div>
+<div class="nav-buttons" id="current-time">
+    <div id="current-time" style="top: 5%"></div>
 </div>
+
+<div class="side-right-buttons">
+        {% if user.user_role == 'admin' %}
+        <a href="{% url 'adminpanel:admin_home' %}">
+            <p>관리자</p>
+        </a>
+        {% endif %}     
+        <a href="{% url 'home' %}">
+            <p>메인홈</p>
+        </a>
+        <a>
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" style="border:none; background:none;">
+                    <p>로그아웃</p>
+                </button>
+            </form>
+        </a>
+</div>
+
+
 <script>
     function updateTime() {
         var now = new Date();
@@ -352,7 +349,7 @@ $(document).ready(function() {
     <a href="#"class="btn btn-primary"title="119"data-toggle="modal"data-target="#myModal"><i class="fa fa-phone"></i></a>  
     <a href="#"class="btn btn-primary"title="해군"data-toggle="modal"data-target="#myModal"><i class="fa fa-anchor"></i></a>
     <a href="#" class="btn btn-primary" title="모의훈련" data-toggle="modal" data-target="#myModal2"><i class="fa fa-file-alt"></i></a>
-    <a href="#" class="btn btn-secondary" title="기상예보" data-toggle="modal" data-target="#myModal3"><i class="fa fa-cloud-sun"></i></a>
+    <a href="#" class="btn btn-primary" title="기상예보" data-toggle="modal" data-target="#myModal3"><i class="fa fa-cloud-sun"></i></a>
     <a href="#" class="btn btn-secondary" title="CCTV" data-toggle="modal" data-target="#CCTV_modal"><i class="fa fa-video"></i></a>
 </div>
 <!-- CCTV Modal -->
@@ -427,9 +424,11 @@ $(document).ready(function() {
                             <p id="cacutionCount-status" class="status-text">주의 지역 인원 수: 0</p>
                         </div>
                     </div>
+                </div>
             </div>
         </div>
     </div>
+</div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -619,7 +618,8 @@ $(document).ready(function() {
         background-color: #c9302c;
     }
 </style>
-
+  
+  
 <!-- 119/해군 모달버튼 시작 -->
 <div class="modal" id="myModal">
     <div class="modal-dialog">
@@ -742,11 +742,11 @@ $(document).ready(function() {
     }
 
 </style>
+
     <!-- 모의훈련 모달 -->
     <div class="modal" id="myModal2">
         <div class="modal-dialog">
             <div class="modal-content">
-                
                 <div class="container-fluid pt-4 px-4">
                     <div class="row">
                         <!-- Chat Box Start -->
@@ -817,10 +817,7 @@ $(document).ready(function() {
                                         <button class="btn btn-success mt-2" onclick="showFinalTime()">최종 시간 보기</button>
                                         <button class="btn btn-danger mt-2" onclick="resetAllStopwatches()">초기화</button>
                                     </div>
-                                    <div class="form-group mb-3">
-                                        <label for="largeFinalTime">최종 시간</label>
-                                        <div id="largeFinalTime" class="display-4">00:00:00.000</div>
-                                    </div>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -837,7 +834,9 @@ $(document).ready(function() {
     <!-- 경고알림 창 이안류 3,4(경계, 위험) 단계에 해당할 경우에만 뜸 -->
     <body>
         <div class="warn-alarm" style="overflow-y: scroll;">
-            <h5 id="api-time-html">경고알람</h5>
+            <div class="h5-container">
+                <h5>경고알람</h5><h5 id="api-time-html"></h5>
+            </div>
             <div id="alarm-container"></div>
         </div>
     </body>

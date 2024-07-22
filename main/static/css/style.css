@@ -298,7 +298,7 @@
 #control-nav{
     opacity: 1;
 }
-
+/* //////////////왼쪽 사이드 버튼 ///////////// */
 .side-buttons {
     position: fixed;
     top: 50%;
@@ -327,7 +327,42 @@
 .side-buttons a:hover {
     background-color: #4682b4; /* 더 짙은 연한 하늘색 */
 }
+/* ///////////////////오른쪽 사이드 버튼 */
 
+.side-right-buttons {
+    position: fixed;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* 버튼 간격을 조정합니다 */
+}
+
+.side-right-buttons a {
+    width: 70px;
+    height: 70px;
+    background-color: #87ceeb; /* 연한 하늘색 */
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    position: relative; /* 추가 */
+    font-size: 16px; /* 버튼 내 텍스트 크기 */
+    padding-top: 4px; /* 텍스트 위치 조정 */
+}
+
+.side-right-buttons a:hover {
+    background-color: #4682b4; /* 더 짙은 연한 하늘색 */
+}
+.side-right-buttons p{
+    font-size: 14px; /* 버튼 내 텍스트 크기 */
+    padding-top: 4px; /* 텍스트 위치 조정 */
+    color: white;
+    margin-top: 6px;
+}
 /* 툴팁 스타일 */
 .tooltip-inner {
     background-color: #007bff;
@@ -362,7 +397,9 @@
 
 #current-time {
     color: rgb(255, 255, 255);
-    font-size : 2rem
+    font-size : 2rem;
+    top: 3%;
+    right: 20px;
 }
 
 .logo{
@@ -427,9 +464,18 @@
     margin: auto;
     border: 1px solid #000000;
     padding: 10px;
-    background-color: rgba(249, 202, 74, 0.8); /* 투명한 배경 */
+    background-color: rgba(255, 255, 255, 0.8); /* 투명한 배경 */
     gap: 10px; /* 박스들 사이의 간격 */
     overflow-y: auto; /* 스크롤 허용 */
+    border-radius: 10px;
+    
+}
+.h5-container {
+    display: flex;
+    flex-direction: row; /* 가로로 정렬 */
+    justify-content: space-between; /* 필요에 따라 요소 간의 간격 조절 */
+    align-items: center; /* 세로 정렬 (필요에 따라 조절) */
+    gap: 10px; /* 요소들 간의 간격 설정 (선택 사항) */
 }
 
 
@@ -453,7 +499,7 @@
     max-width: 1200px; /* 원하는 너비를 설정 */
     margin: auto;
     top: 50%;
-    transform: translateY(-50%);
+    transform: translateY(-30%);
     height: 100%;
 }
 
@@ -979,4 +1025,121 @@
 
 #admin_contentbox-3{
     height: 90%;
+}
+
+/* 관제 cctv css */
+.custom-modal-content {
+    background-color: #ffffff;
+    border: 2px solid #003366;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.status-description-container {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 2px solid #003366;
+    border-radius: 8px;
+    background-color: #e6f0ff;
+}
+
+.status-description-box {
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.status-description-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.status-description-table th, .status-description-table td {
+    border: 1px solid #003366;
+    padding: 8px;
+    text-align: left;
+}
+
+.status-description-table th {
+    background-color: #003366;
+    color: #ffffff;
+}
+
+.status-description-table td {
+    background-color: #f0f8ff;
+}
+
+.status-safe {
+    color: #28a745; /* Green color for SAFE status */
+}
+
+.status-warning {
+    color: #dc3545; /* Red color for WARNING status */
+}
+
+.cctv-status-container {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    margin-bottom: 20px;
+}
+
+.cctv-box {
+    flex: 2;
+    margin-right: 10px;
+}
+
+.status-box-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.custom-cctv-frame {
+    width: 100%;
+    height: auto;
+    border: 2px solid #003366;
+    border-radius: 10px;
+}
+
+.status-box {
+    background-color: #e6f0ff;
+    border: 2px solid #003366;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    flex: 1;
+}
+
+.status-text {
+    font-size: 16px;
+    font-weight: bold;
+    color: #003366;
+    margin: 0;
+    display: flex; /* Flexbox 사용 */
+    align-items: center; /* 수직 중앙 정렬 */
+    justify-content: center; /* 수평 중앙 정렬 */
+    height: 100%; /* 박스 전체 높이에 맞추기 */
+}
+
+.btn-secondary {
+    background-color: #003366;
+    border: none;
+    border-radius: 5px;
+}
+
+.btn-secondary:hover {
+    background-color: #002244;
+}
+
+.custom-close-btn {
+    background-color: #d9534f;
+    border: none;
+    border-radius: 5px;
+}
+
+.custom-close-btn:hover {
+    background-color: #c9302c;
 }
