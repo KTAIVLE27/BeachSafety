@@ -49,9 +49,9 @@
 <script type="text/javascript" src="http://map.vworld.kr/js/vworldMapInit.js.do?version=2.0
 &apiKey=80973894-487D-3977-BA22-621594681047&domain=www.test.com/map.html"></script> 
 <script type="text/javascript">
-
-vw.ol3.CameraPosition.center = [14256762.437870322, 4360039.299660016];
-vw.ol3.CameraPosition.zoom =8;
+    
+vw.ol3.CameraPosition.center = [14107294.56825383, 4281495.351721472];
+vw.ol3.CameraPosition.zoom =7;
                                         //지도의 초기 위치값을 설정
 
 vw.ol3.MapOptions = {
@@ -141,7 +141,11 @@ function insertData() {
 
 window.onload = insertData;
 
-
+vmap.getInteractions().forEach(function(interaction) {
+    if (interaction instanceof ol.interaction.MouseWheelZoom) {
+        vmap.removeInteraction(interaction);
+    }
+});
 //마커찍기
 var markerLayer = new vw.ol3.layer.Marker(vmap); 
 vmap.addLayer(markerLayer);
@@ -275,9 +279,14 @@ $(document).ready(function() {
 
             
                 beaches.forEach(function(beach) {
-                    if (beach.status === '경계' || beach.status === '위험') {
+                    if (beach.status === '경계') {
                         var div = $('<div>').addClass('textbox');
-                        div.html('<h5>' + beach.name + '</h5>' + beach.score_msg);
+                        div.html('<h5>' + beach.name + '</h5>' + '🟧'+beach.score_msg);
+                        alarmContainer.append(div);
+                    }
+                    if (beach.status === '위험') {
+                        var div = $('<div>').addClass('textbox');
+                        div.html('<h5>' + beach.name + '</h5>' + '🟥'+beach.score_msg);
                         alarmContainer.append(div);
                     }
                 });
@@ -333,7 +342,7 @@ $(document).ready(function() {
 <script>
     function updateTime() {
         var now = new Date();
-        var formattedTime = '현재시각: ' + now.getFullYear() + '-' +
+        var formattedTime = '' + now.getFullYear() + '-' +
                             ('0' + (now.getMonth() + 1)).slice(-2) + '-' +
                             ('0' + now.getDate()).slice(-2) + ' ' +
                             ('0' + now.getHours()).slice(-2) + ':' +
@@ -352,6 +361,7 @@ $(document).ready(function() {
     <a href="#" class="btn btn-primary" title="기상예보" data-toggle="modal" data-target="#myModal3"><i class="fa fa-cloud-sun"></i></a>
     <a href="#" class="btn btn-secondary" title="CCTV" data-toggle="modal" data-target="#CCTV_modal"><i class="fa fa-video"></i></a>
 </div>
+
 <!-- CCTV Modal -->
 <div class="modal" id="CCTV_modal" tabindex="-1">
     <div class="modal-dialog modal-lg" style="max-width: 80%">
@@ -501,125 +511,7 @@ $(document).ready(function() {
     });
 </script>
 
-<style>
-    .custom-modal-content {
-        background-color: #ffffff;
-        border: 2px solid #003366;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        padding: 20px;
-    }
 
-    .status-description-container {
-        margin-bottom: 20px;
-        padding: 10px;
-        border: 2px solid #003366;
-        border-radius: 8px;
-        background-color: #e6f0ff;
-    }
-
-    .status-description-box {
-        margin-bottom: 10px;
-        text-align: center;
-    }
-
-    .status-description-table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    .status-description-table th, .status-description-table td {
-        border: 1px solid #003366;
-        padding: 8px;
-        text-align: left;
-    }
-
-    .status-description-table th {
-        background-color: #003366;
-        color: #ffffff;
-    }
-
-    .status-description-table td {
-        background-color: #f0f8ff;
-    }
-
-    .status-safe {
-        color: #28a745; /* Green color for SAFE status */
-    }
-
-    .status-warning {
-        color: #dc3545; /* Red color for WARNING status */
-    }
-
-    .cctv-status-container {
-        display: flex;
-        flex-direction: row;
-        align-items: stretch;
-        margin-bottom: 20px;
-    }
-
-    .cctv-box {
-        flex: 2;
-        margin-right: 10px;
-    }
-
-    .status-box-container {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .custom-cctv-frame {
-        width: 100%;
-        height: auto;
-        border: 2px solid #003366;
-        border-radius: 10px;
-    }
-
-    .status-box {
-        background-color: #e6f0ff;
-        border: 2px solid #003366;
-        border-radius: 8px;
-        padding: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        text-align: center;
-        flex: 1;
-    }
-
-    .status-text {
-        font-size: 16px;
-        font-weight: bold;
-        color: #003366;
-        margin: 0;
-        display: flex; /* Flexbox 사용 */
-        align-items: center; /* 수직 중앙 정렬 */
-        justify-content: center; /* 수평 중앙 정렬 */
-        height: 100%; /* 박스 전체 높이에 맞추기 */
-    }
-
-    .btn-secondary {
-        background-color: #003366;
-        border: none;
-        border-radius: 5px;
-    }
-
-    .btn-secondary:hover {
-        background-color: #002244;
-    }
-
-    .custom-close-btn {
-        background-color: #d9534f;
-        border: none;
-        border-radius: 5px;
-    }
-
-    .custom-close-btn:hover {
-        background-color: #c9302c;
-    }
-</style>
-  
-  
 <!-- 119/해군 모달버튼 시작 -->
 <div class="modal" id="myModal">
     <div class="modal-dialog">
@@ -835,7 +727,7 @@ $(document).ready(function() {
     <body>
         <div class="warn-alarm" style="overflow-y: scroll;">
             <div class="h5-container">
-                <h5>경고알람</h5><h5 id="api-time-html"></h5>
+                <h4>경고알람</h4><h4 id="api-time-html"></h4>
             </div>
             <div id="alarm-container"></div>
         </div>
