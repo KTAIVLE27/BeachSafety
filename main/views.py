@@ -305,9 +305,15 @@ def edit_freeboard(request, pk):
             if event.beach_no == '':
                 event.beach_no = None
                 
-            if 'event_img' in request.FILES:
-                file = request.FILES['event_img']
+            if 'delete_event_img' in request.POST and request.POST['delete_event_img'] =='on':
+                if post.event_img:
+                    s3_key = post.event_img.split(f'https://{settings.AWS_S3_CUSTOM_DOMAIN}/')[1]
+                    s3.delete_object(Bucket=s3_bucket, Key=s3_key)
+                event.event_img = None
                 
+            elif 'event_img' in request.FILES:
+                file = request.FILES['event_img']
+            
                 s3 = boto3.client(
                     's3',
                     aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
@@ -322,12 +328,13 @@ def edit_freeboard(request, pk):
                 file_url = f'https://{settings.AWS_S3_CUSTOM_DOMAIN}/{s3_key}'
                 event.event_img = file_url
             else :
-                event.event_img = request.POST.get('existing_event_img')  # 기존 이미지 유지                                
+                existing_event_img = request.POST.get('existing_event_img')  # 기존 이미지 유지
+                event.event_img = existing_event_img if existing_event_img else None                             
             event.save()
             return JsonResponse({'success': True})
         else:
-            return JsonResponse({'success': False})
-    return JsonResponse({'success': False})
+            return JsonResponse({'success': False, 'errors': form.errors.as_json()})
+    return JsonResponse({'success': False, 'error': '잘못된 요청 방법입니다.'})
 
 #자유게시판 삭제
 @require_POST
@@ -689,7 +696,7 @@ def get_scenarios(request, scenario_type):
             'water_leisure': '수상레저',
             'illegality': '불법',
             'marine_pollution': '해양오염',
-            'safety_vacationers': '피서객안전',
+            'safety_vacationers': '피서객 안전',
             'watery_man': '익수자',
             'medical_aid': '의료지원',
             'missing': '실종',

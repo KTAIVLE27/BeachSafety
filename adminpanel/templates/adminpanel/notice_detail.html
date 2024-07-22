@@ -24,14 +24,14 @@
                             <div class="text-start">
                                 <div id="viewContent">
                                     <p>{{ post.notice_contents }}</p>
-                                    {% if post.notice_img %}
+                                    {% if post.notice_img and post.notice_img != "None" %}
                                     <div>
                                         <img src="{{ post.notice_img }}" alt="첨부 이미지" style="max-width: 100%; height: auto;">
                                         <div>
                                             <a href="{{ post.notice_img }}" target="_blank">첨부파일 다운로드</a>
                                         </div>
                                     </div>
-                                {% endif %}
+                                    {% endif %}
                                 </div>
                                 {% if post.user_no == user and user.user_role == 'admin' %}
                                 <form id="editForm" method="POST" enctype="multipart/form-data" style="display:none;">
@@ -57,6 +57,13 @@
                                         <label for="notice_img" class="form-label">첨부파일</label>
                                         <input type="file" class="form-control" id="notice_img" name="notice_img">
                                         <input type="hidden" name="existing_notice_img" value="{{ post.notice_img }}">
+                                        {% if post.notice_img and post.notice_img != "None" %}
+                                        <div class="form-check mt-2">
+                                            <img src="{{ post.notice_img }}" alt="첨부 이미지" style="max-width: 100%; height: auto;">
+                                            <input class="form-check-input" type="checkbox" id="delete_notice_img" name="delete_notice_img">
+                                            <label class="form-check-label" for="delete_notice_img">첨부파일 삭제</label>
+                                        </div>
+                                        {% endif %}
                                     </div>
                                     <button type="submit" class="btn btn-primary">저장</button>
                                     <button type="button" id="cancelEditButton" class="btn btn-secondary">취소</button>

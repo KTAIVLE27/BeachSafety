@@ -417,26 +417,35 @@ def edit_notice(request, pk):
             notice = form.save(commit=False)
             if notice.beach_no == '':
                 notice.beach_no = None
+
+            if 'delete_notice_img' in request.POST and request.POST['delete_notice_img'] == 'on':
+                #s3 에서 삭제 후 DB 에 None 처리
+                if post.notice_img:
+                    s3_key = post.notice_img.split(f'https://{settings.AWS_S3_CUSTOM_DOMAIN}/')[1]
+                    s3.delete_object(Bucket=s3_bucket, Key=s3_key)
+                    # 현재 삭제가 안되는 것 같음.. s3 에 남아있다..
+                notice.notice_img = None
                 
-            # 파일 업로드 (client 방식)
-            if 'notice_img' in request.FILES:
+            elif 'notice_img' in request.FILES:
                 file = request.FILES['notice_img']
-                
+
                 s3 = boto3.client(
                     's3',
                     aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
                     aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
                     region_name=settings.AWS_S3_REGION_NAME
                 )
-                
+
                 s3_bucket = settings.AWS_STORAGE_BUCKET_NAME
                 s3_key = f'notices/{file.name}'
                 s3.upload_fileobj(file, s3_bucket, s3_key, ExtraArgs={'ContentType': file.content_type})
-                
+
                 file_url = f'https://{settings.AWS_S3_CUSTOM_DOMAIN}/{s3_key}'
                 notice.notice_img = file_url
             else:
-                notice.notice_img = request.POST.get('existing_notice_img')  # 기존 이미지 유지               
+                existing_notice_img = request.POST.get('existing_notice_img')
+                notice.notice_img = existing_notice_img if existing_notice_img else None
+
             notice.save()
             return JsonResponse({'success': True})
         else:
