@@ -1046,7 +1046,8 @@ body, html {
 }
 
 #contentbox-3 {
-    height: 100vh;
+    min-height: 70vh;
+    overflow-y: auto; 
 }
 
 #admin_contentbox-1 {
@@ -1381,10 +1382,8 @@ border-bottom-left-radius: 0; /* 왼쪽 아래 모서리 각도 0으로 설정 *
 
 /* 입력창과 버튼 그룹 */
 .input-group {
-padding: 10px;
 background-color: #ffffff; /* 입력창과 버튼 배경색 */
 border-top: 1px solid #e0e0e0; /* 상단 테두리 */
-box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1); /* 하단 그림자 */
 display: flex;
 align-items: center;
 {% comment %} display:none; {% endcomment %}
