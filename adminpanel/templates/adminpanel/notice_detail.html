@@ -26,7 +26,7 @@
                                     <p>{{ post.notice_contents }}</p>
                                     {% if post.notice_img and post.notice_img != "None" %}
                                     <div>
-                                        <img src="{{ post.notice_img }}" alt="첨부 이미지" style="max-width: 100%; height: auto;">
+                                        <img src="{{ post.notice_img }}" alt="첨부 이미지" style="width: 50%; height: 30%;">
                                         <div>
                                             <a href="#"  id="downloadButton">첨부파일 다운로드 ({{notice_img_filename}})</a>
                                         </div>
@@ -61,8 +61,11 @@
                                         <div class="mt-2">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" id="delete_notice_img" name="delete_notice_img">
-                                                <label class="form-check-label" for="delete_event_img">첨부파일 삭제 ({{notice_img_filename}})</label>
-                                                <img src="{{ post.notice_img }}" alt="첨부 이미지" style="max-width: 100px; height: 100px;  display:block; margin-top: 10px;">
+                                                <label class="form-check-label" for="delete_event_img">
+                                                    첨부파일 삭제 ({{notice_img_filename}})
+                                                </label>
+                                                <br>
+                                                <img src="{{ post.notice_img }}" alt="첨부 이미지" style="width: 40vh; height:30vh;">
                                             </div>
                                         </div>
                                         {% endif %} 
