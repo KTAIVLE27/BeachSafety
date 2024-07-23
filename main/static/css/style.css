@@ -1507,7 +1507,7 @@ transform: translateY(0); /* 클릭 시 위치 유지 */
     color: #ff0000; /* 기록 글자색 */
 }
 
-#btn-start-chat, .btn-stop-chat {
+#btn-start-chat, #btn-stop-chat {
     font-size: 14px; /* 버튼 글자 크기 */
     padding: 8px 12px; /* 버튼 내부 여백 */
     border-radius: 5px; /* 둥근 모서리 */
