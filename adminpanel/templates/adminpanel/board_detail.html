@@ -28,12 +28,9 @@
                         <hr>
                         <div class="text-start">
                             <p>{{ post.event_contents }}</p>
-                            {% if post.event_img %}
+                            {% if post.event_img and post.event_img != "None" %}
                             <div>
                                 <img src="{{ post.event_img }}" alt="첨부 이미지" style="max-width: 100%; height: auto;">
-                                <div>
-                                    <a href="{{ post.event_img }}" target="_blank">첨부파일 다운로드</a>
-                                </div>
                             </div>
                         {% endif %}
                         </div>

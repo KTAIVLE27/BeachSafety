@@ -26,6 +26,7 @@ from langchain.chains import ConversationalRetrievalChain
 from langchain.memory import ConversationBufferMemory
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from urllib.parse import quote
 
 
 embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
@@ -199,10 +200,42 @@ def board_detail(request, pk):
     except Notice_board.DoesNotExist:
         messages.error(request, "해당 게시글을 찾을 수 없습니다.")
         return redirect('board')
+    notice_img_filename = os.path.basename(post.notice_img) if post.notice_img else None
+    return render(request, 'board_detail.html', {'post': post, 'notice_img_filename':notice_img_filename})
+
+# 공지사항 이미지 다운로드
+@login_required
+def board_generate_presigned_url(request, pk):
+    post = get_object_or_404(Notice_board, pk=pk)
     
-    return render(request, 'board_detail.html', {'post': post})
+    if not post.notice_img:
+        return JsonResponse({'error': 'No image found.'}, status=404)
 
+    s3 = boto3.client(
+        's3',
+        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+        region_name=settings.AWS_S3_REGION_NAME
+    )
+    s3_bucket = settings.AWS_STORAGE_BUCKET_NAME
+    s3_key = post.notice_img.split(f'https://{settings.AWS_S3_CUSTOM_DOMAIN}/')[1]
+    filename = s3_key.split('/')[-1]
+    encoded_filename = quote(filename)
 
+    try:
+        presigned_url = s3.generate_presigned_url(
+            'get_object',
+            Params={
+                'Bucket': s3_bucket,
+                'Key': s3_key,
+                'ResponseContentDisposition': f'attachment; filename="{encoded_filename}"'
+            },
+            ExpiresIn=3600  # URL 유효 기간 (초)
+        )
+        return JsonResponse({'url': presigned_url})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+    
 @login_required
 def free_board(request):
     beach_no = request.GET.get('beach_no')
@@ -251,7 +284,8 @@ def freeboard_detail(request, pk):
         messages.error(request, "해당 게시글을 찾을 수 없습니다.")
         return redirect('free_board')
     beaches = Beach.objects.all()
-    return render(request, 'freeboard_detail.html', {'post': post, 'beaches':beaches})
+    event_img_filename = os.path.basename(post.event_img) if post.event_img else None
+    return render(request, 'freeboard_detail.html', {'post': post, 'beaches':beaches, 'event_img_filename': event_img_filename})
 
 #자유게시판 생성
 @login_required
@@ -344,9 +378,38 @@ def delete_freeboard(request, post_id):
     return JsonResponse({'success': True})
 
 
-# @login_required
-# def chat(request):
-#     return render(request, 'chat.html')
+# 자유게시판 이미지 다운로드
+@login_required
+def generate_presigned_url(request, pk):
+    post = get_object_or_404(Event_board, pk=pk)
+    
+    if not post.event_img:
+        return JsonResponse({'error': 'No image found.'}, status=404)
+
+    s3 = boto3.client(
+        's3',
+        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+        region_name=settings.AWS_S3_REGION_NAME
+    )
+    s3_bucket = settings.AWS_STORAGE_BUCKET_NAME
+    s3_key = post.event_img.split(f'https://{settings.AWS_S3_CUSTOM_DOMAIN}/')[1]
+    filename = s3_key.split('/')[-1]
+    encoded_filename = quote(filename)
+
+    try:
+        presigned_url = s3.generate_presigned_url(
+            'get_object',
+            Params={
+                'Bucket': s3_bucket,
+                'Key': s3_key,
+                'ResponseContentDisposition': f'attachment; filename="{encoded_filename}"'
+            },
+            ExpiresIn=3600  # URL 유효 기간 (초)
+        )
+        return JsonResponse({'url': presigned_url})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
 
 @login_required
 def cctv(request):

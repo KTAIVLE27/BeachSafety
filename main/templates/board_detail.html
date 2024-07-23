@@ -23,11 +23,11 @@
                             </div>
                             <hr>
                             <div class="text-start">
-                                {% if post.notice_img %}
+                                {% if post.notice_img and post.notice_img != "None" %}
                                 <div>
                                     <img src="{{ post.notice_img }}" alt="첨부 이미지" style="max-width: 100%; height: auto;">
                                     <div>
-                                        <a href="{{ post.notice_img }}" target="_blank">첨부파일 다운로드</a>
+                                        <a href="#" id="downloadButton" >첨부파일 다운로드 ({{notice_img_filename}})</a>
                                     </div>
                                 </div>
                             {% endif %}
@@ -40,6 +40,29 @@
                     </div>
                 </div>
             </div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function()  {
+    if (downloadButton) {
+        downloadButton.addEventListener('click', function() {
+            fetch("{% url 'board_generate_presigned_url' post.pk %}")
+            .then(response => response.json())
+            .then(data => {
+                if (data.url) {
+                    window.location.href = data.url;
+                } else {
+                    alert('파일 다운로드에 실패했습니다.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    }
+
+});
+</script>
       
 {% endblock %}
 
