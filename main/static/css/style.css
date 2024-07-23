@@ -1539,6 +1539,7 @@ transform: translateY(0); /* 클릭 시 위치 유지 */
     border: 1px solid #005bb5; /* 강조 색 테두리 */
     padding: 20px;
     border-radius: 10px;
+    
 }
 
 .final-time-section h6 {
@@ -1553,6 +1554,11 @@ transform: translateY(0); /* 클릭 시 위치 유지 */
 .final-time-section .btn {
     font-size: 16px; /* 버튼 글자 크기 */
     padding: 10px 15px; /* 버튼 내부 여백 */
+    font-size: 14px;
+    padding: 8px 12px;
+    border-radius: 5px;
+    margin-right: 5px;
+    border: none;
 }
 
 
