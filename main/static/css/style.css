@@ -1191,3 +1191,44 @@ body, html {
     color: white;
 
 }
+
+
+.marine-weather-icon {
+    color: #fec034
+}
+
+/* 드롭다운 메뉴 스타일 */
+.dropdown-menu-custom {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.3s ease-out;
+    backdrop-filter: blur(10px);
+    padding: 0;
+    z-index: 1000;
+    width: 200px;
+    list-style: none;
+}
+
+.nav-item:hover .dropdown-menu-custom {
+    max-height: 200px; /* 드롭다운 메뉴의 최대 높이를 설정합니다 */
+    padding: 10px 0;
+}
+
+.dropdown-item-custom {
+    padding: 10px 45px;
+    color: #333;
+    text-decoration: none;
+    display: block;
+    transition: background-color 0.3s, color 0.3s;
+    border-radius: 4px;
+}
+
+.dropdown-item-custom.active {
+    background-color: rgba(0, 123, 255, 0.2);
+    color: #007bff;
+}
+
+.dropdown-item-custom:hover {
+    background-color: rgba(0, 123, 255, 0.1);
+    color: #007bff;
+}

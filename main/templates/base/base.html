@@ -82,11 +82,12 @@
                         <a href="#" class="nav-link {% if request.resolver_match.url_name == 'myprofile' or request.resolver_match.url_name == 'myposts' %}active{% endif %}" id="myProfileLink">
                             <img class="fa fa-th me-2" src="{% static 'img/face_24dp.png' %}" style="width: 40px; height: 40px;">마이 페이지
                         </a>
-                        <ul class="dropdown-menu" id="myProfileMenu" aria-labelledby="dropdownMenuButton2">
-                            <li><a class="dropdown-item {% if request.resolver_match.url_name == 'myprofile' %}active{% endif %}" href="{% url 'myprofile' %}">📄 내 정보 수정</a></li>
-                            <li><a class="dropdown-item {% if request.resolver_match.url_name == 'myposts' %}active{% endif %}" href="{% url 'myposts' %}">✒️ 내가 쓴 글 관리</a></li>
+                        <ul class="dropdown-menu-custom" id="myProfileMenu" aria-labelledby="dropdownMenuButton2">
+                            <li><a class="dropdown-item-custom {% if request.resolver_match.url_name == 'myprofile' %}active{% endif %}" href="{% url 'myprofile' %}"> 내 정보 수정</a></li>
+                            <li><a class="dropdown-item-custom {% if request.resolver_match.url_name == 'myposts' %}active{% endif %}" href="{% url 'myposts' %}"> 내가 쓴 글 관리</a></li>
                         </ul>
                     </div>
+                    
                     <a href="{% url 'cctv' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'cctv' %}active{% endif %}">
                         <img class="fa fa-th me-2" src="{% static 'img/videocam.png' %}" style="width: 40px; height: 40px;">CCTV
                     </a>
