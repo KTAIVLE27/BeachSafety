@@ -59,14 +59,18 @@
                             <form method="post" enctype="multipart/form-data">
                                 {% csrf_token %}
                                 <div class="input-group mb-3">
-                                    <select class="custom-select" name="beach_no">
-                                        <option value="" selected>공통</option>
-                                        {% for beach in beaches %}
-                                            <option value="{{ beach.beach_no }}">{{ beach.beach_name }}</option>
-                                        {% endfor %}
-                                    </select>
+                                    <div class="custom-select-wrapper">
+                                        <select class="form-control custom-select-width" name="beach_no">
+                                            <option value="" selected>공통</option>
+                                            {% for beach in beaches %}
+                                                <option value="{{ beach.beach_no }}">{{ beach.beach_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <span class="custom-select-arrow"></span>
+                                    </div>
                                     <input type="text" class="form-control" placeholder="제목" name="event_title" maxlength="50" required>
                                 </div>
+                                
                                 <div class="form-group mb-3">
                                     <label for="event_contents">본문</label>
                                     <textarea class="form-control" id="event_contents" placeholder="본문을 작성하시오.." name="event_contents" maxlength="2048" style="height: 350px;" required></textarea>

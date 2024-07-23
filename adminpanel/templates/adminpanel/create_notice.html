@@ -58,12 +58,15 @@
                             <form method="post" enctype="multipart/form-data">
                                 {% csrf_token %}
                                 <div class="input-group mb-3">
-                                    <select class="custom-select" name="beach_no">
-                                        <option value="" selected>공통</option>
-                                        {% for beach in beaches %}
-                                            <option value="{{ beach.beach_no }}">{{ beach.beach_name }}</option>
-                                        {% endfor %}
-                                    </select>
+                                    <div class="custom-select-wrapper">
+                                        <select class="custom-select form-control" name="beach_no">
+                                            <option value="" selected>공통</option>
+                                            {% for beach in beaches %}
+                                                <option value="{{ beach.beach_no }}">{{ beach.beach_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <span class="custom-select-arrow"></span>
+                                    </div>
                                     <input type="text" class="form-control" placeholder="제목" name="notice_title" maxlength="50" required>
                                 </div>
                                 <div class="form-group mb-3">

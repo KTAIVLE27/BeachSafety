@@ -267,7 +267,7 @@
                         <tbody>
                             {% for notice in home_notices %}
                                 <tr>
-                                    <td><a href="{% url 'board_detail' post.pk %}">{{ post.notice_title }}</a></td>
+                                    <td><a href="{% url 'board_detail' notice.pk %}">{{ notice.notice_title }}</a></td>
                                     <td>{{ notice.notice_wdate|date:"Y-m-d" }}</td>
                                 </tr>
                             {% endfor %}
