@@ -312,7 +312,11 @@ $(document).ready(function() {
 </script>
 
 <div class="logo">
+<<<<<<< HEAD
 <a href="{% url 'home' %}"><img src="{% static 'img/control_logo.png' %}" style="width:170px; height:100px; top: 10%" ></i></a>      
+=======
+<a href="{% url 'home' %}"><img src="{% static 'img/control_logo.png' %}" style="width:190px; height:100px; top: 10%" ></i></a>      
+>>>>>>> 94b921df800870e4615331981c8669f3e43c56f5
 </div> 
 
 <div class="nav-buttons" id="current-time">
@@ -574,6 +578,7 @@ $(document).ready(function() {
 
 <!-- 모의훈련 모달 -->
 <div class="modal" id="myModal2">
+<<<<<<< HEAD
     <div class="modal-dialog modal-dialog-centered" style="margin-top: 60px;">
         <div class="modal-content">
             <div class="container-fluid pt-1 px-1">
@@ -660,6 +665,97 @@ $(document).ready(function() {
                             <!-- Main Content End -->
                         </div>
                     </div>
+=======
+    <div class="modal-dialog" style="max-width: 50%; width: 50%; max-height: 70%; height: 70%;">
+        <div class="modal-content">
+            <div class="container-fluid pt-2 px-2">
+                <div class="row g-2">
+                    <div class="col-lg-12">
+                        <h2 class="mb-0">모의 훈련</h2>
+                        <hr>
+                    </div>
+                    <!-- Main Content Start -->
+                    <div class="container-fluid pt-2 px-2" style="height: 60%;">
+                        <div class="row">
+                            <!-- Chat Box Start -->
+                            <div class="col-sm-12 col-md-6 mb-2">
+                                <div class="bg-light text-center rounded p-2 h-100 chat-window">
+                                    <h4 class="mb-2 chat-header">해양안전 시나리오 챗봇</h4>
+                                    <div class="chat-box">
+                                        <div id="chat-content" class="chat-body" style="max-height: 150px; overflow-y: auto;">
+                                            <!-- Initial welcome message -->
+                                            <div class="chat-message">
+                                                <strong>안녕하세요 해양안전 AI 모니터링 시스템입니다</strong>
+                                            </div>
+                                            <!-- {% for log in logs %}
+                                            <div class="chat-message-box">
+                                                <strong>질문:</strong> {{ log.question|safe }}<br>
+                                                <strong>답변:</strong><br>
+                                                {{ log.answer|safe|linebreaksbr }}
+                                            </div>
+                                            {% endfor %} -->
+                                        </div>
+                                        <div class="loading-spinner" id="loading-spinner"></div>
+                                        <div class="button-group mt-2">
+                                            <button class="btn-custom" onclick="sendRandomPredefinedQuestion('생물 보호')">생물보호</button>
+                                            <button class="btn-custom" onclick="sendRandomPredefinedQuestion('수상레저')">수상레저</button>
+                                            <button class="btn-custom" onclick="sendRandomPredefinedQuestion('불법')">불법</button>
+                                            <button class="btn-custom" onclick="sendRandomPredefinedQuestion('해양오염')">해양오염</button>
+                                            <button class="btn-custom" onclick="sendRandomPredefinedQuestion('피서객 안전')">피서객 안전</button>
+                                            <button class="btn-custom" onclick="sendRandomPredefinedQuestion('익수자')">익수자</button>
+                                            <button class="btn-custom" onclick="sendRandomPredefinedQuestion('의료지원')">의료지원</button>
+                                            <button class="btn-custom" onclick="sendRandomPredefinedQuestion('실종')">실종</button>
+                                        </div>
+                                        <div class="input-group mt-2 chat-footer" style="display:none;">
+                                            <input type="text" class="form-control" id="question-input" placeholder="메시지 입력" onkeypress="handleKeyPress(event)" style="display:none;">
+                                            <button class="btn btn-primary" id="send-button" onclick="sendMessage()">전송</button>
+                                        </div>
+                                    </div>
+                                    <div class="loading-spinner" id="loading-spinner"></div>
+                                </div>
+                            </div>
+                            <!-- Chat Box End -->
+
+                            <!-- Evaluation Box Start -->
+                            <div class="col-sm-12 col-md-6 mb-2">
+                                <div class="bg-light text-center rounded p-2 h-100">
+                                    <h4 class="mb-2 chat-header">평가 항목</h4>
+                                    <div class="evaluation-box" id='contentbox-4'>
+                                        <div class="form-group mb-2" id="form-group-chat">
+                                            <label for="stopwatch1">상황 전파 및 출동 준비</label>
+                                            <div id="stopwatch1" class="stopwatch">00:00:00.000</div>
+                                            <button class="btn btn-start mt-1" onclick="startStopwatch(0)">Start</button>
+                                            <button class="btn btn-stop mt-1" onclick="stopStopwatch(0)">Stop</button>
+                                            <div id="record1" class="record mt-1"></div>
+                                        </div>
+                                        <div class="form-group mb-2" id="form-group-chat">
+                                            <label for="stopwatch2">구조 활동 시간</label>
+                                            <div id="stopwatch2" class="stopwatch">00:00:00.000</div>
+                                            <button class="btn btn-start mt-1" onclick="startStopwatch(1)">Start</button>
+                                            <button class="btn btn-stop mt-1" onclick="stopStopwatch(1)">Stop</button>
+                                            <div id="record2" class="record mt-1"></div>
+                                        </div>
+                                        <div class="form-group mb-2" id="form-group-chat">
+                                            <label for="stopwatch3">상황 마무리 및 인수 인계</label>
+                                            <div id="stopwatch3" class="stopwatch">00:00:00.000</div>
+                                            <button class="btn btn-start mt-1" onclick="startStopwatch(2)">Start</button>
+                                            <button class="btn btn-stop mt-1" onclick="stopStopwatch(2)">Stop</button>
+                                            <div id="record3" class="record mt-1"></div>
+                                        </div>
+                                        <div class="form-group final-time-section mb-2" id="form-group-chat">
+                                            <h6 class="mb-2">총 훈련 소요 시간</h6>
+                                            <div id="finalStopwatch" class="stopwatch">00:00:00.000</div>
+                                            <button class="btn btn-success mt-1" onclick="showFinalTime()">최종 시간 보기</button>
+                                            <button class="btn btn-danger mt-1" onclick="resetAllStopwatches()">초기화</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Evaluation Box End -->
+                        </div>
+                    </div>
+                    <!-- Main Content End -->
+>>>>>>> 94b921df800870e4615331981c8669f3e43c56f5
                 </div>
             </div>
         </div>
@@ -667,7 +763,10 @@ $(document).ready(function() {
 </div>
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 94b921df800870e4615331981c8669f3e43c56f5
     <!-- 경고알림 창 이안류 3,4(경계, 위험) 단계에 해당할 경우에만 뜸 -->
     <body>
         <div class="warn-alarm" style="overflow-y: scroll;">

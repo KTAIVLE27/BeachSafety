@@ -543,6 +543,7 @@ body, html {
 
 /* 모의훈련 모달의 크기 조절 */
 #myModal2 .modal-dialog {
+    height: 1000px;
     max-width: 1200px;
     margin: auto;
     top: 50%;
@@ -1193,6 +1194,7 @@ body, html {
 }
 
 
+<<<<<<< HEAD
 .marine-weather-icon {
     color: #fec034
 }
@@ -1235,6 +1237,17 @@ body, html {
 
 
 /* ////////chat css */
+=======
+/* //////////chat css */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #e8f0fe;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+>>>>>>> 94b921df800870e4615331981c8669f3e43c56f5
 .chat-window {
     border: 1px solid #003366;
     border-radius: 10px;
@@ -1256,7 +1269,11 @@ body, html {
 .chat-box {
     display: flex;
     flex-direction: column;
+<<<<<<< HEAD
     height: 500px;
+=======
+    height: 100%;
+>>>>>>> 94b921df800870e4615331981c8669f3e43c56f5
 }
 
 .chat-body {
@@ -1387,7 +1404,10 @@ border-top: 1px solid #e0e0e0; /* 상단 테두리 */
 box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1); /* 하단 그림자 */
 display: flex;
 align-items: center;
+<<<<<<< HEAD
 {% comment %} display:none; {% endcomment %}
+=======
+>>>>>>> 94b921df800870e4615331981c8669f3e43c56f5
 }
 
 /* 입력창 스타일 */
@@ -1410,6 +1430,10 @@ padding: 10px 20px;
 font-size: 14px;
 cursor: pointer;
 transition: background-color 0.3s;
+<<<<<<< HEAD
+=======
+display: none;
+>>>>>>> 94b921df800870e4615331981c8669f3e43c56f5
 }
 
 /* 전송 버튼 호버 효과 */
@@ -1478,7 +1502,11 @@ transform: translateY(0); /* 클릭 시 위치 유지 */
     flex-direction: column;
     gap: 20px; /* 섹션 간의 간격 */
     color: #000000; /* 글자색 */
+<<<<<<< HEAD
     height: 100vh;
+=======
+    height: 90%;
+>>>>>>> 94b921df800870e4615331981c8669f3e43c56f5
 }
 
 #form-group-chat {
@@ -1507,7 +1535,11 @@ transform: translateY(0); /* 클릭 시 위치 유지 */
     color: #ff0000; /* 기록 글자색 */
 }
 
+<<<<<<< HEAD
 #btn-start-chat, .btn-stop-chat {
+=======
+.btn-start, .btn-stop {
+>>>>>>> 94b921df800870e4615331981c8669f3e43c56f5
     font-size: 14px; /* 버튼 글자 크기 */
     padding: 8px 12px; /* 버튼 내부 여백 */
     border-radius: 5px; /* 둥근 모서리 */
@@ -1515,21 +1547,37 @@ transform: translateY(0); /* 클릭 시 위치 유지 */
     border: none; /* 버튼 테두리 없음 */
 }
 
+<<<<<<< HEAD
 #btn-start-chat {
+=======
+.btn-start {
+>>>>>>> 94b921df800870e4615331981c8669f3e43c56f5
     background-color: #003366; /* 시작 버튼 배경색 */
     color: #ffffff; /* 버튼 글자색 */
 }
 
+<<<<<<< HEAD
 #btn-stop-chat {
+=======
+.btn-stop {
+>>>>>>> 94b921df800870e4615331981c8669f3e43c56f5
     background-color: #ff0000; /* 정지 버튼 배경색 */
     color: #ffffff; /* 버튼 글자색 */
 }
 
+<<<<<<< HEAD
 #btn-start-chat:hover {
     background-color: #3e5e7d; /* 마우스 호버 시 배경색 변경 */
 }
 
 #btn-stop-chat:hover {
+=======
+.btn-start:hover {
+    background-color: #3e5e7d; /* 마우스 호버 시 배경색 변경 */
+}
+
+.btn-stop:hover {
+>>>>>>> 94b921df800870e4615331981c8669f3e43c56f5
     background-color: #d54747; /* 마우스 호버 시 배경색 변경 */
 }
 
@@ -1558,7 +1606,14 @@ transform: translateY(0); /* 클릭 시 위치 유지 */
 
 /* 레이블 스타일 */
 .form-label {
+<<<<<<< HEAD
     color: #000000; /* 레이블 텍스트 색상 */
     font-size: 18px; /* 레이블 텍스트 크기 */
     margin-bottom: 5px;
 }
+=======
+    color: #ffffff; /* 레이블 텍스트 색상 */
+    font-size: 18px; /* 레이블 텍스트 크기 */
+    margin-bottom: 5px;
+}
+>>>>>>> 94b921df800870e4615331981c8669f3e43c56f5
