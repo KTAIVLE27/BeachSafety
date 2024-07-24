@@ -343,22 +343,27 @@ def delete_notice_boards(request):
     except Exception as e:
         return JsonResponse({"status": "error", "message": str(e)}, status=400)
 
+# 파일 업로드 핸들러
+def handle_uploaded_file(file, is_image=False):
+    allowed_image_extensions = ['jpg', 'jpeg', 'png', 'gif']
+    allowed_other_extensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'hwp', 'csv']
+    max_file_size = 5 * 1024 * 1024  # 5MB
 
+    ext = file.name.split('.')[-1].lower()
+    if is_image:
+        if ext not in allowed_image_extensions:
+            raise ValueError("허용되지 않는 이미지 파일 형식입니다.")
+    else:
+        if ext not in allowed_other_extensions:
+            raise ValueError("허용되지 않는 파일 형식입니다.")
+    
+    if file.size > max_file_size:
+        raise ValueError("파일 크기가 너무 큽니다.")
+    
+    return True
 
 @login_required
 def create_notice(request):
-    def handle_uploaded_file(file):
-        allowed_extensions = ['jpg', 'jpeg', 'png', 'gif']
-        max_file_size = 5 * 1024 * 1024  # 5MB
-
-        ext = file.name.split('.')[-1].lower()
-        if ext not in allowed_extensions:
-            raise ValueError("허용되지 않는 파일 형식입니다.")
-        if file.size > max_file_size:
-            raise ValueError("파일 크기가 너무 큽니다.")
-
-        return True
-
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
@@ -368,11 +373,11 @@ def create_notice(request):
             if not notice.beach_no:
                 notice.beach_no = None
             
-            # 파일 업로드 (client 방식)
+            # 파일 업로드 (image)
             if 'notice_img' in request.FILES:
                 file = request.FILES['notice_img']
                 
-                if handle_uploaded_file(file):
+                if handle_uploaded_file(file, is_image = True):
                     s3 = boto3.client(
                         's3',
                         aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
@@ -385,7 +390,25 @@ def create_notice(request):
                     s3.upload_fileobj(file, s3_bucket, s3_key, ExtraArgs={'ContentType': file.content_type})
                     
                     file_url = f'https://{settings.AWS_S3_CUSTOM_DOMAIN}/{s3_key}'
-                    notice.notice_img = file_url    
+                    notice.notice_img = file_url
+                    
+            other_files = []
+            for file in request.FILES.getlist('other_files'):
+                if handle_uploaded_file(file, is_image=False):
+                    s3 = boto3.client(
+                        's3',
+                        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                        region_name=settings.AWS_S3_REGION_NAME
+                    )
+                    
+                    s3_bucket = settings.AWS_STORAGE_BUCKET_NAME 
+                    s3_key = f'notices/files/{file.name}'
+                    s3.upload_fileobj(file, s3_bucket, s3_key, ExtraArgs={'ContentType': file.content_type})
+                    file_url = f'https://{settings.AWS_S3_CUSTOM_DOMAIN}/{s3_key}'
+                    other_files.append(file_url)
+ 
+            notice.notice_files = other_files                        
             notice.save()
             return redirect('adminpanel:notice_manage')
     else:
@@ -405,7 +428,8 @@ def notice_detail(request, pk):
     
     beaches = Beach.objects.all()
     notice_img_filename = os.path.basename(post.notice_img) if post.notice_img else None
-    return render(request, 'adminpanel/notice_detail.html', {'post': post, 'beaches':beaches, 'notice_img_filename': notice_img_filename})
+    notice_files = [(os.path.basename(file_url), file_url) for file_url in post.notice_files] if post.notice_files else None
+    return render(request, 'adminpanel/notice_detail.html', {'post': post, 'beaches':beaches, 'notice_img_filename': notice_img_filename, 'notice_files':notice_files})
 
 @login_required
 def edit_notice(request, pk):
@@ -424,8 +448,14 @@ def edit_notice(request, pk):
 
             if 'delete_notice_img' in request.POST and request.POST['delete_notice_img'] == 'on':
                 if post.notice_img:
+                    s3 = boto3.client(
+                        's3',
+                        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                        region_name=settings.AWS_S3_REGION_NAME
+                    )
                     s3_key = post.notice_img.split(f'https://{settings.AWS_S3_CUSTOM_DOMAIN}/')[1]
-                    s3.delete_object(Bucket=s3_bucket, Key=s3_key)
+                    s3.delete_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=s3_key)
                 notice.notice_img = None
                 
             elif 'notice_img' in request.FILES:
@@ -448,6 +478,40 @@ def edit_notice(request, pk):
                 existing_notice_img = request.POST.get('existing_notice_img')
                 notice.notice_img = existing_notice_img if existing_notice_img else None
 
+            # 기타 파일 처리
+            other_files = notice.notice_files if notice.notice_files else []
+
+            # 삭제할 파일 처리
+            delete_files = request.POST.getlist('delete_other_files')
+            for file_url in delete_files:
+                if file_url in other_files:
+                    s3 = boto3.client(
+                        's3',
+                        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                        region_name=settings.AWS_S3_REGION_NAME
+                    )
+                    s3_key = file_url.split(f'https://{settings.AWS_S3_CUSTOM_DOMAIN}/')[1]
+                    s3.delete_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=s3_key)
+                    other_files.remove(file_url)
+
+            # 새로운 파일 업로드 처리
+            for file in request.FILES.getlist('other_files'):
+                if handle_uploaded_file(file, is_image=False):
+                    s3 = boto3.client(
+                        's3',
+                        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                        region_name=settings.AWS_S3_REGION_NAME
+                    )
+                    s3_bucket = settings.AWS_STORAGE_BUCKET_NAME
+                    s3_key = f'notices/files/{file.name}'
+                    s3.upload_fileobj(file, s3_bucket, s3_key, ExtraArgs={'ContentType': file.content_type})
+
+                    file_url = f'https://{settings.AWS_S3_CUSTOM_DOMAIN}/{s3_key}'
+                    other_files.append(file_url)
+
+            notice.notice_files = other_files
             notice.save()
             return JsonResponse({'success': True})
         else:

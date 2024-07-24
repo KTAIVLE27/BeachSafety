@@ -28,9 +28,20 @@
                                     <div>
                                         <img src="{{ post.event_img }}" alt="첨부 이미지" style="max-width: 100%; height: auto; max-height: 400px;">
                                         <div>
-                                            <a href = "#" id="downloadButton" >첨부파일 다운로드 ({{ event_img_filename }})</a>
+                                            <a href="#" id="downloadImageButton">첨부 이미지 다운로드 ({{event_img_filename}})</a>
                                         </div>
                                     </div>
+                                {% endif %}
+                                {% if event_files %}
+                                <div>
+                                    <ul style="list-style-type: none; padding: 0;">
+                                        {% for filename, file_url in event_files %}
+                                        <li>
+                                            <a href="#" class="downloadFileButton" data-file-url="{{ file_url }}">{{ filename }}</a>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
                                 {% endif %}
                                 </div>
                                 {% if post.user_no == user %}
@@ -54,19 +65,39 @@
                                         <textarea class="form-control" id="event_contents" name="event_contents" rows="5">{{ post.event_contents }}</textarea>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="event_img" class="form-label">첨부파일</label>
+                                        <label for="event_img" class="form-label">첨부 이미지</label>
                                         <input type="file" class="form-control" id="event_img" name="event_img">
                                         <input type="hidden" name="existing_event_img" value="{{ post.event_img }}">
                                         {% if post.event_img and post.event_img != "None" %}
                                         <div class="mt-2">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" id="delete_event_img" name="delete_event_img">
-                                                <label class="form-check-label" for="delete_event_img">첨부파일 삭제 ({{ event_img_filename }})</label>
+                                                <label class="form-check-label" for="delete_event_img">
+                                                    첨부 이미지 삭제 ({{ event_img_filename }})
+                                                </label>
+                                                <br>
                                                 <img src="{{ post.event_img }}" alt="첨부 이미지" style="width: 100%; height:100%;  display:block; margin-top: 10px;">
                                             </div>
                                         </div>
                                         {% endif %}                                      
                                     </div>
+                                    <div class="mb-3">
+                                        <label for="other_files" class="form-label">기타 파일 업로드</label>
+                                        <input type="file" class="form-control" id="other_files" name="other_files" multiple>
+                                    </div>
+                                    {% if event_files %}
+                                    <div class="mb-3">
+                                        <h5>기존 첨부 파일</h5>
+                                        <ul>
+                                            {% for filename, file_url in event_files %}
+                                            <li>
+                                                <input type="checkbox" name="delete_other_files" value="{{ file_url }}"> 삭제
+                                                <a href="#" class="downloadFileButton" data-file-url="{{ file_url }}">{{ filename }}</a>
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    {% endif %}
                                     <div class="d-flex justify-content-between">
                                         <div>
                                             <button type="submit" class="btn btn-primary">저장</button>
@@ -161,8 +192,8 @@
                 });
             }
         }
-        if (downloadButton) {
-            downloadButton.addEventListener('click', function() {
+        if (downloadImageButton) {
+            downloadImageButton.addEventListener('click', function() {
                 fetch("{% url 'generate_presigned_url' post.pk %}")
                 .then(response => response.json())
                 .then(data => {
@@ -177,6 +208,13 @@
                 });
             });
         }
+
+        downloadFileButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                var fileUrl = this.getAttribute('data-file-url');
+                window.location.href = fileUrl;
+            });
+        });
     });
     </script>
 {% endblock %}

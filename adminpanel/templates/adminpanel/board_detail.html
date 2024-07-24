@@ -33,6 +33,17 @@
                                 <img src="{{ post.event_img }}" alt="첨부 이미지" style="max-width: 100%; height: auto; max-height: 400px;">
                             </div>
                         {% endif %}
+                        {% if event_files %}
+                        <div>
+                            <ul style="list-style-type: none; padding: 0;">
+                                {% for filename, file_url in event_files %}
+                                <li>
+                                    <a href="#" class="downloadFileButton" data-file-url="{{ file_url }}">{{ filename }}</a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
                         </div>
                         <hr>
                         <div class="text-end">

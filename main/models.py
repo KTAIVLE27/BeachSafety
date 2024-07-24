@@ -81,7 +81,7 @@ class Notice_board(models.Model):
     notice_views = models.IntegerField(default=0)  # 조회수
     notice_wdate = models.DateTimeField(blank=False, default=timezone.now)  # 작성일
     notice_contents = models.TextField(blank=True, null=True)  # 본문
-
+    notice_files = models.JSONField(default=list, blank=True) # 첨부 파일
     class Meta:
         db_table = 'notice_board'
 
@@ -94,7 +94,7 @@ class Event_board(models.Model):
     event_views = models.IntegerField(default=0)  # 조회수
     event_wdate = models.DateTimeField( blank=False, default=timezone.now)  # 작성일
     event_contents= models.TextField(blank=True, null=True)  # 본문
-
+    event_files = models.JSONField(default=list, blank=True) # 첨부 파일
     class Meta:
         db_table = 'event_board'
 
