@@ -13,14 +13,14 @@
         <!-- Map Image Section -->
         <div class="col-sm-12 col-xl-6">
             <div class="bg-light text-center rounded p-4">
-                <div class="d-flex align-items-center justify-content-between mb-4">
+                <div class="d-flex align-items-center justify-content-between mb-4 header-bar">
                     <h4 class="mb-0">해수욕장 AI 위험도 실시간 감지 </h4>
-                </div>
-                <div id="vmap" style="width:100%;height:650px;left:0px;top:0px"></div> 
-                <script type="text/javascript" src="http://map.vworld.kr/js/vworldMapInit.js.do?version=2.0&apiKey=80973894-487D-3977-BA22-621594681047&domain=www.test.com/map.html"></script> 
+                </div>               
+                <div id="vmap" style="width:100%;height:650px;left:0px;top:0px"></div>
+                <script type="text/javascript" src="http://map.vworld.kr/js/vworldMapInit.js.do?version=2.0&apiKey=80973894-487D-3977-BA22-621594681047&domain=www.test.com/map.html"></script>
                 <script type="text/javascript">
-                    vw.ol3.CameraPosition.center = [14256762.437870322, 4300000.299660016];
-                    vw.ol3.CameraPosition.zoom = 7.0005548;
+                    vw.ol3.CameraPosition.center = [14181282.145818451,4362116.114066147];
+                    vw.ol3.CameraPosition.zoom = 6.5;
                     vw.ol3.MapOptions = {
                         basemapType: vw.ol3.BasemapType.GRAPHIC_WHITE,
                         controlDensity: vw.ol3.DensityType.EMPTY,
@@ -29,13 +29,21 @@
                         homePosition: vw.ol3.CameraPosition,
                         initPosition: vw.ol3.CameraPosition
                     };
-                    
+        
                     let vmap = new vw.ol3.Map("vmap", vw.ol3.MapOptions); 
+        
+                    // Disable mouse wheel zoom
+                    vmap.getInteractions().forEach(function(interaction) {
+                        if (interaction instanceof ol.interaction.MouseWheelZoom) {
+                            vmap.removeInteraction(interaction);
+                        }
+                    });
+        
                     var markerLayer = new vw.ol3.layer.Marker(vmap); 
                     vmap.addLayer(markerLayer);
-                    
+        
                     var contextRipData = JSON.parse('{{ context_rip_json|escapejs }}');
-                    
+        
                     var GYEONGPO_score_msg = contextRipData.GYEONGPO_score_msg;
                     var GORAEBUL_score_msg = contextRipData.GORAEBUL_score_msg;
                     var NAKSAN_score_msg = contextRipData.NAKSAN_score_msg;
@@ -46,7 +54,7 @@
                     var IMRANG_score_msg = contextRipData.IMRANG_score_msg;
                     var JUNGMUN_score_msg = contextRipData.JUNGMUN_score_msg;
                     var HAE_score_msg = contextRipData.HAE_score_msg;
-                    
+        
                     var GYEONGPO_lon = contextRipData.GYEONGPO_lon;
                     var GORAEBUL_lon = contextRipData.GORAEBUL_lon;
                     var NAKSAN_lon = contextRipData.NAKSAN_lon;
@@ -57,7 +65,7 @@
                     var IMRANG_lon = contextRipData.IMRANG_lon;
                     var JUNGMUN_lon = contextRipData.JUNGMUN_lon;
                     var HAE_lon = contextRipData.HAE_lon;
-                    
+        
                     var GYEONGPO_lat = contextRipData.GYEONGPO_lat;
                     var GORAEBUL_lat = contextRipData.GORAEBUL_lat;
                     var NAKSAN_lat = contextRipData.NAKSAN_lat;
@@ -68,9 +76,9 @@
                     var IMRANG_lat = contextRipData.IMRANG_lat;
                     var JUNGMUN_lat = contextRipData.JUNGMUN_lat;
                     var HAE_lat = contextRipData.HAE_lat;
-                    
+        
                     var popup = document.getElementById('popup');
-                    
+        
                     function createMarker(id, x, y, epsg, title, contents, iconUrl) {
                         var markerOption = {
                             x: x,
@@ -82,24 +90,23 @@
                             attr: { id: id }
                         };
                         var marker = markerLayer.addMarker(markerOption);
-                        
+        
                         marker.on('click', function(evt) {
                             popup.innerHTML = contents;
                             popup.style.display = 'block';
                             popup.style.left = evt.pixel[0] + 'px';
                             popup.style.top = evt.pixel[1] + 'px';
                         });
-                        
+        
                         return markerOption;
                     }
-                    
+        
                     function updateMarkerIcon(marker, imgUrl) {
                         marker.iconUrl = imgUrl;
                         markerLayer.removeMarker(marker);
                         markerLayer.addMarker(marker);
                     }
-                    
-                    // 색상을 결정 함수
+        
                     function getColorScoreMsg(score_msg) { 
                         switch (score_msg) {
                             case "관심":
@@ -110,13 +117,13 @@
                                 return '/static/img/oring1.png';
                             case "위험":
                                 return '/static/img/red2.png';
-                            case "NaN": //API에 정보가 없을떄
+                            case "NaN":
                                 return '/static/img/white1.png';
                             default:
-                                return "/static/img/white1.png"; // 예외 처리 
+                                return "/static/img/white1.png";
                         }
                     }
-
+        
                     var markerData = [
                         { id: 'marker1', x: GYEONGPO_lon, y: GYEONGPO_lat, epsg: 'EPSG:4326', title: '경포 해수욕장', contents: GYEONGPO_score_msg, iconUrl: getColorScoreMsg(GYEONGPO_score_msg) },
                         { id: 'marker2', x: GORAEBUL_lon, y: GORAEBUL_lat, epsg: 'EPSG:4326', title: '고래불 해수욕장', contents: GORAEBUL_score_msg, iconUrl: getColorScoreMsg(GORAEBUL_score_msg) },
@@ -129,13 +136,13 @@
                         { id: 'marker9', x: JUNGMUN_lon, y: JUNGMUN_lat, epsg: 'EPSG:4326', title: '중문 해수욕장', contents: JUNGMUN_score_msg, iconUrl: getColorScoreMsg(JUNGMUN_score_msg) },
                         { id: 'marker10', x: HAE_lon, y: HAE_lat, epsg: 'EPSG:4326', title: '해운대 해수욕장', contents: HAE_score_msg, iconUrl: getColorScoreMsg(HAE_score_msg) },
                     ];
-
+        
                     var markers = {};
-                    
+        
                     markerData.forEach(function(marker) {
                         markers[marker.id] = createMarker(marker.id, marker.x, marker.y, marker.epsg, marker.title, marker.contents, marker.iconUrl);
                     });
-                    // 주기적으로 마커 아이콘 업데이트
+        
                     $(document).ready(function() {
                         function fetchApiTime() {
                             $.ajax({
@@ -153,7 +160,7 @@
                                     var IMRANG_score_msg = data.IMRANG_score_msg;
                                     var JUNGMUN_score_msg = data.JUNGMUN_score_msg;
                                     var HAE_score_msg = data.HAE_score_msg;
-
+        
                                     $('#GYEONGPO_score_msg').text(GYEONGPO_score_msg);
                                     $('#GORAEBUL_score_msg').text(GORAEBUL_score_msg);
                                     $('#NAKSAN_score_msg').text(NAKSAN_score_msg);
@@ -170,15 +177,11 @@
                                 }
                             });
                         }
-
-                        // 페이지 로드 시 API 가져오기
+        
                         fetchApiTime();
-
-                        // 3분 마다 API  업데이트
                         setInterval(fetchApiTime, 60000 * 3);
                     });
-                
-
+        
                     let style = new ol.style.Style({
                         stroke: new ol.style.Stroke({
                             color: [0, 255, 0, .7],
@@ -188,21 +191,21 @@
                             color: [255, 0, 0, .4]
                         })
                     });
-
+        
                     polygon_feature.setStyle(style);
-
+        
                     let vector_layer = new ol.layer.Vector({
                         source: new ol.source.Vector({
                             features: [polygon_feature]
                         })
                     });
-
+        
                     vmap.addLayer(vector_layer);
-                    
+        
                     vmap.on("click", function(evt) {
                         let coordinate = evt.coordinate;
                         let pixel = evt.pixel;
-                        
+        
                         vmap.forEachFeatureAtPixel(pixel, function(feature, layer) {
                             let name = feature.get("name");
                             alert(name);
@@ -211,7 +214,7 @@
                 </script>
             </div>
         </div>
-    
+        
         <link rel="stylesheet" href="h_btn.css">
 
         <div class="col-sm-12 col-xl-4 mb-4" id="home-right-box" style="max-width: 50%; width: 100%;">
@@ -264,7 +267,7 @@
                         <tbody>
                             {% for notice in home_notices %}
                                 <tr>
-                                    <td>{{ notice.notice_title }}</td>
+                                    <td><a href="{% url 'board_detail' notice.pk %}">{{ notice.notice_title }}</a></td>
                                     <td>{{ notice.notice_wdate|date:"Y-m-d" }}</td>
                                 </tr>
                             {% endfor %}
@@ -284,7 +287,7 @@
                         <tbody>
                             {% for event in home_event %}
                                 <tr>
-                                    <td>{{ event.event_title }}</td>
+                                    <td><a href="{% url 'freeboard_detail' event.pk %}">{{ event.event_title }}</a></td>
                                     <td>{{ event.event_wdate|date:"Y-m-d" }}</td>
                                 </tr>
                             {% endfor %}

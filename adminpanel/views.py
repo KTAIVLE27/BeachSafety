@@ -37,6 +37,7 @@ from datetime import datetime, timedelta
 from datetime import timezone as dt_timezone  # Import datetime and rename timezone
 from django.utils import timezone as django_timezone  # Rename the django.utils timezone
 from .utils import mask_user_data
+from urllib.parse import quote
 
 def get_signature(key, msg):
     return hmac.new(key.encode(), msg.encode(), hashlib.sha256).hexdigest()
@@ -403,7 +404,8 @@ def notice_detail(request, pk):
         return redirect('adminpanel:notice_manage')
     
     beaches = Beach.objects.all()
-    return render(request, 'adminpanel/notice_detail.html', {'post': post, 'beaches':beaches})
+    notice_img_filename = os.path.basename(post.notice_img) if post.notice_img else None
+    return render(request, 'adminpanel/notice_detail.html', {'post': post, 'beaches':beaches, 'notice_img_filename': notice_img_filename})
 
 @login_required
 def edit_notice(request, pk):
@@ -419,26 +421,33 @@ def edit_notice(request, pk):
             notice = form.save(commit=False)
             if notice.beach_no == '':
                 notice.beach_no = None
+
+            if 'delete_notice_img' in request.POST and request.POST['delete_notice_img'] == 'on':
+                if post.notice_img:
+                    s3_key = post.notice_img.split(f'https://{settings.AWS_S3_CUSTOM_DOMAIN}/')[1]
+                    s3.delete_object(Bucket=s3_bucket, Key=s3_key)
+                notice.notice_img = None
                 
-            # 파일 업로드 (client 방식)
-            if 'notice_img' in request.FILES:
+            elif 'notice_img' in request.FILES:
                 file = request.FILES['notice_img']
-                
+
                 s3 = boto3.client(
                     's3',
                     aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
                     aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
                     region_name=settings.AWS_S3_REGION_NAME
                 )
-                
+
                 s3_bucket = settings.AWS_STORAGE_BUCKET_NAME
                 s3_key = f'notices/{file.name}'
                 s3.upload_fileobj(file, s3_bucket, s3_key, ExtraArgs={'ContentType': file.content_type})
-                
+
                 file_url = f'https://{settings.AWS_S3_CUSTOM_DOMAIN}/{s3_key}'
                 notice.notice_img = file_url
             else:
-                notice.notice_img = request.POST.get('existing_notice_img')  # 기존 이미지 유지               
+                existing_notice_img = request.POST.get('existing_notice_img')
+                notice.notice_img = existing_notice_img if existing_notice_img else None
+
             notice.save()
             return JsonResponse({'success': True})
         else:
@@ -447,7 +456,39 @@ def edit_notice(request, pk):
 
     return JsonResponse({'success': False, 'error': '잘못된 요청 방법입니다.'})
 
+# 공지사항 이미지 다운로드
+@login_required
+def generate_presigned_url(request, pk):
+    post = get_object_or_404(Notice_board, pk=pk)
+    
+    if not post.notice_img:
+        return JsonResponse({'error': 'No image found.'}, status=404)
 
+    s3 = boto3.client(
+        's3',
+        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+        region_name=settings.AWS_S3_REGION_NAME
+    )
+    s3_bucket = settings.AWS_STORAGE_BUCKET_NAME
+    s3_key = post.notice_img.split(f'https://{settings.AWS_S3_CUSTOM_DOMAIN}/')[1]
+    filename = s3_key.split('/')[-1]
+    encoded_filename = quote(filename)
+
+    try:
+        presigned_url = s3.generate_presigned_url(
+            'get_object',
+            Params={
+                'Bucket': s3_bucket,
+                'Key': s3_key,
+                'ResponseContentDisposition': f'attachment; filename="{encoded_filename}"'
+            },
+            ExpiresIn=3600  # URL 유효 기간 (초)
+        )
+        return JsonResponse({'url': presigned_url})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+    
 @login_required
 def board_detail(request, pk):
     try:

@@ -9,52 +9,65 @@
 
 {% block content %}
 <!-- CCTV Display Start -->
-<body class="cctv-page">
+<body>
     <div class="container-fluid pt-4 px-4">
-        <div class="row g-4">
-            <div class="col-12">
-                <div class="bg-light text-center rounded p-4">
-                    <div class="d-flex align-items-center justify-content-between mb-4">
-                        <h6 class="mb-0">해당 CCTV 팝업창</h6>
-                    </div>
-
-                    <!-- Dropdown menu for beach selection -->
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                            해수욕장 선택
-                        </button>
-                        <ul id="beach-list" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            {% for beach in beaches %}
-                                {% for cctv in cctvs %}
-                                    {% if cctv.beach_no_id == beach.beach_no %}
-                                        <li><a class="dropdown-item" onclick="loadCCTV('{{ cctv.cctv_url }}')">{{ beach.beach_name }}</li>
-                                    {% endif %}
-                                {% endfor %}
-                            {% endfor %}
-                        </ul>
-                        <iframe id="cctv-frame" width="1400" height="750" frameborder="0" allowfullscreen></iframe>
-                    </div>
-                </div>
+        <div class="bg-light text-center rounded p-4">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <h4 class="mb-0">해당 CCTV 팝업창</h4>
+            </div>
+            <!-- Dropdown menu for beach selection -->
+            <div class="dropdown cctv-dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    해수욕장 선택
+                </button>
+                <ul id="beach-list" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <!-- 드롭다운 메뉴 항목은 JavaScript로 동적으로 생성됩니다 -->
+                </ul>
+                <span class="ms-2">원하는 해수욕장을 선택하세요</span>
+            </div>
+            <div class="video-container">
+                <iframe id="cctv-frame" width="1400" height="750" frameborder="0" allowfullscreen></iframe>
             </div>
         </div>
     </div>
-<!-- CCTV Display End -->
-</body>
- <!-- 추가된 자바스크립트 -->
- <script>
-    function toggleSearch() {
-        const toggleKey = document.querySelector('.toggle-key');
-        const beachList = document.getElementById('beach-list');
-        toggleKey.classList.toggle('active');
-        if (beachList.style.display === 'none' || beachList.style.display === '') {
-            beachList.style.display = 'block';
-        } else {
-            beachList.style.display = 'none';
-        }
-    }
 
-    function loadCCTV(url) {
-        document.getElementById('cctv-frame').src = url;
-    }
-</script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const beaches = [
+                { beach_no: 1, beach_name: '함덕해수욕장' },
+                { beach_no: 2, beach_name: '중문해수욕장' }
+            ];
+
+            const cctvs = [
+                { beach_no_id: 1, cctv_url: 'http://www.trendworld.kr/cctv/hamdeok.php' },
+                { beach_no_id: 2, cctv_url: 'http://www.trendworld.kr/cctv/jungmunhaesuyokjang.php' }
+            ];
+
+            const beachList = document.getElementById('beach-list');
+
+            beaches.forEach(beach => {
+                cctvs.forEach(cctv => {
+                    if (cctv.beach_no_id === beach.beach_no) {
+                        const listItem = document.createElement('li');
+                        const linkItem = document.createElement('a');
+                        linkItem.className = 'dropdown-item';
+                        linkItem.href = '#';
+                        linkItem.textContent = beach.beach_name;
+                        linkItem.onclick = function () {
+                            loadCCTV(cctv.cctv_url);
+                        };
+                        listItem.appendChild(linkItem);
+                        beachList.appendChild(listItem);
+                    }
+                });
+            });
+        });
+
+        function loadCCTV(url) {
+            const iframe = document.getElementById('cctv-frame');
+            iframe.src = url;
+
+           
+        }
+    </script>
 {% endblock %}

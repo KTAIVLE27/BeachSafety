@@ -70,8 +70,8 @@
                         <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
                     </div>
                     <div class="ms-3">
-                        <h6 class="mb-0">27조 {{ user.user_name }}</h6>
-                        <span>{{ user.user_id }}</span>
+                        <h6 class="mb-0">27조 <span id="masked-user-name">{{ user.user_name }}</span></h6>
+                        <span id="masked-user-id">{{ user.user_id }}</span>
                     </div>
                 </div>
                 <div class="navbar-nav w-100">
@@ -82,11 +82,12 @@
                         <a href="#" class="nav-link {% if request.resolver_match.url_name == 'myprofile' or request.resolver_match.url_name == 'myposts' %}active{% endif %}" id="myProfileLink">
                             <img class="fa fa-th me-2" src="{% static 'img/face_24dp.png' %}" style="width: 40px; height: 40px;">마이 페이지
                         </a>
-                        <div class="dropdown-menu" id="myProfileMenu">
-                            <a class="dropdown-item {% if request.resolver_match.url_name == 'myprofile' %}active{% endif %}" href="{% url 'myprofile' %}">📄 내 정보 수정</a>
-                            <a class="dropdown-item {% if request.resolver_match.url_name == 'myposts' %}active{% endif %}" href="{% url 'myposts' %}">✒️ 내가 쓴 글 관리</a>
-                        </div>
+                        <ul class="dropdown-menu-custom" id="myProfileMenu" aria-labelledby="dropdownMenuButton2">
+                            <li><a class="dropdown-item-custom {% if request.resolver_match.url_name == 'myprofile' %}active{% endif %}" href="{% url 'myprofile' %}"> 내 정보 수정</a></li>
+                            <li><a class="dropdown-item-custom {% if request.resolver_match.url_name == 'myposts' %}active{% endif %}" href="{% url 'myposts' %}"> 내가 쓴 글 관리</a></li>
+                        </ul>
                     </div>
+                    
                     <a href="{% url 'cctv' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'cctv' %}active{% endif %}">
                         <img class="fa fa-th me-2" src="{% static 'img/videocam.png' %}" style="width: 40px; height: 40px;">CCTV
                     </a>
@@ -115,9 +116,10 @@
         <div class="content">
             <!-- Navbar Start -->
             <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
-                <a href="#" class="sidebar-toggler flex-shrink-0"><i class="fa fa-bars"></i></a>
-
-                <a href="{% url 'home' %}"><img src="{% static 'img/logo_new1.png' %}" width="50" height="55" id="main-logo"></i></a>      
+                <a href="#" class="sidebar-toggler"><i class="fa fa-bars"></i></a>
+                
+      
+                <a href="{% url 'home' %}"><img src="{% static 'img/logo_choi.png' %}" width="150" height="70" id="main-logo"></i></a>    
                
                 <div class="navbar-nav align-items-center ms-auto">
                     <!-- Add buttons based on user role ㅇㅇ-->
@@ -194,21 +196,46 @@
     {% block end-script %}
     {% endblock %}
 
-
     <!-- Template Javascript -->
     <script src="{% static 'js/main.js' %}"></script>
 
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            function maskName(name) {
+                if (name.length <= 1) {
+                    return name; // 이름이 한 글자일 경우 마스킹하지 않음
+                }
+                return name[0] + '*' + name.slice(2);
+            }
+        
+            var userNameElement = document.getElementById('masked-user-name');
+            if (userNameElement) {
+                var maskedName = maskName(userNameElement.textContent.trim());
+                userNameElement.textContent = maskedName;
+            }
+            function maskUserId(userId) {
+                if (userId.length <= 2) {
+                    return userId; // ID가 2글자 이하일 경우 마스킹하지 않음
+                }
+                let maskedLength = Math.min(2, userId.length - 2);
+                let start = Math.floor((userId.length - maskedLength) / 2);
+                return userId.slice(0, start) + '*'.repeat(maskedLength) + userId.slice(start + maskedLength);
+            }
+            var userIdElement = document.getElementById('masked-user-id');
+            if (userIdElement) {
+                var maskedId = maskUserId(userIdElement.textContent.trim());
+                userIdElement.textContent = maskedId;
+            }
+        
             var profileLink = document.getElementById('myProfileLink');
             var profileMenu = document.getElementById('myProfileMenu');
-       
+        
             profileLink.addEventListener('click', function(event) {
                 event.preventDefault();
                 profileMenu.classList.toggle('show');
             });
-       
+        
             document.addEventListener('click', function(event) {
                 if (!profileLink.contains(event.target) && !profileMenu.contains(event.target)) {
                     profileMenu.classList.remove('show');

@@ -10,78 +10,27 @@
 {% endblock %}
 
 {% block content %}
-<style>
-    .chat-box {
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        padding: 15px;
-        height: 600px;
-        overflow-y: scroll;
-    }
 
-    .chat-message-box {
-        margin-bottom: 10px;
-        padding: 10px;
-        border: 1px solid #e9ecef;
-        border-radius: 5px;
-        background-color: #f8f9fa;
-    }
-
-    .evaluation-box {
-        padding: 15px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        height: 600px;
-        overflow-y: auto;
-    }
-
-    .stopwatch {
-        font-size: 24px;
-        font-weight: bold;
-        margin-bottom: 10px;
-    }
-
-    .record {
-        font-size: 14px;
-        color: #6c757d;
-    }
-
-    .display-4 {
-        font-size: 36px;
-        font-weight: bold;
-    }
-
-    #question-input, #send-button {
-        display: none;
-    }
-
-    .loading-spinner {
-        display: none;
-        width: 3rem;
-        height: 3rem;
-        border: 0.5rem solid #f3f3f3;
-        border-top: 0.5rem solid #3498db;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        margin: auto;
-    }
-
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-</style>
-
-<!-- Main Content Start -->
 <div class="container-fluid pt-4 px-4">
-    <div class="row">
+    <div class="row g-4">
+        <div class="col-lg-12">
+            <div class="bg-light text-center rounded p-4">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h4 class="mb-0">모의 훈련</h4><hr>
+                </div>
+<!-- Main Content Start -->
+<div class="container-fluid pt-4 px-4" id='contentbox-1'>
+    <div class="row" id='contentbox-2'>
         <!-- Chat Box Start -->
         <div class="col-sm-12 col-md-6 mb-4">
-            <div class="bg-light text-center rounded p-4 h-100">
-                <h6 class="mb-4">해양안전 시나리오 챗봇</h6>
-                <div class="chat-box">
-                    <div id="chat-content">
-                        <!-- 채팅 메시지 -->
+            <div class="bg-light text-center rounded p-4 h-100 chat-window">
+                <h4 class="mb-4 chat-header">해양안전 시나리오 챗봇</h4>
+                <div class="chat-box" id='contentbox-3'>
+                    <div id="chat-content" class="chat-body">
+                        <!-- Initial welcome message -->
+                        <div class="chat-message">
+                            <strong>안녕하세요 해양안전 AI 모니터링 시스템입니다</strong>
+                        </div>
                         <!-- {% for log in logs %}
                         <div class="chat-message-box">
                             <strong>질문:</strong> {{ log.question|safe }}<br>
@@ -92,18 +41,18 @@
                     </div>
                     <div class="loading-spinner" id="loading-spinner"></div>
                     <div class="button-group mt-3">
-                        <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion('생물 보호')">생물보호</button>
-                        <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion('수상레저')">수상레저</button>
-                        <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion('불법')">불법</button>
-                        <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion('해양오염')">해양오염</button>
-                        <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion('피서객 안전')">피서객 안전</button>
-                        <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion('익수자')">익수자</button>
-                        <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion('의료지원')">의료지원</button>
-                        <button class="btn btn-secondary mb-2" onclick="sendRandomPredefinedQuestion('실종')">실종</button>
+                        <button class="btn-custom" onclick="sendRandomPredefinedQuestion('생물 보호')">생물보호</button>
+                        <button class="btn-custom" onclick="sendRandomPredefinedQuestion('수상레저')">수상레저</button>
+                        <button class="btn-custom" onclick="sendRandomPredefinedQuestion('불법')">불법</button>
+                        <button class="btn-custom" onclick="sendRandomPredefinedQuestion('해양오염')">해양오염</button>
+                        <button class="btn-custom" onclick="sendRandomPredefinedQuestion('피서객 안전')">피서객 안전</button>
+                        <button class="btn-custom" onclick="sendRandomPredefinedQuestion('익수자')">익수자</button>
+                        <button class="btn-custom" onclick="sendRandomPredefinedQuestion('의료지원')">의료지원</button>
+                        <button class="btn-custom" onclick="sendRandomPredefinedQuestion('실종')">실종</button>
                     </div>
-                    <div class="input-group mt-3">
-                        <input type="text" class="form-control" id="question-input" placeholder="메시지 입력">
-                        <button class="btn btn-primary" id="send-button">전송</button>
+                    <div class="input-group mt-3 chat-footer" style="display: none;">
+                        <input type="text" class="form-control" id="question-input" placeholder="메시지 입력" onkeypress="handleKeyPress(event)"  style="display: none;">
+                        <button class="btn btn-primary" id="send-button" onclick="sendMessage()">전송</button>
                     </div>
                 </div>
                 <div class="loading-spinner" id="loading-spinner"></div>
@@ -111,54 +60,48 @@
         </div>
         <!-- Chat Box End -->
 
-        <!-- Evaluation Box Start -->
-        <div class="col-sm-12 col-md-6 mb-4">
-            <div class="bg-light text-center rounded p-4 h-100">
-                <h6 class="mb-4">평가 항목</h6>
-                <div class="evaluation-box">
-                    <div class="form-group mb-3">
-                        <label for="stopwatch1">상황 전파 및 출동 준비</label>
-                        <div id="stopwatch1" class="stopwatch">00:00:00.000</div>
-                        <button class="btn btn-success mt-2" onclick="startStopwatch(0)">Start</button>
-                        <button class="btn btn-primary mt-2" onclick="stopStopwatch(0)">Stop</button>
-                        <div id="record1" class="record mt-2"></div>
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="stopwatch2">구조 활동 시간</label>
-                        <div id="stopwatch2" class="stopwatch">00:00:00.000</div>
-                        <button class="btn btn-success mt-2" onclick="startStopwatch(1)">Start</button>
-                        <button class="btn btn-primary mt-2" onclick="stopStopwatch(1)">Stop</button>
-                        <div id="record2" class="record mt-2"></div>
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="stopwatch3">상황 마무리 및 인수 인계</label>
-                        <div id="stopwatch3" class="stopwatch">00:00:00.000</div>
-                        <button class="btn btn-success mt-2" onclick="startStopwatch(2)">Start</button>
-                        <button class="btn btn-primary mt-2" onclick="stopStopwatch(2)">Stop</button>
-                        <div id="record3" class="record mt-2"></div>
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="finalStopwatch">총 훈련 소요 시간</label>
-                        <div id="finalStopwatch" class="stopwatch">00:00:00.000</div>
-                        <button class="btn btn-success mt-2" onclick="showFinalTime()">최종 시간 보기</button>
-                        <button class="btn btn-danger mt-2" onclick="resetAllStopwatches()">초기화</button>
-                    </div>
-                    {% comment %} <div class="form-group mb-3">
-                        <label for="largeFinalTime">최종 시간</label>
-                        <div id="largeFinalTime" class="display-4">00:00:00.000</div>
-                    </div> {% endcomment %}
-                </div>
+<!-- Evaluation Box Start -->
+<div class="col-sm-12 col-md-6 mb-4">
+    <div class="bg-light text-center rounded p-4 h-100">
+        <h4 class="mb-4 chat-header">평가 항목</h4>
+        <div class="evaluation-box" id='contentbox-4'>
+            <div class="form-group mb-3" id="form-group-chat">
+                <label for="stopwatch1">상황 전파 및 출동 준비</label>
+                <div id="stopwatch1" class="stopwatch">00:00:00.000</div>
+                <button class="btn btn-start mt-2" onclick="startStopwatch(0)" id="btn-start-chat">Start</button>
+                <button class="btn btn-stop mt-2" onclick="stopStopwatch(0)"id="btn-stop-chat">Stop</button>
+                <div id="record1" class="record mt-2"></div>
+            </div>
+            <div class="form-group mb-3"id="form-group-chat">
+                <label for="stopwatch2">구조 활동 시간</label>
+                <div id="stopwatch2" class="stopwatch">00:00:00.000</div>
+                <button class="btn btn-start mt-2" onclick="startStopwatch(1)"id="btn-start-chat">Start</button>
+                <button class="btn btn-stop mt-2" onclick="stopStopwatch(1)"id="btn-stop-chat">Stop</button>
+                <div id="record2" class="record mt-2"></div>
+            </div>
+            <div class="form-group mb-3"id="form-group-chat">
+                <label for="stopwatch3">상황 마무리 및 인수 인계</label>
+                <div id="stopwatch3" class="stopwatch">00:00:00.000</div>
+                <button class="btn btn-start mt-2" onclick="startStopwatch(2)"id="btn-start-chat">Start</button>
+                <button class="btn btn-stop mt-2" onclick="stopStopwatch(2)"id="btn-stop-chat">Stop</button>
+                <div id="record3" class="record mt-2"></div>
+            </div>
+            <div class="form-group final-time-section mb-3"id="form-group-chat">
+                <h6 class="mb-4">총 훈련 소요 시간</h6>
+                <div id="finalStopwatch" class="stopwatch">00:00:00.000</div>
+                <button class="btn btn-success mt-2" onclick="showFinalTime()"id="btn-start-chat">최종 시간 보기</button>
+                <button class="btn btn-danger mt-2" onclick="resetAllStopwatches()"id="btn-danger-chat">초기화</button>
             </div>
         </div>
-        <!-- Evaluation Box End -->
+    </div>
+</div>
+
+<!-- Evaluation Box End -->
     </div>
 </div>
 <!-- Main Content End -->
-<div class="container-fluid pt-4 px-4" style="height: 320px">
-    <div class="white-box">
+</div></div></div></div>
 
-    </div>
-</div>
 <script>
     var stopwatches = [0, 0, 0];
     var intervals = [null, null, null];
@@ -248,7 +191,7 @@
                 if (scenarios.length > 0) {
                     var randomIndex = Math.floor(Math.random() * scenarios.length);
                     var selectedScenario = scenarios[randomIndex];
-                    var question = '유형: ' + selectedScenario.scenario_code + ', 상황: ' + selectedScenario.scenario_situation + '시나리오 생성';
+                    var question = '유형: ' + selectedScenario.scenario_code + ', 상황: ' + selectedScenario.scenario_situation + ' 관련 시나리오 생성';
                     sendPredefinedQuestion(question);
                 } else {
                     alert(type + ' 시나리오가 없습니다.');
@@ -259,14 +202,19 @@
             });
     }
 
-    document.getElementById('send-button').addEventListener('click', function() {
+    function handleKeyPress(event) {
+        if (event.key === "Enter") {
+            sendMessage();
+        }
+    }
+
+    function sendMessage() {
         var question = document.getElementById('question-input').value;
         if (question.trim() === '') {
             alert('질문을 입력하세요.');
             return;
         }
 
-        // 로딩 스피너 표시
         document.getElementById('loading-spinner').style.display = 'block';
 
         var xhr = new XMLHttpRequest();
@@ -275,29 +223,28 @@
         xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
 
         xhr.onload = function() {
-            // 로딩 스피너 숨기기
-            document.getElementById('loading-spinner').style.display = 'none';
+    // 로딩 스피너 숨기기
+    document.getElementById('loading-spinner').style.display = 'none';
 
-            if (xhr.status === 200) {
-                var response = JSON.parse(xhr.responseText);
-                var chatContent = document.getElementById('chat-content');
-                chatContent.innerHTML = ''; // Clear previous chat messages
-                var newMessage = document.createElement('div');
-                newMessage.classList.add('chat-message-box');
-                newMessage.innerHTML = '<strong>질문:</strong> ' + response.question + '<br>' +
-                                       '<strong>답변:</strong><br>' +
-                                       response.answer.replace(/\n/g, "<br>") + '<br>';
-                chatContent.appendChild(newMessage);
-                chatContent.scrollTop = chatContent.scrollHeight;
+    if (xhr.status === 200) {
+        var response = JSON.parse(xhr.responseText);
+        var chatContent = document.getElementById('chat-content');
+        chatContent.innerHTML = ''; // Clear previous chat messages
+        var newMessage = document.createElement('div');
+        newMessage.classList.add('chat-message');
+        newMessage.innerHTML = '<strong>질문:</strong> ' + response.question + '<br>' + '<br>' +
+                               '<strong>답변:</strong>' +
+                               response.answer.replace(/\n/g, "<br>") + '<br>';
+        chatContent.appendChild(newMessage);
+        chatContent.scrollTop = chatContent.scrollHeight;
 
-                document.getElementById('question-input').value = '';
-            } else {
-                alert('오류가 발생했습니다.');
-            }
-        };
+        document.getElementById('question-input').value = '';
+    } else {
+        alert('오류가 발생했습니다.');
+    }
+};
 
         xhr.send('question=' + encodeURIComponent(question));
-    });
+    }
 </script>
-
 {% endblock %}

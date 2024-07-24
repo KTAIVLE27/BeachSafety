@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 import os
 
+from dotenv import load_dotenv
+load_dotenv()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,7 +28,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '43.203.146.114']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'beachsafety27.co.kr', '13.125.240.223']
 
 # Application definition
 
@@ -120,11 +123,15 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
+# 정적 파일 URL
+STATIC_URL = '/static/'
 
-STATIC_URL = "static/"
+# 정적 파일 디렉토리 설정
 STATICFILES_DIRS = [BASE_DIR / 'main' / 'static']
 
-# Default primary key field type
+# collectstatic 명령으로 모을 정적 파일의 루트 디렉토리
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

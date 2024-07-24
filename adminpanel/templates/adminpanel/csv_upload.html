@@ -13,30 +13,53 @@
 {% endblock %}
 
 {% block content %}
-<div class="container">
-    <h2 class="mt-4">CSV 파일 업로드</h2>
-    <form id="csvUploadForm" method="post" enctype="multipart/form-data" action="{% url 'adminpanel:csv_upload' %}">
-        {% csrf_token %}
-        <div class="mb-3">
-            <label for="csvFile" class="form-label">CSV 파일 선택</label>
-            <input class="form-control" type="file" id="csvFile" name="csv_file" required>
-        </div>
-        <div class="d-flex align-items-center">
-            <button type="submit" class="btn btn-primary">업로드</button>
-            <div id="loadingSpinner" class="spinner-border text-primary ms-3" role="status" style="display: none;">
-                <span class="visually-hidden">Loading...</span>
+
+<div class="container-fluid pt-4 px-4" id="contentbox-1">
+    <div class="row g-4" id="contentbox-2">
+        <div class="col-lg-12">
+            <div class="bg-light text-center rounded p-4" id="contentbox-3">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h4 class="mb-0">훈련시나리오 목록</h4>
+                </div>
+                <div class="container" style="height: 80%;">
+                    <h4 class="mt-4">CSV 파일 업로드</h4>
+                    <form id="csvUploadForm" method="post" enctype="multipart/form-data" action="{% url 'adminpanel:csv_upload' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="csvFile" class="form-label">반드시 규격에 맞는 훈련 시나리오 CSV 파일을 업로드 해주세요.</label>
+                            <input class="form-control" type="file" id="csvFile" name="csv_file" required>
+                            <div id="fileError" class="text-danger mt-2" style="display: none;">CSV 파일이 아닙니다.</div>
+                        </div>
+                        <div class="d-flex justify-content-center align-items-center mt-4">
+                            <button type="submit" class="btn btn-primary">업로드</button>
+                            <div id="loadingSpinner" class="spinner-border text-primary ms-3" role="status" style="display: none;">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-    </form>
-</div>
-<div class="container-fluid pt-4 px-4" style="height: 500px">
-    <div class="white-box">
-
     </div>
 </div>
+
 <script>
-document.getElementById('csvUploadForm').addEventListener('submit', function() {
-    document.getElementById('loadingSpinner').style.display = 'block';
+document.getElementById('csvUploadForm').addEventListener('submit', function(event) {
+    var fileInput = document.getElementById('csvFile');
+    var filePath = fileInput.value;
+    var allowedExtensions = /(\.csv)$/i;
+    var errorMessage = document.getElementById('fileError');
+
+    if (!allowedExtensions.exec(filePath)) {
+        event.preventDefault();
+        errorMessage.style.display = 'block';
+        fileInput.value = '';
+        return false;
+    } else {
+        errorMessage.style.display = 'none';
+        document.getElementById('loadingSpinner').style.display = 'block';
+    }
 });
 </script>
+
 {% endblock %}

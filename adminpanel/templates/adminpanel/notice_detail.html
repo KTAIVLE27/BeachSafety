@@ -9,10 +9,10 @@
 
 {% block content %}
             <!-- Notice Detail Start -->
-            <div class="container-fluid pt-4 px-4">
-                <div class="row g-4">
+            <div class="container-fluid pt-4 px-4" id="contentbox-1">
+                <div class="row g-4" id="contentbox-2">
                     <div class="col-lg-12">
-                        <div class="bg-light text-center rounded p-4">
+                        <div class="bg-light text-center rounded p-4" id="contentbox-3">
                             <h4 class="mb-3">{{ post.notice_title }}</h4> <!-- Notice Title -->
                             <div class="d-flex justify-content-between">
                                 <span>작성자: {{ post.user_no.user_name }}</span>
@@ -23,15 +23,15 @@
                             <hr>
                             <div class="text-start">
                                 <div id="viewContent">
-                                    <p>{{ post.notice_contents }}</p>
-                                    {% if post.notice_img %}
+                                    <p style="white-space: pre-line;">{{ post.notice_contents }}</p>
+                                    {% if post.notice_img and post.notice_img != "None" %}
                                     <div>
-                                        <img src="{{ post.notice_img }}" alt="첨부 이미지" style="max-width: 100%; height: auto;">
+                                        <img src="{{ post.notice_img }}" alt="첨부 이미지" style="max-width: 100%; height: auto; max-height: 400px;">
                                         <div>
-                                            <a href="{{ post.notice_img }}" target="_blank">첨부파일 다운로드</a>
+                                            <a href="#"  id="downloadButton">첨부파일 다운로드 ({{notice_img_filename}})</a>
                                         </div>
                                     </div>
-                                {% endif %}
+                                    {% endif %}
                                 </div>
                                 {% if post.user_no == user and user.user_role == 'admin' %}
                                 <form id="editForm" method="POST" enctype="multipart/form-data" style="display:none;">
@@ -57,11 +57,30 @@
                                         <label for="notice_img" class="form-label">첨부파일</label>
                                         <input type="file" class="form-control" id="notice_img" name="notice_img">
                                         <input type="hidden" name="existing_notice_img" value="{{ post.notice_img }}">
+                                        {% if post.notice_img and post.notice_img != "None" %}
+                                        <div class="mt-2">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="delete_notice_img" name="delete_notice_img">
+                                                <label class="form-check-label" for="delete_event_img">
+                                                    첨부파일 삭제 ({{notice_img_filename}})
+                                                </label>
+                                                <br>
+                                                <img src="{{ post.notice_img }}" alt="첨부 이미지" style="width: 100%; height:100%;">
+                                            </div>
+                                        </div>
+                                        {% endif %} 
                                     </div>
-                                    <button type="submit" class="btn btn-primary">저장</button>
-                                    <button type="button" id="cancelEditButton" class="btn btn-secondary">취소</button>
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <button type="submit" class="btn btn-primary">저장</button>
+                                            <button id="deleteButton" class="btn btn-danger">삭제</button>
+                                        </div>
+                                        <button type="button" id="cancelEditButton" class="btn btn-secondary">취소</button>
+                                    </div>
                                 </form>
-                                <button id="editButton" class="btn btn-warning">수정</button>
+                                <div class="d-flex justify-content-between mt-3">
+                                    <button id="editButton" class="btn btn-warning">수정</button>
+                                </div>            
                                 {% endif %}
                             </div>
                             <hr>
@@ -119,6 +138,22 @@
                             } else {
                                 console.log(data.error); // 오류 메시지를 콘솔에 출력합니다.
                             }
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                });
+            }
+            if (downloadButton) {
+                downloadButton.addEventListener('click', function() {
+                    fetch("{% url 'adminpanel:generate_presigned_url' post.pk %}")
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.url) {
+                            window.location.href = data.url;
+                        } else {
+                            alert('파일 다운로드에 실패했습니다.');
                         }
                     })
                     .catch(error => {

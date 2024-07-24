@@ -9,25 +9,37 @@
 {% endblock %}
 
 {% block content %}
+
 <div class="container-fluid pt-4 px-4">
     <div class="row g-4">
-        <div class="dropdown me-2">
-            <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                해수욕장 선택
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                {% for beach in beaches %}
-                    <a class="dropdown-item" href="?beach_no={{ beach.pk }}">{{ beach.beach_name }}</a>
-                {% endfor %}
+        <div class="col-lg-12">
+            <div class="bg-light text-center rounded p-4">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h4 class="mb-0">날씨</h4><hr>
+                </div>
+<div class="container-fluid pt-4 px-4" id="contentbox-1">
+    <div class="row g-4">
+        <div class="d-flex align-items-center">
+            <div class="dropdown me-2">
+                <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    해수욕장 선택
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    {% for beach in beaches %}
+                        <a class="dropdown-item" href="?beach_no={{ beach.pk }}">{{ beach.beach_name }}</a>
+                    {% endfor %}
+                </div>
             </div>
+            <span class="ms-2">원하는 해수욕장을 선택하세요</span>
         </div>
+        
 
         <!-- Display weather data for the selected beach -->
         {% if selected_beach %}
         <div class="col-md-6">
             <div class="weather-box bg-light text-center rounded p-4 marine-weather-box">
                 <div class="d-flex align-items-center justify-content-between mb-4">
-                    <h2 class="mb-0 marine-weather-title">{{ selected_beach }} 날씨 정보</h2>
+                    <h4 class="mb-0 marine-weather-title">{{ selected_beach }} 날씨 정보</h4>
                 </div>
                 <p class="marine-weather-info text-primary"><i class="bi bi-cloud-sun marine-weather-icon"></i>{{ weather_data.TMP }}°C</p>
                 <p>🏖️ 해수욕장: {{ selected_beach }}</p>
@@ -93,14 +105,6 @@
 </div>
 
 <!-- Weather Information End -->
-
-<!-- Back to Top Button -->
-<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
-
-        <div class="container-fluid pt-4 px-4" style="height: 300px">
-            <div class="white-box">
-       
-            </div>
-        </div>
+</div></div></div></div>
 
 {% endblock %}
