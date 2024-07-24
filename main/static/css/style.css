@@ -751,6 +751,7 @@ body, html {
     border-radius: 50%;
     margin: 0 auto;
     display: block;
+    margin-top: 38px;
 }
 
 .card {
