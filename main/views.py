@@ -29,7 +29,7 @@ from django.utils.decorators import method_decorator
 from urllib.parse import quote
 from django.shortcuts import render
 from .utils import fetch_weather_data
-from adminpanel.views import handle_uploaded_file
+
 import sqlite3
 import pandas as pd
 from django.shortcuts import render, redirect
@@ -204,6 +204,24 @@ def board(request):
     
     
     return render(request, 'board.html', {'notices': posts, 'beaches': beaches, 'selected_beach_no': beach_no, 'page_obj': page_obj})
+# 파일 업로드 핸들러
+def handle_uploaded_file(file, is_image=False):
+    allowed_image_extensions = ['jpg', 'jpeg', 'png', 'gif']
+    allowed_other_extensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'hwp', 'csv']
+    max_file_size = 5 * 1024 * 1024  # 5MB
+
+    ext = file.name.split('.')[-1].lower()
+    if is_image:
+        if ext not in allowed_image_extensions:
+            raise ValueError("허용되지 않는 이미지 파일 형식입니다.")
+    else:
+        if ext not in allowed_other_extensions:
+            raise ValueError("허용되지 않는 파일 형식입니다.")
+    
+    if file.size > max_file_size:
+        raise ValueError("파일 크기가 너무 큽니다.")
+    
+    return True
 
 @login_required
 def board_detail(request, pk):
@@ -300,7 +318,8 @@ def freeboard_detail(request, pk):
         return redirect('free_board')
     beaches = Beach.objects.all()
     event_img_filename = os.path.basename(post.event_img) if post.event_img else None
-    return render(request, 'freeboard_detail.html', {'post': post, 'beaches':beaches, 'event_img_filename': event_img_filename})
+    event_files = [(os.path.basename(file_url), file_url) for file_url in post.event_files] if post.event_files else None
+    return render(request, 'freeboard_detail.html', {'post': post, 'beaches':beaches, 'event_img_filename': event_img_filename, 'event_files': event_files})
 
 #자유게시판 생성
 @login_required
@@ -332,29 +351,28 @@ def create_freeboard(request):
                     file_url = f'https://{settings.AWS_S3_CUSTOM_DOMAIN}/{s3_key}'
                     event.event_img = file_url  
                     
-                other_files = []
-                for file in request.FILES.getlist('other_files'):
-                    if handle_uploaded_file(file, is_image = False):
-                        s3 = boto3.client(
-                            's3',
-                            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-                            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-                            region_name=settings.AWS_S3_REGION_NAME
-                        )
-                        s3_bucket = settings.AWS_STORAGE_BUCKET_NAME
-                        s3_key = f'event/files/{file.name}'
-                        s3.upload_fileobj(file, s3_bucket, s3_key, ExtraArgs={'ContentType': file.content_type})                                           
-                        file_url = f'https://{settings.AWS_S3_CUSTOM_DOMAIN}/{s3_key}'
-                        other_files.append(file_url)
+            other_files = []
+            for file in request.FILES.getlist('other_files'):
+                if handle_uploaded_file(file, is_image = False):
+                    s3 = boto3.client(
+                        's3',
+                        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                        region_name=settings.AWS_S3_REGION_NAME
+                    )
+                    s3_bucket = settings.AWS_STORAGE_BUCKET_NAME
+                    s3_key = f'event/files/{file.name}'
+                    s3.upload_fileobj(file, s3_bucket, s3_key, ExtraArgs={'ContentType': file.content_type})                                           
+                    file_url = f'https://{settings.AWS_S3_CUSTOM_DOMAIN}/{s3_key}'
+                    other_files.append(file_url)
                    
-                event.evnet_files = other_files                                 
-                event.save()
-                return redirect('free_board')
+            event.evnet_files = other_files                                 
+            event.save()
+            return redirect('free_board')
         else:
-            form = FreePostForm()
-            
-        beaches = Beach.objects.all()
-        return render(request, 'create_freeboard.html', {'beaches': beaches})
+            form = FreePostForm()           
+    beaches = Beach.objects.all()
+    return render(request, 'create_freeboard.html', {'beaches': beaches})
 
 # 자유게시판 수정
 @login_required

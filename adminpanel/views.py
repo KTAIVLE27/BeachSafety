@@ -561,8 +561,9 @@ def board_detail(request, pk):
     except Event_board.DoesNotExist:
         messages.error(request, "해당 게시글을 찾을 수 없습니다.")
         return redirect('adminpanel:board_manage')
-    
-    return render(request, 'adminpanel/board_detail.html', {'post': post})
+    event_img_filename = os.path.basename(post.event_img) if post.event_img else None
+    event_files = [(os.path.basename(file_url), file_url) for file_url in post.event_files] if post.event_files else None
+    return render(request, 'adminpanel/board_detail.html', {'post': post, 'event_img_filename':event_img_filename ,'event_files': event_files})
 
 def control_load(request):
     return render(request, 'control.html')
