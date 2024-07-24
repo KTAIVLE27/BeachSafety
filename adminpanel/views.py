@@ -62,6 +62,8 @@ def get_headers(apiKey, apiSecret):
 
 def format_date(date_string):
     # Convert string to UTC timezone datetime object
+    if date_string is None:
+        return None
     date_obj = datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%S.%fZ').replace(tzinfo=dt_timezone.utc)
     # Convert to local timezone (e.g., Korea Standard Time KST)
     kst = dt_timezone(timedelta(hours=9))
@@ -90,7 +92,7 @@ def fetch_message_details(message_code):
             text = message_data.get('text')
             from_number = message_data.get('from')
             deliver_date = message_data.get('dateReceived')
-            if text:
+            if text and deliver_date:
                 extracted_messages.append({
                     #'messageId': message_code,
                     'text': text,
@@ -133,7 +135,7 @@ def admin_home(request):
         else:
             messages.append(message_details)
     
-    sorted_messages = sorted(messages, key=lambda x: x['deliver_date'], reverse=True)
+    sorted_messages = sorted(messages, key=lambda x: x.get('deliver_date', ''), reverse=True)
     return render(request, 'adminpanel/admin_home.html',
                   {'hours':hours, 'counts':counts, 'beaches': beaches, 
                    'user_count':user_count, 'beach_count':beach_count,
