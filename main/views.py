@@ -27,7 +27,20 @@ from langchain.memory import ConversationBufferMemory
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from urllib.parse import quote
-
+import sqlite3
+import pandas as pd
+from django.shortcuts import render, redirect
+from django.http import JsonResponse, HttpResponse
+from django.utils import timezone
+from langchain.chat_models import ChatOpenAI
+from langchain.vectorstores import Chroma
+from langchain.chains import RetrievalQA
+from langchain.schema import Document
+from langchain.embeddings import OpenAIEmbeddings
+from .models import Chatlog
+import logging
+from django.shortcuts import render
+from .utils import fetch_weather_data
 
 embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
 database = Chroma(persist_directory="./database", embedding_function=embeddings)
@@ -536,30 +549,6 @@ def signup(request):
     return render(request, 'signup.html', {'form': form})
 
 
-# def control_view(request):
-#     forecast_data_items = get_weather_item()
-#     forecast_data = dict(forecast_data_items)
-
-#     weather_data = {
-#         'weather_of_today': forecast_data.get('TMP', 'N/A'),
-#         'highest_temp_of_today': forecast_data.get('TMX', 'N/A'),
-#         'lowest_temp_of_today': forecast_data.get('TMN', 'N/A'),
-#         'temperature': forecast_data.get('TMP', 'N/A'),
-#         'rainfall': forecast_data.get('PCP', 'N/A'),
-#         'wind_ew': forecast_data.get('UUU', 'N/A'),
-#         'wind_ns': forecast_data.get('VVV', 'N/A'),
-#         'humidity': forecast_data.get('REH', 'N/A'),
-#         'precipitation': forecast_data.get('PTY', 'N/A'),
-#         'wind_direction': forecast_data.get('VEC', 'N/A'),
-#         'wind_speed': forecast_data.get('WSD', 'N/A'),
-#     }
-
-#     context = {
-#         'weather_data': weather_data
-#     }
-#     return render(request, 'weather.html', context)
-
-
 def forgotpw(request):
     if request.method == 'POST':
         form = PasswordResetForm(request.POST)
@@ -628,9 +617,6 @@ def privacy_policy(request):
 def copyright(request):
     return render(request, 'copyright.html')
 
-from django.shortcuts import render
-from .utils import fetch_weather_data
-
 def control_view(request):
     beach_no = request.GET.get('beach_no')
     
@@ -670,35 +656,6 @@ def control_view(request):
     }
     
     return render(request, 'weather.html', context)
-
-# @csrf_exempt
-# @login_required
-# def chat_message(request):
-#     if request.method == 'POST':
-#         data = json.loads(request.body)
-#         message = data.get('message')
-        
-#         # ChatOpenAI와 연동하여 챗봇 응답 생성
-#         response = qa_chain({"question": message})
-
-#         return JsonResponse({'response': response['answer']})
-#     return JsonResponse({'error': 'Invalid request'}, status=400)
-
-
-import sqlite3
-import pandas as pd
-from django.shortcuts import render, redirect
-from django.http import JsonResponse, HttpResponse
-from django.utils import timezone
-from langchain.chat_models import ChatOpenAI
-from langchain.vectorstores import Chroma
-from langchain.chains import RetrievalQA
-from langchain.schema import Document
-from langchain.embeddings import OpenAIEmbeddings
-from .models import Chatlog
-import logging
-
-logger = logging.getLogger(__name__)
 
 # SQLite 데이터베이스에서 QA 데이터를 가져오는 함수 (새로 추가된 레코드만 가져오도록 수정)
 def get_new_qa_data(last_id):
