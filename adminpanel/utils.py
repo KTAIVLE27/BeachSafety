@@ -4,10 +4,9 @@ def mask_user_data(user):
         user_name = user_name[0] + '*' * (len(user_name) - 2) + user_name[-1]
 
     user_phone = user.user_phone
-    # Assuming phone number format is 010-1234-5678
-    if len(user_phone) == 11:  # e.g., 01012345678
+    if len(user_phone) == 11: 
         user_phone = user_phone[:3] + '****' + user_phone[7:]
-    elif len(user_phone) == 13 and '-' in user_phone:  # e.g., 010-1234-5678
+    elif len(user_phone) == 13 and '-' in user_phone: 
         parts = user_phone.split('-')
         if len(parts) == 3:
             user_phone = parts[0] + '-' + '****' + '-' + parts[2]

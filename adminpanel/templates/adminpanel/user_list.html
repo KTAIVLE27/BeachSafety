@@ -21,7 +21,7 @@
         <div class="bg-light text-center rounded p-4" id="contentbox-3">
             <div class="d-flex align-items-center justify-content-between mb_4">
                 <h4 class="mb-0">사용자 정보</h4>
-                <button id="deleteButton" class="btn btn-primary">삭제</button> <!-- Delete Button -->
+                <button id="deleteButton" class="btn btn-primary">삭제</button>
             </div><br>
             <div class="table-responsive">
                 <table class="table table-striped table-bordered">
@@ -107,12 +107,10 @@
 {% block end-script %} 
 <script>
     $(document).ready(function() {
-        // Select/Deselect all checkboxes
         $('#selectAll').click(function() {
             $('.selectRow').prop('checked', this.checked);
         });
 
-        // Delete selected users
         $('#deleteButton').click(function() {
             var selectedIds = [];
             $('.selectRow:checked').each(function() {
@@ -129,7 +127,7 @@
                             csrfmiddlewaretoken: '{{ csrf_token }}'
                         },
                         success: function(response) {
-                            location.reload(); // Reload the page on success
+                            location.reload();
                         },
                         error: function(response) {
                             alert('사용자를 삭제하는 동안 오류가 발생했습니다.');

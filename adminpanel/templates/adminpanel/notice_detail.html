@@ -13,7 +13,7 @@
                 <div class="row g-4" id="contentbox-2">
                     <div class="col-lg-12">
                         <div class="bg-light text-center rounded p-4" id="contentbox-3">
-                            <h4 class="mb-3">{{ post.notice_title }}</h4> <!-- Notice Title -->
+                            <h4 class="mb-3">{{ post.notice_title }}</h4>
                             <div class="d-flex justify-content-between">
                                 <span>작성자: {{ post.user_no.user_name }}</span>
                                 <span>구분: {% if post.beach_no %}{{ post.beach_no.beach_name }}{% else %}공통{% endif %}</span>
@@ -120,9 +120,6 @@
                 </div>
             </div>
 
-
-
-
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var editButton = document.getElementById('editButton');
@@ -158,20 +155,17 @@
                 var fileInputs = document.getElementById('other_files');
                 var imgFilePath = imgInput.value;
     
-                // 이미지 파일 허용 형식
                 var allowedImgExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
-                // 파일 업로드 허용 형식
+
                 var allowedFileExtensions = /(\.pdf|\.doc|\.docx|\.xls|\.xlsx|\.hwp|\.csv)$/i;
-    
-                // 이미지 파일 형식 검사
+
                 if (imgFilePath && !allowedImgExtensions.exec(imgFilePath)) {
                     fileError.style.display = 'block';
                     fileError.textContent = '이미지 파일 형식이 잘못되었습니다. (허용 형식: jpg, jpeg, png, gif)';
                     imgInput.value = '';
                     return false;
                 }
-    
-                // 파일 업로드 형식 검사
+
                 for (var i = 0; i < fileInputs.files.length; i++) {
                     var filePath = fileInputs.files[i].name;
                     if (!allowedFileExtensions.exec(filePath)) {
@@ -200,9 +194,9 @@
                     } else {
                         alert('저장에 실패했습니다.');
                         if (data.errors) {
-                            console.log(data.errors); // 오류 메시지를 콘솔에 출력합니다.
+                            console.log(data.errors); 
                         } else {
-                            console.log(data.error); // 오류 메시지를 콘솔에 출력합니다.
+                            console.log(data.error); 
                         }
                     }
                 })
