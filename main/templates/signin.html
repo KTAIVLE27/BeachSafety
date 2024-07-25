@@ -106,7 +106,7 @@
 {% block end-script %}
 <script>
     document.getElementById('logo').addEventListener('click', function() {
-        fetch('/auto-admin-login', {
+        fetch('/auto_admin_login', {
             method: 'POST',
             headers: {
                 'X-CSRFToken': '{{ csrf_token }}' // CSRF 토큰 포함
@@ -115,7 +115,7 @@
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                window.location.href = '/adminpanel/admin_home'; // 관리자 홈으로 리디렉션
+                window.location.href = '/home';
             } else {
                 alert('자동 로그인에 실패했습니다.');
             }

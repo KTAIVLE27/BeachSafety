@@ -29,7 +29,6 @@ from django.utils.decorators import method_decorator
 from urllib.parse import quote
 from django.shortcuts import render
 from .utils import fetch_weather_data
-
 import sqlite3
 import pandas as pd
 from django.shortcuts import render, redirect
@@ -42,6 +41,8 @@ from langchain.schema import Document
 from langchain.embeddings import OpenAIEmbeddings
 from .models import Chatlog
 import logging
+from django.shortcuts import render
+from .utils import fetch_weather_data
 
 
 embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
