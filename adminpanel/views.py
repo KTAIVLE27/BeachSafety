@@ -131,18 +131,19 @@ def admin_home(request):
     messages = []
     for message_code in message_codes:
         message_details = fetch_message_details(message_code)
-        if isinstance(message_details, list):
-            messages.extend(message_details)
-        else:
-            messages.append(message_details)
+        if message_details :
+            if isinstance(message_details, list):
+                messages.extend(message_details)
+            else:
+                messages.append(message_details)
     
-    sorted_messages = sorted(messages, key=lambda x: x.get('deliver_date', ''), reverse=True)
-    return render(request, 'adminpanel/admin_home.html',
-                  {'hours':hours, 'counts':counts, 'beaches': beaches, 
-                   'user_count':user_count, 'beach_count':beach_count,
-                   'board_count':board_count, 'notice_board_count':notice_board_count,
-                   'messages':sorted_messages
-                   })
+        sorted_messages = sorted(messages, key=lambda x: x.get('deliver_date', ''), reverse=True)
+        return render(request, 'adminpanel/admin_home.html',
+                    {'hours':hours, 'counts':counts, 'beaches': beaches, 
+                    'user_count':user_count, 'beach_count':beach_count,
+                    'board_count':board_count, 'notice_board_count':notice_board_count,
+                    'messages':sorted_messages
+                    })
 
 
 
