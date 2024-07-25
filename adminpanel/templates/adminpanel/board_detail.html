@@ -31,7 +31,21 @@
                             {% if post.event_img and post.event_img != "None" %}
                             <div>
                                 <img src="{{ post.event_img }}" alt="첨부 이미지" style="max-width: 100%; height: auto; max-height: 400px;">
+                                <div>
+                                    <a href="#" id="downImageButton" >{{event_img_filename}}</a>
+                                </div>
                             </div>
+                        {% endif %}
+                        {% if event_files %}
+                        <div>
+                            <ul style="list-style-type: none; padding: 0;">
+                                {% for filename, file_url in event_files %}
+                                <li>
+                                    <a href="#" class="downloadFileButton" data-file-url="{{ file_url }}">{{ filename }}</a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
                         {% endif %}
                         </div>
                         <hr>
@@ -44,4 +58,38 @@
         </div>
         <!-- Event Detail End -->
 
+
+<script>
+    document.addEventListener('DOMContentLoaded', function()  {
+
+        var downloadImageButton = document.getElementById('downloadImageButton');
+        var downloadFileButtons = document.querySelectorAll('.downloadFileButton');
+    
+    
+        if (downloadImageButton) {
+            downloadImageButton.addEventListener('click', function() {
+                fetch("{% url 'board_generate_presigned_url' post.pk %}")
+                .then(response => response.json())
+                .then(data => {
+                    if (data.url) {
+                        window.location.href = data.url;
+                    } else {
+                        alert('파일 다운로드에 실패했습니다.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+        }
+    
+        downloadFileButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                var fileUrl = this.getAttribute('data-file-url');
+                window.location.href = fileUrl;
+            });
+        });
+    
+    });
+</script>
 {% endblock %}
