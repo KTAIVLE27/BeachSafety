@@ -136,7 +136,7 @@ def admin_home(request):
         else:
             messages.append(message_details)
     
-    sorted_messages = sorted(messages, key=lambda x: x['deliver_date'], reverse=True)
+    sorted_messages = sorted(messages, key=lambda x: x.get('deliver_date', ''), reverse=True)
     return render(request, 'adminpanel/admin_home.html',
                   {'hours':hours, 'counts':counts, 'beaches': beaches, 
                    'user_count':user_count, 'beach_count':beach_count,
