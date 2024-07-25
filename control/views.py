@@ -6,19 +6,27 @@ from django.views.decorators.csrf import csrf_exempt
 import os
 from sdk.api.message import Message
 from sdk.exceptions import CoolsmsException
-from main.models import Message as MessageModel
 import time 
 import hmac
 import hashlib
 import uuid
 import requests
 import datetime
-# Create your views here.
-# ['GYEONGPO', 'GORAEBUL','NAKSAN','DAECHON','MANGSANG','SOKCHO','SONGJUNG','IMRANG','JUNGMUN','HAE']
+import json
+from django.http import StreamingHttpResponse, JsonResponse
+from django.shortcuts import render
+import cv2
+import numpy as np
+import yt_dlp as youtube_dl
+from ultralytics import YOLO
+from threading import Event
 
 from .utils import *
-import json
 from main.models import *
+from main.models import Message as MessageModel
+
+
+
 def control_view(request):
     context = {
         'GYEONGPO_score_msg': get_beach_score_msg('GYEONGPO'),
@@ -95,14 +103,12 @@ def get_headers(apiKey, apiSecret):
 @csrf_exempt
 def send_sms(request):
     if request.method == 'POST':
-        # set api key, api secret
         MESSAGE_API_KEY = os.getenv('MESSAGE_API_KEY')
         MESSAGE_API_SECRET = os.getenv('MESSAGE_API_SECRET')
 
         if not MESSAGE_API_KEY or not MESSAGE_API_SECRET:
             return JsonResponse({'status': 'error', 'message': 'API key or secret not set'}, status=400)
 
-        # Get beach name from request
         beach_name = request.POST.get('beach_name')
         if not beach_name:
             return JsonResponse({'status': 'error', 'message': 'Beach name not provided'}, status=400)
@@ -135,14 +141,8 @@ def send_sms(request):
             return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
     return JsonResponse({'status': 'invalid request'}, status=400)
 
-# yolo 모델 적용
-from django.http import StreamingHttpResponse, JsonResponse
-from django.shortcuts import render
-import cv2
-import numpy as np
-import yt_dlp as youtube_dl
-from ultralytics import YOLO
-from threading import Event
+
+
 
 # YOLOv8 모델 설정
 model = YOLO('control/best5.pt')  # 세그멘테이션 모델 파일 경로

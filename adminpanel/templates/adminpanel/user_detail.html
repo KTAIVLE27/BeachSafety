@@ -114,7 +114,6 @@
 
 <!-- Custom JavaScript for alert messages -->
 <script>
-// Display alert message
 function showAlert(message, alertType) {
 const alertBox = document.createElement('div');
 alertBox.className = `alert alert-${alertType} alert-message`;
@@ -130,7 +129,6 @@ setTimeout(() => {
 }, 3000);
 }
 
-// Handle messages from Django
 {% if messages %}
 {% for message in messages %}
     showAlert("{{ message }}", "{% if message.tags %}{{ message.tags }}{% else %}info{% endif %}");
@@ -147,7 +145,6 @@ new daum.Postcode({
 }).open();
 }
 
-// Preview Image
 function previewImage(event) {
 var reader = new FileReader();
 reader.onload = function(){

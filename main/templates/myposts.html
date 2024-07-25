@@ -30,9 +30,9 @@
             <div class="col-lg-12">
                 <div class="bg-light text-center rounded p-4"id="contentbox-3">
                     <div class="d-flex align-items-center justify-content-between mb-4">
-                        <h4 class="mb-0">내 게시글 목록</h4> <!-- Increased font size for Notices -->
+                        <h4 class="mb-0">내 게시글 목록</h4>
                         <div class="d-flex">
-                            <a href="{% url 'create_freeboard' %}" class="btn btn-secondary me-2">글쓰기</a> <!-- Write Button -->
+                            <a href="{% url 'create_freeboard' %}" class="btn btn-secondary me-2">글쓰기</a> 
                             <div class="dropdown me-2">
                                 <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                                     구분
@@ -45,7 +45,7 @@
                                     {% endfor %}
                                 </div>
                             </div>
-                            <button id="deleteButton" class="btn btn-primary">삭제</button> <!-- Delete Button -->
+                            <button id="deleteButton" class="btn btn-primary">삭제</button>
                         </div>
                     </div>
                     <!-- Table for Notices -->
@@ -56,12 +56,12 @@
                                     <th scope="col" style="width: 5%;">
                                     <input type="checkbox" id="selectAll">
                                     </th>
-                                    <th scope="col" style="width: 5%;">글 번호</th> <!-- Adjusted width for Title -->
-                                    <th scope="col" style="width: 15%;">구분</th> <!-- Adjusted width for Title -->
-                                    <th scope="col" style="width: 50%;">제목</th> <!-- Adjusted width for Date -->
-                                    <th scope="col" style="width: 10%;">작성자</th> <!-- Adjusted width for Author -->
+                                    <th scope="col" style="width: 5%;">글 번호</th>
+                                    <th scope="col" style="width: 15%;">구분</th> 
+                                    <th scope="col" style="width: 50%;">제목</th> 
+                                    <th scope="col" style="width: 10%;">작성자</th> 
                                     <th scope="col" style="width: 10%;">등록일시</th>
-                                    <th scope="col" style="width: 10%;">조회수</th> <!-- Adjusted width for Views -->
+                                    <th scope="col" style="width: 10%;">조회수</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -116,7 +116,7 @@
                     <!-- End of Pagination Controls -->
                       <!-- Search Bar -->
                       <div class="container pt-4">
-                        <div class="row justify-content-center"> <!-- 중앙 정렬 -->
+                        <div class="row justify-content-center"> 
                             <div class="col-lg-6">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
@@ -146,7 +146,7 @@ document.getElementById('selectAll').addEventListener('change', function() {
         checkbox.checked = this.checked;
     }
 });
-// post 삭제
+
 document.getElementById('deleteButton').addEventListener('click', function() {
     if(confirm('정말로 삭제하시겠습니까?')) {
         var checkboxes = document.querySelectorAll('.selectRow:checked');
@@ -167,9 +167,9 @@ document.getElementById('deleteButton').addEventListener('click', function() {
             .then(data => {
                 console.log(data);
                 if (data.status === "success") {
-                    location.reload(); // 성공시 페이지 리로드
+                    location.reload(); 
                 } else {
-                    alert("Error: " + data.message); // 실패시 메시지 출력
+                    alert("Error: " + data.message); 
                 }
             })
             .catch(error => console.error('Error:', error));
@@ -178,7 +178,6 @@ document.getElementById('deleteButton').addEventListener('click', function() {
 });
 
 
-// Display alert message
 function showAlert(message, alertType) {
     const alertBox = document.createElement('div');
     alertBox.className = `alert alert-${alertType} alert-message`;
@@ -195,8 +194,6 @@ function showAlert(message, alertType) {
 }
 
 
-
-// Handle messages from Django
 {% if messages %}
     {% for message in messages %}
         showAlert("{{ message }}", "{% if message.tags %}{{ message.tags }}{% else %}info{% endif %}");

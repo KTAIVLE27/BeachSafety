@@ -27,17 +27,9 @@
                 <h4 class="mb-4 chat-header">해양안전 시나리오 챗봇</h4>
                 <div class="chat-box" id='contentbox-3'>
                     <div id="chat-content" class="chat-body">
-                        <!-- Initial welcome message -->
                         <div class="chat-message">
                             <strong>안녕하세요 해양안전 AI 모니터링 시스템입니다</strong>
                         </div>
-                        <!-- {% for log in logs %}
-                        <div class="chat-message-box">
-                            <strong>질문:</strong> {{ log.question|safe }}<br>
-                            <strong>답변:</strong><br>
-                            {{ log.answer|safe|linebreaksbr }}
-                        </div>
-                        {% endfor %} -->
                     </div>
                     <div class="loading-spinner" id="loading-spinner"></div>
                     <div class="button-group mt-3">
@@ -223,13 +215,13 @@
         xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
 
         xhr.onload = function() {
-    // 로딩 스피너 숨기기
+
     document.getElementById('loading-spinner').style.display = 'none';
 
     if (xhr.status === 200) {
         var response = JSON.parse(xhr.responseText);
         var chatContent = document.getElementById('chat-content');
-        chatContent.innerHTML = ''; // Clear previous chat messages
+        chatContent.innerHTML = ''; 
         var newMessage = document.createElement('div');
         newMessage.classList.add('chat-message');
         newMessage.innerHTML = '<strong>질문:</strong> ' + response.question + '<br>' + '<br>' +

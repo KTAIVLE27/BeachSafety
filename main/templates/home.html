@@ -32,7 +32,6 @@
         
                     let vmap = new vw.ol3.Map("vmap", vw.ol3.MapOptions); 
         
-                    // Disable mouse wheel zoom
                     vmap.getInteractions().forEach(function(interaction) {
                         if (interaction instanceof ol.interaction.MouseWheelZoom) {
                             vmap.removeInteraction(interaction);

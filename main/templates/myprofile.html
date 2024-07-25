@@ -135,9 +135,7 @@
 {% endblock %}
 
 
-<!-- Custom JavaScript for alert messages -->
 <script>
-// Display alert message
 function showAlert(message, alertType) {
 const alertBox = document.createElement('div');
 alertBox.className = `alert alert-${alertType} alert-message`;
@@ -153,24 +151,20 @@ setTimeout(() => {
 }, 3000);
 }
 
-// Handle messages from Django
 {% if messages %}
 {% for message in messages %}
     showAlert("{{ message }}", "{% if message.tags %}{{ message.tags }}{% else %}info{% endif %}");
 {% endfor %}
 {% endif %}
 
-// Daum Postcode
 function execDaumPostcode() {
 new daum.Postcode({
     oncomplete: function(data) {
-        // 주소 정보를 해당 필드에 넣는다.
         document.getElementById("profile-address").value = data.address;
     }
 }).open();
 }
 
-// Preview Image
 function previewImage(event) {
 var reader = new FileReader();
 reader.onload = function(){
@@ -180,7 +174,6 @@ reader.onload = function(){
 reader.readAsDataURL(event.target.files[0]);
 }
 
-// Validate Fields
 function validateField(field) {
 let errorDiv = document.getElementById(field.id + "_error");
 
@@ -241,7 +234,6 @@ if (field.name === "user_detail_address") {
 }
 }
 
-// Form submit event handler
 document.getElementById('profile-form').addEventListener('submit', function(event) {
 let isValid = true;
 const fields = this.querySelectorAll('input[oninput="validateField(this)"]');

@@ -1,6 +1,3 @@
-# from django.shortcuts import render
-# from django.contrib.auth.models import User
-# from main.models import User  # Ensure this is the correct import
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
@@ -8,22 +5,15 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator
-from main.models import *
-from main.models import Event_board, Notice_board
 from django.contrib import messages
 import json
-from main.forms import *
-from django.db.models import Q
 import csv
 import io
-# from datetime import datetime,timezone, timedelta
-from main.utils import similarity_function 
 import boto3
 from django.conf import settings
 from collections import Counter
+from django.db.models import Q
 from django.utils.timezone import localtime
-# from django.utils import timezone
 import time 
 import hmac
 import hashlib
@@ -31,13 +21,15 @@ import uuid
 import requests
 import os
 import datetime
-from main.views import add_qa_to_database
-
 from datetime import datetime, timedelta
-from datetime import timezone as dt_timezone  # Import datetime and rename timezone
-from django.utils import timezone as django_timezone  # Rename the django.utils timezone
+from datetime import timezone as dt_timezone  
+from django.utils import timezone
 from .utils import mask_user_data
 from urllib.parse import quote
+
+from main.views import add_qa_to_database
+from main.forms import *
+from main.models import *
 
 def get_signature(key, msg):
     return hmac.new(key.encode(), msg.encode(), hashlib.sha256).hexdigest()
@@ -62,40 +54,32 @@ def get_headers(apiKey, apiSecret):
     return headers
 
 def format_date(date_string):
-    # Convert string to UTC timezone datetime object
     if date_string is None:
         return None
     date_obj = datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%S.%fZ').replace(tzinfo=dt_timezone.utc)
-    # Convert to local timezone (e.g., Korea Standard Time KST)
     kst = dt_timezone(timedelta(hours=9))
     local_date_obj = date_obj.astimezone(kst)
     return local_date_obj.strftime('%Y-%m-%d %H:%M:%S')
 
 def fetch_message_details(message_code):
-    # Environment variables for API key and secret
     MESSAGE_API_KEY = os.getenv('MESSAGE_API_KEY')
     MESSAGE_API_SECRET = os.getenv('MESSAGE_API_SECRET')
 
-    # URL for the API request to get message details
     url = f"http://api.coolsms.co.kr/messages/v4/list?criteria=messageId&value={message_code}&cond=eq"
-    # Generate headers
     headers = get_headers(MESSAGE_API_KEY, MESSAGE_API_SECRET)
 
     response = requests.get(url, headers=headers)
 
-    # Print the response status and body
     response_json = response.json()
     if 'messageList' in response_json and response_json['messageList']:
         message_list = response_json.get('messageList', {})
         extracted_messages = []
         for message_id, message_data in message_list.items():
-            #message_code = message_data.get('_id')
             text = message_data.get('text')
             from_number = message_data.get('from')
             deliver_date = message_data.get('dateReceived')
             if text and deliver_date:
                 extracted_messages.append({
-                    #'messageId': message_code,
                     'text': text,
                     'from': from_number,
                     'deliver_date': format_date(deliver_date)
@@ -104,6 +88,7 @@ def fetch_message_details(message_code):
 
     return None
 
+@login_required
 def admin_home(request):
 
     beaches = Beach.objects.all()
@@ -145,18 +130,16 @@ def admin_home(request):
                    })
 
 
-
+@login_required
 def senario(request):
-    # scenario_code 파라미터를 GET 요청에서 가져옴
     scenario_code = request.GET.get('scenario_code', '')
 
-    # scenario_code가 존재하면 필터링된 시나리오 목록을 가져오고, 그렇지 않으면 모든 시나리오를 가져옴
     if scenario_code:
         scenario_list = Scenario.objects.filter(scenario_code=scenario_code)
     else:
         scenario_list = Scenario.objects.all()
 
-    paginator = Paginator(scenario_list, 10)  # 한 페이지에 10개의 시나리오를 보여줌
+    paginator = Paginator(scenario_list, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -166,6 +149,7 @@ def senario(request):
 
 
 # CSV 업로드 핸들러
+@login_required
 def csv_upload(request):
     if request.method == 'POST':
         csv_file = request.FILES['csv_file']
@@ -202,6 +186,7 @@ def csv_upload(request):
     
     return render(request, 'adminpanel/csv_upload.html')
 
+@login_required
 def delete_senario(request):
     try:
         data = json.loads(request.body)
@@ -211,7 +196,8 @@ def delete_senario(request):
     except Exception as e:
         return JsonResponse({"status": "error", "message": str(e)}, status=400)
 
-# 관리자
+# 자유게시판
+@login_required
 def board_manage(request):    
     beach_no = request.GET.get('beach_no')
     
@@ -228,7 +214,7 @@ def board_manage(request):
     
     if search_keyword:
         if len(search_keyword) > 1:
-            if search_type == 'all': # 전체
+            if search_type == 'all': 
                 posts = posts.filter(Q (event_title__icontains=search_keyword) 
                                               | Q (event_contents__icontains=search_keyword) 
                                               | Q (user_no__user_name__icontains=search_keyword) )
@@ -244,7 +230,7 @@ def board_manage(request):
             messages.error(request, '검색어는 2글자 이상 입력해주세요!')
     
     # 페이징 처리
-    paginator = Paginator(posts, 10)  # 페이지당 10개의 게시물
+    paginator = Paginator(posts, 10) 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -253,6 +239,7 @@ def board_manage(request):
     return render(request, 'adminpanel/board_manage.html', {'posts': posts, 'page_obj': page_obj, 'beaches' : beaches})
 
 @require_POST
+@login_required
 def delete_boards(request):
     try:
         data = json.loads(request.body)
@@ -262,11 +249,11 @@ def delete_boards(request):
     except Exception as e:
         return JsonResponse({"status": "error", "message": str(e)}, status=400)
     
-
+@login_required
 def user_list_view(request):
-    users = User.objects.all().order_by('user_no')  # Order by 'user_no' or another appropriate field
+    users = User.objects.all().order_by('user_no') 
     masked_users = [mask_user_data(user) for user in users]
-    paginator = Paginator(masked_users, 10)  # Show 10 users per page
+    paginator = Paginator(masked_users, 10)
 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -276,11 +263,13 @@ def user_list_view(request):
     }
     return render(request, 'adminpanel/user_list.html', context)
 
+@login_required
 def user_detail(request, user_no):
     user_info = User.objects.get(user_no=user_no)
     return render(request, 'adminpanel/user_detail.html', {'user_info': user_info})
 
 @csrf_exempt
+@login_required
 def delete_users(request):
     if request.method == 'POST':
         user_ids = request.POST.getlist('ids[]')
@@ -292,6 +281,7 @@ def delete_users(request):
     return JsonResponse({'status': 'invalid request'}, status=400)
 
 # 공지사항
+@login_required
 def notice_manage(request):
     beach_no = request.GET.get('beach_no')
 
@@ -309,7 +299,7 @@ def notice_manage(request):
     
     if search_keyword:
         if len(search_keyword) > 1:
-            if search_type == 'all': # 전체
+            if search_type == 'all':
                 posts = posts.filter(Q (notice_title__icontains=search_keyword) 
                                               | Q (notice_contents__icontains=search_keyword) 
                                               | Q (user_no__user_name__icontains=search_keyword) )
@@ -325,7 +315,7 @@ def notice_manage(request):
             messages.error(request, '검색어는 2글자 이상 입력해주세요!')
     
     # 페이징 처리
-    paginator = Paginator(posts, 10)  # 페이지당 10개의 게시물
+    paginator = Paginator(posts, 10) 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -515,12 +505,11 @@ def edit_notice(request, pk):
             notice.save()
             return JsonResponse({'success': True})
         else:
-            # 폼이 유효하지 않은 경우 오류 메시지를 반환
             return JsonResponse({'success': False, 'errors': form.errors.as_json()})
 
     return JsonResponse({'success': False, 'error': '잘못된 요청 방법입니다.'})
 
-# 공지사항 이미지 다운로드
+# 이미지 다운로드
 @login_required
 def generate_presigned_url(request, pk):
     post = get_object_or_404(Notice_board, pk=pk)
@@ -565,9 +554,11 @@ def board_detail(request, pk):
     event_files = [(os.path.basename(file_url), file_url) for file_url in post.event_files] if post.event_files else None
     return render(request, 'adminpanel/board_detail.html', {'post': post, 'event_img_filename':event_img_filename ,'event_files': event_files})
 
+@login_required
 def control_load(request):
     return render(request, 'control.html')
 
+@login_required
 def main_load(request):
     return render(request, 'home.html')
 

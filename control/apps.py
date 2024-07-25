@@ -6,4 +6,4 @@ class ControlConfig(AppConfig):
     name = "control"
     
     def ready(self):
-        pass  # 더 이상 여기서 스케줄러를 시작하지 않음
+        pass  

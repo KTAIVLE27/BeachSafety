@@ -17,7 +17,6 @@
                 </div>
                 
                 <div id="policyContent" class="mt-4">
-                    <!-- Policy content will be dynamically loaded here -->
                 </div>
             </div>
         </div>
@@ -554,13 +553,11 @@
         adjustScroll();
     }
 
-    // Adjust scroll position after content load
     function adjustScroll() {
         const offsetTop = document.getElementById('policyContent').offsetTop - 100;
         window.scrollTo({ top: offsetTop, behavior: 'smooth' });
     }
 
-    // Initially load copyright policy on page load
     document.addEventListener('DOMContentLoaded', function() {
         loadPolicy('privacy');
     });

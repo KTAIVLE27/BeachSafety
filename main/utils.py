@@ -2,7 +2,7 @@ import os
 import requests
 import json
 from datetime import datetime
-
+from .models import Beach
 # 환경 변수에서 API 키 가져오기
 WEATHER_API_KEY = os.getenv('WEATHER_API_KEY')
 
@@ -19,18 +19,10 @@ closest_base_time = max([bt for bt in base_times if bt <= current_time], default
 # API URL 및 요청 매개 변수 설정
 api_url = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst"
 
-# 해수욕장 목록과 좌표 설정
+beach_records = Beach.objects.exclude(beach_name="함덕해수욕장")
 beaches = [
-    {"name": "경포 해수욕장", "nx": 92, "ny": 132},
-    {"name": "고래불 해수욕장", "nx": 103, "ny": 107},
-    {"name": "낙산", "nx": 87, "ny": 140},
-    {"name": "대천", "nx": 53, "ny": 100},
-    {"name": "망상", "nx": 96, "ny": 127},
-    {"name": "속초", "nx": 87, "ny": 140},
-    {"name": "송정", "nx": 61, "ny": 126},
-    {"name": "임랑", "nx": 101, "ny": 79},
-    {"name": "중문", "nx": 51, "ny": 32},
-    {"name": "해운대", "nx": 99, "ny": 75},
+    {"name": beach.beach_name, "nx": beach.nx, "ny": beach.ny}
+    for beach in beach_records
 ]
 
 # 날씨 데이터 가져오는 함수
@@ -92,8 +84,3 @@ if __name__ == "__main__":
 
 def get_weather_item(beach_name):
     return weather_data.get(beach_name, {}).items()
-
-# 유사도 판단
-import difflib
-def similarity_function(str1, str2):
-    return difflib.SequenceMatcher(None, str1, str2).ratio()
