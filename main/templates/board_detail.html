@@ -28,10 +28,19 @@
                                 <div>
                                     <img src="{{ post.notice_img }}" alt="첨부 이미지" style="max-width: 100%; height: auto; max-height: 400px;">
                                     <div>
-                                        <a href="#" id="downloadButton" >첨부파일 다운로드 ({{notice_img_filename}})</a>
+                                        <a href="#" id="downImageButton">{{notice_img_filename}}</a>
                                     </div>
                                 </div>
                             {% endif %}
+                            {% if notice_files %}
+                            <div>
+                                <ul style="list-style-type: none; padding: 0;">
+                                    {% for filename, file_url in notice_files %}
+                                    <li>
+                                        <a href="#" class="downloadFileButton" data-file-url="{{ file_url }}">{{ filename }}</a>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
                             </div>
                             <hr>
                             <div class="text-end">
@@ -45,8 +54,13 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function()  {
-    if (downloadButton) {
-        downloadButton.addEventListener('click', function() {
+
+    var downloadImageButton = document.getElementById('downloadImageButton');
+    var downloadFileButtons = document.querySelectorAll('.downloadFileButton');
+
+
+    if (downloadImageButton) {
+        downloadImageButton.addEventListener('click', function() {
             fetch("{% url 'board_generate_presigned_url' post.pk %}")
             .then(response => response.json())
             .then(data => {
@@ -61,6 +75,13 @@ document.addEventListener('DOMContentLoaded', function()  {
             });
         });
     }
+
+    downloadFileButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            var fileUrl = this.getAttribute('data-file-url');
+            window.location.href = fileUrl;
+        });
+    });
 
 });
 </script>

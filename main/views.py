@@ -27,6 +27,8 @@ from langchain.memory import ConversationBufferMemory
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from urllib.parse import quote
+from django.shortcuts import render
+from .utils import fetch_weather_data
 import sqlite3
 import pandas as pd
 from django.shortcuts import render, redirect
@@ -41,6 +43,7 @@ from .models import Chatlog
 import logging
 from django.shortcuts import render
 from .utils import fetch_weather_data
+
 
 embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
 database = Chroma(persist_directory="./database", embedding_function=embeddings)
@@ -59,8 +62,7 @@ def is_admin(user):
 def forgotpw(request):
     return render(request, 'forgotpw.html')
 
-#@login_required
-#@user_passes_test(is_admin)
+@login_required
 def admin_panel(request):
     return render(request, 'adminpanel/admin_home.html')
 
@@ -203,6 +205,24 @@ def board(request):
     
     
     return render(request, 'board.html', {'notices': posts, 'beaches': beaches, 'selected_beach_no': beach_no, 'page_obj': page_obj})
+# 파일 업로드 핸들러
+def handle_uploaded_file(file, is_image=False):
+    allowed_image_extensions = ['jpg', 'jpeg', 'png', 'gif']
+    allowed_other_extensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'hwp', 'csv']
+    max_file_size = 5 * 1024 * 1024  # 5MB
+
+    ext = file.name.split('.')[-1].lower()
+    if is_image:
+        if ext not in allowed_image_extensions:
+            raise ValueError("허용되지 않는 이미지 파일 형식입니다.")
+    else:
+        if ext not in allowed_other_extensions:
+            raise ValueError("허용되지 않는 파일 형식입니다.")
+    
+    if file.size > max_file_size:
+        raise ValueError("파일 크기가 너무 큽니다.")
+    
+    return True
 
 @login_required
 def board_detail(request, pk):
@@ -214,7 +234,8 @@ def board_detail(request, pk):
         messages.error(request, "해당 게시글을 찾을 수 없습니다.")
         return redirect('board')
     notice_img_filename = os.path.basename(post.notice_img) if post.notice_img else None
-    return render(request, 'board_detail.html', {'post': post, 'notice_img_filename':notice_img_filename})
+    notice_files = [(os.path.basename(file_url), file_url) for file_url in post.notice_files] if post.notice_files else None
+    return render(request, 'board_detail.html', {'post': post, 'notice_img_filename':notice_img_filename, 'notice_files' :notice_files})
 
 # 공지사항 이미지 다운로드
 @login_required
@@ -298,7 +319,8 @@ def freeboard_detail(request, pk):
         return redirect('free_board')
     beaches = Beach.objects.all()
     event_img_filename = os.path.basename(post.event_img) if post.event_img else None
-    return render(request, 'freeboard_detail.html', {'post': post, 'beaches':beaches, 'event_img_filename': event_img_filename})
+    event_files = [(os.path.basename(file_url), file_url) for file_url in post.event_files] if post.event_files else None
+    return render(request, 'freeboard_detail.html', {'post': post, 'beaches':beaches, 'event_img_filename': event_img_filename, 'event_files': event_files})
 
 #자유게시판 생성
 @login_required
@@ -312,28 +334,44 @@ def create_freeboard(request):
             if not event.beach_no:
                 event.beach_no = None
             
-            # 파일 업로드 (client 방식)
             if 'event_img' in request.FILES:
                 file = request.FILES['event_img']
                 
-                s3 = boto3.client(
-                    's3',
-                    aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-                    aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-                    region_name=settings.AWS_S3_REGION_NAME
-                )
-                
-                s3_bucket = settings.AWS_STORAGE_BUCKET_NAME
-                s3_key = f'event/{file.name}'
-                s3.upload_fileobj(file, s3_bucket, s3_key, ExtraArgs={'ContentType': file.content_type})
-                
-                file_url = f'https://{settings.AWS_S3_CUSTOM_DOMAIN}/{s3_key}'
-                event.event_img = file_url           
+                if handle_uploaded_file(file, is_image = True):
+                    s3 = boto3.client(
+                        's3',
+                        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                        region_name=settings.AWS_S3_REGION_NAME
+                    )
+                    
+                    s3_bucket = settings.AWS_STORAGE_BUCKET_NAME
+                    s3_key = f'event/{file.name}'
+                    s3.upload_fileobj(file, s3_bucket, s3_key, ExtraArgs={'ContentType': file.content_type})
+                    
+                    file_url = f'https://{settings.AWS_S3_CUSTOM_DOMAIN}/{s3_key}'
+                    event.event_img = file_url  
+                    
+            other_files = []
+            for file in request.FILES.getlist('other_files'):
+                if handle_uploaded_file(file, is_image = False):
+                    s3 = boto3.client(
+                        's3',
+                        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                        region_name=settings.AWS_S3_REGION_NAME
+                    )
+                    s3_bucket = settings.AWS_STORAGE_BUCKET_NAME
+                    s3_key = f'event/files/{file.name}'
+                    s3.upload_fileobj(file, s3_bucket, s3_key, ExtraArgs={'ContentType': file.content_type})                                           
+                    file_url = f'https://{settings.AWS_S3_CUSTOM_DOMAIN}/{s3_key}'
+                    other_files.append(file_url)
+                   
+            event.evnet_files = other_files                                 
             event.save()
             return redirect('free_board')
-    else:
-        form = FreePostForm()
-        
+        else:
+            form = FreePostForm()           
     beaches = Beach.objects.all()
     return render(request, 'create_freeboard.html', {'beaches': beaches})
 
@@ -376,7 +414,42 @@ def edit_freeboard(request, pk):
                 event.event_img = file_url
             else :
                 existing_event_img = request.POST.get('existing_event_img')  # 기존 이미지 유지
-                event.event_img = existing_event_img if existing_event_img else None                             
+                event.event_img = existing_event_img if existing_event_img else None
+                
+                       # 기타 파일 처리
+            other_files = event.event_files if event.event_files else []
+
+            # 삭제할 파일 처리
+            delete_files = request.POST.getlist('delete_other_files')
+            for file_url in delete_files:
+                if file_url in other_files:
+                    s3 = boto3.client(
+                        's3',
+                        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                        region_name=settings.AWS_S3_REGION_NAME
+                    )
+                    s3_key = file_url.split(f'https://{settings.AWS_S3_CUSTOM_DOMAIN}/')[1]
+                    s3.delete_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=s3_key)
+                    other_files.remove(file_url)
+
+            # 새로운 파일 업로드 처리
+            for file in request.FILES.getlist('other_files'):
+                if handle_uploaded_file(file, is_image=False):
+                    s3 = boto3.client(
+                        's3',
+                        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                        region_name=settings.AWS_S3_REGION_NAME
+                    )
+                    s3_bucket = settings.AWS_STORAGE_BUCKET_NAME
+                    s3_key = f'notices/files/{file.name}'
+                    s3.upload_fileobj(file, s3_bucket, s3_key, ExtraArgs={'ContentType': file.content_type})
+
+                    file_url = f'https://{settings.AWS_S3_CUSTOM_DOMAIN}/{s3_key}'
+                    other_files.append(file_url)
+
+            event.event_files = other_files                                 
             event.save()
             return JsonResponse({'success': True})
         else:
@@ -640,7 +713,6 @@ def control_view(request):
         except (SyntaxError, KeyError):
             pass
     else:
-        # Set default value to the first beach in the queryset
         first_beach = beaches.first()
         if first_beach:
             nx, ny = first_beach.nx, first_beach.ny
@@ -656,6 +728,7 @@ def control_view(request):
     }
     
     return render(request, 'weather.html', context)
+
 
 # SQLite 데이터베이스에서 QA 데이터를 가져오는 함수 (새로 추가된 레코드만 가져오도록 수정)
 def get_new_qa_data(last_id):

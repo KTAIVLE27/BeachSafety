@@ -28,8 +28,19 @@
                                     <div>
                                         <img src="{{ post.notice_img }}" alt="첨부 이미지" style="max-width: 100%; height: auto; max-height: 400px;">
                                         <div>
-                                            <a href="#"  id="downloadButton">첨부파일 다운로드 ({{notice_img_filename}})</a>
+                                            <a href="#" id="downloadImageButton">{{notice_img_filename}}</a>
                                         </div>
+                                    </div>
+                                    {% endif %}
+                                    {% if notice_files %}
+                                    <div>
+                                        <ul style="list-style-type: none; padding: 0;">
+                                            {% for filename, file_url in notice_files %}
+                                            <li>
+                                                <a href="#" class="downloadFileButton" data-file-url="{{ file_url }}">{{ filename }}</a>
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
                                     </div>
                                     {% endif %}
                                 </div>
@@ -54,22 +65,39 @@
                                         <textarea class="form-control" id="notice_contents" name="notice_contents" rows="5">{{ post.notice_contents }}</textarea>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="notice_img" class="form-label">첨부파일</label>
+                                        <label for="notice_img" class="form-label">이미지 업로드</label>
                                         <input type="file" class="form-control" id="notice_img" name="notice_img">
                                         <input type="hidden" name="existing_notice_img" value="{{ post.notice_img }}">
                                         {% if post.notice_img and post.notice_img != "None" %}
                                         <div class="mt-2">
+                                            <img src="{{ post.notice_img }}" alt="첨부 이미지"style="width: 40%; height: 40%'">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" id="delete_notice_img" name="delete_notice_img">
                                                 <label class="form-check-label" for="delete_event_img">
-                                                    첨부파일 삭제 ({{notice_img_filename}})
+                                                    삭제 {{notice_img_filename}}
                                                 </label>
-                                                <br>
-                                                <img src="{{ post.notice_img }}" alt="첨부 이미지" style="width: 100%; height:100%;">
                                             </div>
                                         </div>
                                         {% endif %} 
                                     </div>
+                                    <div class="mb-3">
+                                        <label for="other_files" class="form-label">파일 업로드</label>
+                                        <input type="file" class="form-control" id="other_files" name="other_files" multiple>
+                                    </div>
+                                    <br>
+                                    {% if notice_files %}
+                                    <div class="mb-3">
+                                        <h5>기존 첨부 파일</h5>
+                                        <ul style="list-style-type: none; padding: 0;">
+                                            {% for filename, file_url in notice_files %}
+                                            <li>
+                                                <input type="checkbox" name="delete_other_files" value="{{ file_url }}"> 삭제
+                                                <a href="#" class="downloadFileButton" data-file-url="{{ file_url }}">{{ filename }}</a>
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    {% endif %}
                                     <div class="d-flex justify-content-between">
                                         <div>
                                             <button type="submit" class="btn btn-primary">저장</button>
@@ -95,72 +123,119 @@
 
 
 
-        <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var editButton = document.getElementById('editButton');
-            var cancelEditButton = document.getElementById('cancelEditButton');
-            var editForm = document.getElementById('editForm');
-            var viewContent = document.getElementById('viewContent');
-
-            if (editButton) {
-                editButton.addEventListener('click', function() {
-                    editForm.style.display = 'block';
-                    viewContent.style.display = 'none';
-                    editButton.style.display = 'none';
-                });
-
-                cancelEditButton.addEventListener('click', function() {
-                    editForm.style.display = 'none';
-                    viewContent.style.display = 'block';
-                    editButton.style.display = 'block';
-                });
-
-                editForm.addEventListener('submit', function(event) {
-                    event.preventDefault();
-
-                    var formData = new FormData(editForm);
-
-                    fetch("{% url 'adminpanel:edit_notice' post.pk %}", {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRFToken': '{{ csrf_token }}'
-                        },
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            location.reload();
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var editButton = document.getElementById('editButton');
+        var cancelEditButton = document.getElementById('cancelEditButton');
+        var deleteButton = document.getElementById('deleteButton');
+        var editForm = document.getElementById('editForm');
+        var viewContent = document.getElementById('viewContent');
+        var downloadImageButton = document.getElementById('downloadImageButton');
+        var downloadFileButtons = document.querySelectorAll('.downloadFileButton');
+        var fileError = document.createElement('div');
+        fileError.style.color = 'red';
+        fileError.style.display = 'none';
+        fileError.style.marginTop = '10px';
+        editForm.appendChild(fileError);
+    
+        if (editButton) {
+            editButton.addEventListener('click', function() {
+                editForm.style.display = 'block';
+                viewContent.style.display = 'none';
+                editButton.style.display = 'none';
+            });
+    
+            cancelEditButton.addEventListener('click', function() {
+                editForm.style.display = 'none';
+                viewContent.style.display = 'block';
+                editButton.style.display = 'block';
+            });
+    
+            editForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+    
+                var imgInput = document.getElementById('notice_img');
+                var fileInputs = document.getElementById('other_files');
+                var imgFilePath = imgInput.value;
+    
+                // 이미지 파일 허용 형식
+                var allowedImgExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+                // 파일 업로드 허용 형식
+                var allowedFileExtensions = /(\.pdf|\.doc|\.docx|\.xls|\.xlsx|\.hwp|\.csv)$/i;
+    
+                // 이미지 파일 형식 검사
+                if (imgFilePath && !allowedImgExtensions.exec(imgFilePath)) {
+                    fileError.style.display = 'block';
+                    fileError.textContent = '이미지 파일 형식이 잘못되었습니다. (허용 형식: jpg, jpeg, png, gif)';
+                    imgInput.value = '';
+                    return false;
+                }
+    
+                // 파일 업로드 형식 검사
+                for (var i = 0; i < fileInputs.files.length; i++) {
+                    var filePath = fileInputs.files[i].name;
+                    if (!allowedFileExtensions.exec(filePath)) {
+                        fileError.style.display = 'block';
+                        fileError.textContent = '파일 업로드 형식이 잘못되었습니다. (허용 형식: pdf, doc, docx, xls, xlsx, hwp, csv)';
+                        fileInputs.value = '';
+                        return false;
+                    }
+                }
+    
+                fileError.style.display = 'none';
+    
+                var formData = new FormData(editForm);
+    
+                fetch("{% url 'adminpanel:edit_notice' post.pk %}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('저장에 실패했습니다.');
+                        if (data.errors) {
+                            console.log(data.errors); // 오류 메시지를 콘솔에 출력합니다.
                         } else {
-                            alert('저장에 실패했습니다.');
-                            if (data.errors) {
-                                console.log(data.errors); // 오류 메시지를 콘솔에 출력합니다.
-                            } else {
-                                console.log(data.error); // 오류 메시지를 콘솔에 출력합니다.
-                            }
+                            console.log(data.error); // 오류 메시지를 콘솔에 출력합니다.
                         }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
                 });
-            }
-            if (downloadButton) {
-                downloadButton.addEventListener('click', function() {
-                    fetch("{% url 'adminpanel:generate_presigned_url' post.pk %}")
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.url) {
-                            window.location.href = data.url;
-                        } else {
-                            alert('파일 다운로드에 실패했습니다.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
+            });
+        }
+    
+        if (downloadImageButton) {
+            downloadImageButton.addEventListener('click', function() {
+                fetch("{% url 'adminpanel:generate_presigned_url' post.pk %}")
+                .then(response => response.json())
+                .then(data => {
+                    if (data.url) {
+                        window.location.href = data.url;
+                    } else {
+                        alert('파일 다운로드에 실패했습니다.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
                 });
-            }
+            });
+        }
+    
+        downloadFileButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                var fileUrl = this.getAttribute('data-file-url');
+                window.location.href = fileUrl;
+            });
         });
-    </script>
+    });
+    
+</script>
 {% endblock %}
