@@ -41,7 +41,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     user_email = models.EmailField(unique=True, blank=False)  # 회원 이메일
     user_joinday = models.DateTimeField(auto_now_add=True, blank=False)  # 회원 가입날짜
 
-    is_active = models.BooleanField(default=True)  # 이메일 인증 등 을 통해 커스텀 가능
+    is_active = models.BooleanField(default=True) 
     is_staff = models.BooleanField(default=False)
 
     objects = UserManager()
@@ -61,7 +61,7 @@ class Beach(models.Model):
     beach_region = models.CharField(max_length=100, blank=False)  # 지역
     beach_lat = models.FloatField(null = False,blank=False) # 위도
     beach_lon = models.FloatField(null= False, blank=False) # 경도
-    # 아래 3 컬럼은 날씨를 위한 값, null=True (이안류 제공하는 10개 해수욕에 해당하지 않는 값이 있기 때문에)
+
     beach_widget_id = models.CharField(null = True, max_length=50 ) # widget_id 
     nx = models.IntegerField(null = True)
     ny =  models.IntegerField(null = True)
@@ -108,19 +108,7 @@ class CCTV(models.Model):
         db_table = 'cctv'
 
 
-# 댓글 일단 보류
-# class Comment(models.Model):
-#     comment_id = models.CharField(max_length=20, primary_key=True)  # 댓글 고유 번호
-#     user_no = models.ForeignKey(User, on_delete=models.CASCADE, db_column='user_no')  # 회원번호
-#     auth_no = models.ForeignKey(Authority, on_delete=models.CASCADE, db_column='auth_no')  # 권한번호
-#     comment = models.TextField(blank=False)  # 댓글
-
-#     class Meta:
-#         db_table = 'comment'
-
-
-# 인덱스, 유형, 시간(시간 포맷?), 상황, 절차(길게), 목표
-# csv 파일 업로드 목적 
+# csv 파일 업로드
 class Scenario(models.Model):
     scenario_id = models.AutoField(primary_key=True) # 인덱스 
     scenario_code = models.CharField(max_length=20)  # 시나리오 유형
@@ -133,19 +121,6 @@ class Scenario(models.Model):
 
     class Meta:
         db_table = 'scenario'
-
-
-# class ScenarioEval(models.Model):
-#     scenario_code = models.ForeignKey(Scenario, on_delete=models.CASCADE, db_column='scenario_code')  # 시나리오 코드
-#     category = models.CharField(max_length=100, blank=False)  # 유형
-#     time = models.DateTimeField(blank=False)  # 시간
-#     story = models.TextField(blank=False)  # 상황
-#     goal = models.TextField(blank=False)  # 목표
-
-#     class Meta:
-#         db_table = 'scenario_eval'
-
-
 
 class Message(models.Model):
     message_id = models.AutoField(primary_key=True)

@@ -122,7 +122,7 @@
                 <a href="{% url 'home' %}"><img src="{% static 'img/logo_choi.png' %}" width="150" height="70" id="main-logo"></i></a>    
                
                 <div class="navbar-nav align-items-center ms-auto">
-                    <!-- Add buttons based on user role ㅇㅇ-->
+                    <!-- Add buttons based on user role -->
                         <div class="nav-item dropdown">
                             <form method="post" action="{% url 'logout' %}">
                                 {% csrf_token %}
@@ -204,7 +204,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             function maskName(name) {
                 if (name.length <= 1) {
-                    return name; // 이름이 한 글자일 경우 마스킹하지 않음
+                    return name; 
                 }
                 return name[0] + '*' + name.slice(2);
             }
@@ -216,7 +216,7 @@
             }
             function maskUserId(userId) {
                 if (userId.length <= 2) {
-                    return userId; // ID가 2글자 이하일 경우 마스킹하지 않음
+                    return userId; 
                 }
                 let maskedLength = Math.min(2, userId.length - 2);
                 let start = Math.floor((userId.length - maskedLength) / 2);

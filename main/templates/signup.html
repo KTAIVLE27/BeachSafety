@@ -144,58 +144,7 @@
                 }
             });
         });
-
-        // function validateField(field) {
-        //     let errorDiv = document.getElementById(field.id + "_error");
-        //     if (field.name === "user_id") {
-        //         if (field.value.length < 4) {
-        //             errorDiv.textContent = "ID의 길이는 4자 이상이어야 합니다.";
-        //         } else {
-        //             errorDiv.textContent = "";
-        //         }
-        //     }
-        //     if (field.name === "password1") {
-        //         if (field.value.length < 6) {
-        //             errorDiv.textContent = "암호의 길이는 6자 이상이어야 합니다.";
-        //         } else {
-        //             errorDiv.textContent = "";
-        //         }
-        //     }
-        //     if (field.name === "password2") {
-        //         let password1 = document.getElementById('id_password1').value;
-        //         if (field.value !== password1) {
-        //             errorDiv.textContent = "비밀번호가 일치하지 않습니다.";
-        //         } else {
-        //             errorDiv.textContent = "";
-        //         }
-        //     }
-        //     if (field.name === "user_email") {
-        //         let emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-        //         if (!emailPattern.test(field.value)) {
-        //             errorDiv.textContent = "올바른 전자 메일 주소를 입력하십시오.";
-        //         } else {
-        //             errorDiv.textContent = "";
-        //         }
-        //     }
-        //     if (field.name === "user_phone") {
-        //         let phonePattern = /^010-\d{4}-\d{4}$/;
-        //         if (!phonePattern.test(field.value)) {
-        //             errorDiv.textContent = "전화번호는 010-1234-5678 형식이어야 합니다.";
-        //         } else {
-        //             errorDiv.textContent = "";
-        //         }
-        //     }
-        //     if (field.name === "user_birth") {
-        //         let birthPattern = /^\d{4}-\d{2}-\d{2}$/;
-        //         if (!birthPattern.test(field.value)) {
-        //             errorDiv.textContent = "생년월일은 yyyy-mm-dd 형식이어야 합니다.";
-        //         } else {
-        //             errorDiv.textContent = "";
-        //         }
-        //     }
-        // }
-
-        
+  
         // Validate Fields
         function validateField(field) {
         let errorDiv = document.getElementById(field.id + "_error");
@@ -276,13 +225,11 @@
 
         
     }
-
         function startPASSAuth() {
-            // PASS 인증 API 호출
             passAuth({
                 oncomplete: function(data) {
                     document.getElementById('id_PhoneNumber').value = data.phoneNumber;
-                    // 추가 데이터 처리가 필요한 경우 여기에 작성
+
                 }
             });
         }

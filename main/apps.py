@@ -2,10 +2,10 @@ from django.apps import AppConfig
 from django.db.utils import OperationalError
 from django.apps import apps
 from datetime import date
-# 관리자 자동 생성을 위한 설정
+
 class mainConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = 'main'  # 앱의 실제 이름을 입력하세요. 
+    name = 'main' 
 
     
     def ready(self):
@@ -34,7 +34,6 @@ class mainConfig(AppConfig):
                     Beach.objects.create(**beach)
                     print(f"{beach['beach_name']}의 데이터가 생성되었습니다.")
         except OperationalError:
-            # 데이터베이스가 아직 설정되지 않았거나 마이그레이션이 적용되지 않은 경우를 처리
             pass
         
         

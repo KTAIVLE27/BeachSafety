@@ -3,18 +3,13 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.utils import timezone
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import JsonResponse
-import logging
 from django.http import HttpResponseForbidden
-from .models import *
-from .forms import *
-from .utils import get_weather_item
 from django.core.paginator import Paginator
 from django.views.decorators.http import require_POST
 import json
-from control.utils import *
 from django.db.models import Q
 import boto3
 from django.conf import settings
@@ -28,22 +23,21 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from urllib.parse import quote
 from django.shortcuts import render
-from .utils import fetch_weather_data
 import sqlite3
 import pandas as pd
 from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponse
 from django.utils import timezone
-from langchain.chat_models import ChatOpenAI
-from langchain.vectorstores import Chroma
 from langchain.chains import RetrievalQA
 from langchain.schema import Document
-from langchain.embeddings import OpenAIEmbeddings
-from .models import Chatlog
-import logging
 from django.shortcuts import render
+
+from .utils import fetch_weather_data
 from .utils import fetch_weather_data
 
+from .models import *
+from .forms import *
+from control.utils import *
 
 embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
 database = Chroma(persist_directory="./database", embedding_function=embeddings)
@@ -68,8 +62,8 @@ def admin_panel(request):
 
 @login_required
 def home(request):
-    home_notices = Notice_board.objects.all().order_by('-notice_id')[:5]  # 최신 순서로 상위 5개 공지사항
-    home_event = Event_board.objects.all().order_by('-event_id')[:5]  # 최신 순서로 상위 5개 이벤트
+    home_notices = Notice_board.objects.all().order_by('-notice_id')[:5]  
+    home_event = Event_board.objects.all().order_by('-event_id')[:5] 
     context = {
         'home_notices': home_notices,
         'home_event': home_event,
@@ -109,10 +103,10 @@ def home(request):
         'JUNGMUN_lat': get_beach_lat('중문 해수욕장'),
         'HAE_lat': get_beach_lat('해운대 해수욕장'),   
     }
-    context_json = json.dumps(context_rip)  # JSON 형식의 문자열로 변환
+    context_json = json.dumps(context_rip)  
     combined_context = {
         **context,
-        'context_rip_json': context_json  # JSON 문자열을 포함
+        'context_rip_json': context_json  
     }
     return render(request, 'home.html', combined_context)
 
@@ -180,7 +174,7 @@ def board(request):
     search_type  = request.GET.get('type', '')    
     if search_keyword:
         if len(search_keyword) > 1:
-            if search_type == 'all': # 전체
+            if search_type == 'all': 
                 posts = posts.filter(Q (notice_title__icontains=search_keyword) 
                                               | Q (notice_contents__icontains=search_keyword) 
                                               | Q (user_no__user_name__icontains=search_keyword) )
@@ -205,6 +199,7 @@ def board(request):
     
     
     return render(request, 'board.html', {'notices': posts, 'beaches': beaches, 'selected_beach_no': beach_no, 'page_obj': page_obj})
+
 # 파일 업로드 핸들러
 def handle_uploaded_file(file, is_image=False):
     allowed_image_extensions = ['jpg', 'jpeg', 'png', 'gif']
@@ -228,7 +223,7 @@ def handle_uploaded_file(file, is_image=False):
 def board_detail(request, pk):
     try:
         post = Notice_board.objects.get(pk=pk)
-        post.notice_views += 1  # 조회수 증가 
+        post.notice_views += 1  
         post.save()
     except Notice_board.DoesNotExist:
         messages.error(request, "해당 게시글을 찾을 수 없습니다.")
@@ -285,7 +280,7 @@ def free_board(request):
     search_type  = request.GET.get('type', '')    
     if search_keyword:
         if len(search_keyword) > 1:
-            if search_type == 'all': # 전체
+            if search_type == 'all':
                 posts = posts.filter(Q (event_title__icontains=search_keyword) 
                                               | Q (event_contents__icontains=search_keyword) 
                                               | Q (user_no__user_name__icontains=search_keyword) )
@@ -312,7 +307,7 @@ def free_board(request):
 def freeboard_detail(request, pk):
     try:
         post = Event_board.objects.get(pk=pk)
-        post.event_views += 1  # 조회수 증가
+        post.event_views += 1  
         post.save()
     except Event_board.DoesNotExist:
         messages.error(request, "해당 게시글을 찾을 수 없습니다.")
@@ -416,7 +411,7 @@ def edit_freeboard(request, pk):
                 existing_event_img = request.POST.get('existing_event_img')  # 기존 이미지 유지
                 event.event_img = existing_event_img if existing_event_img else None
                 
-                       # 기타 파일 처리
+            
             other_files = event.event_files if event.event_files else []
 
             # 삭제할 파일 처리
@@ -650,10 +645,9 @@ def forgotpw(request):
 def myposts(request):
     if request.method == 'GET':
         try:
-            user_no = request.user.user_no  # 로그인된 사용자의 user_no 가져오기
-            beach_no = request.GET.get('beach_no')  # 요청에서 beach_no 가져오기
+            user_no = request.user.user_no 
+            beach_no = request.GET.get('beach_no')  
 
-            # beach_no에 따른 게시물 필터링
             if beach_no == 'common':
                 event_boards = Event_board.objects.filter(user_no=user_no, beach_no__isnull=True)
             elif beach_no:
@@ -678,7 +672,6 @@ def myposts(request):
         return render(request, 'myposts.html')   
     
 def agreement(request):
-    # 내가 쓴 글을 가져오는 로직을 추가하세요.
     return render(request, 'agreement.html')
 
 def team_info(request):
@@ -781,7 +774,6 @@ def chat_clear_logs(request):
         return HttpResponse(status=405)
     
     
-# 시나리오를 가져오는 뷰 함수
 def get_scenarios(request, scenario_type):
     if request.method == 'GET':
         scenario_type_map = {

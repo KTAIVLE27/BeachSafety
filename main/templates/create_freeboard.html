@@ -103,20 +103,18 @@
         var fileError = document.createElement('div');
         fileError.style.color = 'red';
         fileError.style.display = 'none';
-        fileError.style.marginTop = '10px'; // 버튼 아래에 한 줄 띄우기 위해 여백 추가
+        fileError.style.marginTop = '10px'; 
         uploadForm.appendChild(fileError);
     
         uploadForm.addEventListener('submit', function(event) {
             var imgInput = document.getElementById('event_img');
             var fileInputs = document.getElementById('other_files');
             var imgFilePath = imgInput.value;
-            
-            // 이미지 파일 허용 형식
+
             var allowedImgExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
-            // 파일 업로드 허용 형식
+
             var allowedFileExtensions = /(\.pdf|\.doc|\.docx|\.xls|\.xlsx|\.hwp|\.csv)$/i;
     
-            // 이미지 파일 형식 검사
             if (imgFilePath && !allowedImgExtensions.exec(imgFilePath)) {
                 event.preventDefault();
                 fileError.style.display = 'block';
@@ -125,7 +123,6 @@
                 return false;
             }
     
-            // 파일 업로드 형식 검사
             for (var i = 0; i < fileInputs.files.length; i++) {
                 var filePath = fileInputs.files[i].name;
                 if (!allowedFileExtensions.exec(filePath)) {
