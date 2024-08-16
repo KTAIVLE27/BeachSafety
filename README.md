@@ -1,18 +1,19 @@
-# 해양 안전 AI 모니터링 시스템 
- ##### 🖥️  KT AIVLE 5기 - AI Track 27조
+# :ocean: 해양 안전 AI 모니터링 시스템 
+ ### :curly_loop: KT AIVLE 5기 - AI Track 27조
 (메인 사진)
 
 ## 🕰️ 개발 기간
 * 24.6.26일 - 24.07.30일
 
-## 서비스 소개
+## :pushpin: 서비스 소개
   (서비스 소개 글)
  해양 안전 AI 모니터링 시스템은 이안류 를 포함한 다양한 해양 안전 사고와 그에 따른 인명 피해를 방지하기 위한 서비스입니다.
  관제 모드를 통해 실시간 해수욕장 안전 상황을 확보하고, 빠른 신고를 통해 인명 피해를 최소화 하고 하며..?
+ 
  일반 경찰과 실시간 모니터링을 위한 관제 모드를 사용하여 신속하고 빠른 대처를 통해 국민 해양 안전에 기여합니다.
  
   
-## 주요 기능
+## :pushpin: 주요 기능
 
 * YOLOv8 을 이용한 실시간 해수욕장 모니터링
   (실시간 cctv, yolo 적용 사진)
@@ -21,7 +22,7 @@
 * 챗봇을 이용한 안전 사고 예방 훈련 시나리오
  ( 시나리오 생성 페이지)
 
-## 그 외 서비스
+## :pushpin: 그 외 서비스
 
 * 회원가입, 로그인/로그아웃, 비밀번호 찾기
 * 개인 정보 조회 및 변경
@@ -46,40 +47,6 @@
 <a href="https://github.com/KTAIVLE27/BeachSafety/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=KTAIVLE27/BeachSafety"/>
 </a>
-
-
-
-## Team
-<div>
-  <a href="https://github.com/Beomjw">
-    <img src="https://avatars.githubusercontent.com/u/129016121?v=4" width="80" height="80" style="border-radius:50%;"/>
-  </a>
-  <a href="https://github.com/DoYoung5">
-    <img src="https://avatars.githubusercontent.com/u/122004055?v=4" width="80" height="80" style="border-radius:50%;"/>
-  </a>
-  <a href="https://github.com/k2lly">
-    <img src="https://avatars.githubusercontent.com/u/93562431?v=4" width="80" height="80" style="border-radius:50%;"/>
-  </a>
-  <a href="https://github.com/seohyeon07">
-    <img src="https://avatars.githubusercontent.com/u/77095429?v=4" width="80" height="80" style="border-radius:50%;"/>
-  </a>
-  <a href="https://github.com/lpaead">
-    <img src="https://avatars.githubusercontent.com/u/105852679?v=4" width="80" height="80" style="border-radius:50%;"/>
-  </a>
-  <a href="https://github.com/ktaivlehj">
-    <img src="https://avatars.githubusercontent.com/u/173220874?v=4" width="80" height="80" style="border-radius:50%;"/>
-  </a>
-  <a href="https://github.com/kong68">
-    <img src="https://avatars.githubusercontent.com/u/74444856?v=4" width="80" height="80" style="border-radius:50%;"/>
-  </a>
-  <a href="https://github.com/leeeedaehwan">
-    <img src="https://avatars.githubusercontent.com/u/128450380?v=4" width="80" height="80" style="border-radius:50%;"/>
-  </a>
-  <a href="https://github.com/tklim99">
-    <img src="https://avatars.githubusercontent.com/u/110584634?v=4" width="80" height="80" style="border-radius:50%;"/>
-  </a>
-</div>
-
 
 
 ## 기술 
