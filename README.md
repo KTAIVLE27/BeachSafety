@@ -38,9 +38,8 @@ python manage.py runserver
     - 실시간 이안류 위험지수를 통해 현재시각으로부터 30분 후 위험도 예측
     - 예측 레벨에 따른 색상 변화
 
-
 * 챗봇을 이용한 안전 사고 예방 훈련 시나리오
- <img src='./img/챗봇.png' width='80%' height='40%'>
+  <img src='./img/챗봇.png' width='80%' height='40%'>
     - 모의훈련 생성형 ai 유형 별 버튼식 챗봇
     - 훈련 상황 별 시간 기록 및 총 훈련 소요시간 저장
 
